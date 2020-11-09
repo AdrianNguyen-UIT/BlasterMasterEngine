@@ -1,5 +1,6 @@
 #include "d3dpch.h"
 #include "Player.h"
+#include "Bullet.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/AudioMixer/AudioMixer.h"
 
@@ -16,20 +17,14 @@ Player::Player(float x, float y)
 
 void Player::Start()
 {
-	runSpeed = 250.0f;
+	runSpeed = 300.0f;
 	horizontalMove = 0.0f;
 	isFacingRight = true;
-
-	player2 = std::make_shared<Player>(400.0f, 200.0f);
-	player2->name = "player 2";
-	player2->spriteRenderer->sprite = deviceResources->LoadTexture(TEXTURE_PATH, 0);
-	player2->CreateResources();
 
 	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	rigidbody->bounciness = 0.0f;
 	boxCollider->size = {25.0f, 30.0f};
 	boxCollider->isTrigger = false;
-
 }
 
 void Player::Update()
@@ -72,16 +67,17 @@ void Player::Update()
 	}
 
 	float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
+	LOG_INFO("camera x {0}", camera->GetPosition().x);
 	if (distanceXBetweenCamPlay <= 200.0f)
 	{
 		camera->SetPosition(transform->position.x - 200.0f, camera->GetPosition().y, 0.0f);
 	}
-	else if (distanceXBetweenCamPlay >= 600.0f)
+	else if (distanceXBetweenCamPlay >= 600.0f && camera->GetPosition().x < 2048 - 100)
 	{
 		camera->SetPosition(transform->position.x - 600.0f, camera->GetPosition().y, 0.0f);
 	}
 
-	float distanceYBetweenCamPlay = abs(camera->GetPosition().y - transform->position.y);
+	/*float distanceYBetweenCamPlay = abs(camera->GetPosition().y - transform->position.y);
 	if (distanceYBetweenCamPlay <= 200.0f)
 	{
 		camera->SetPosition(camera->GetPosition().x, transform->position.y + 400.0f, 0.0f);
@@ -89,19 +85,24 @@ void Player::Update()
 	else if (distanceYBetweenCamPlay >= 600.0f)
 	{
 		camera->SetPosition(camera->GetPosition().x, transform->position.y + 200.0f, 0.0f);
-	}
+	}*/
 
 	animationController->SetFloat(L"runSpeed", abs(horizontalMove));
 
 	if (Input::GetKeyDown(KeyCode_C))
 	{
+
 		SceneManager::DestroyObject(shared_from_this());
 	}
 
 	if (Input::GetKeyDown(KeyCode_V))
 	{
-		D3DXVECTOR3 location = {500.0f, 300.0f, 0.0f};
-		SceneManager::Instantiate(player2, location);
+		copy = std::make_shared<Bullet>();
+		copy->name = "bullet";
+		copy->spriteRenderer->sprite = deviceResources->LoadTexture(TEXTURE_PATH, 0);
+		copy->CreateResources();
+		D3DXVECTOR3 location = { transform->position.x + 30, transform->position.y + 40, 0.0f };
+		SceneManager::Instantiate(copy, location);
 	}
 }
 

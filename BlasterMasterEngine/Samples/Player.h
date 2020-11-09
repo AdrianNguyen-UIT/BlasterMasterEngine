@@ -6,7 +6,7 @@ class Player : public Object2D
 private:
 	float runSpeed;
 	float horizontalMove;
-	std::shared_ptr<Object2D> player2;
+	std::shared_ptr<Object2D> copy;
 	bool isFacingRight;
 
 public:

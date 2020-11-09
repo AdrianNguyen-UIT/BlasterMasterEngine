@@ -54,7 +54,7 @@ void Renderer::Render()
 		for (auto object : SceneManager::GetActiveScene()->objects)
 		{
 			object->Draw(D3DXSPRITE_ALPHABLEND);
-			object->RenderDebugRectangle(SceneManager::GetActiveScene()->camera->GetWorldToViewportMat());
+			//object->RenderDebugRectangle(SceneManager::GetActiveScene()->camera->GetWorldToViewportMat());
 		}
 
 		m_deviceResources->GetDevice()->EndScene();

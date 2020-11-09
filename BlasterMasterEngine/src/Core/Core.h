@@ -5,7 +5,7 @@
 #define HEIGHT 600.0f
 #define MONITOR_REFESH_RATE 1.0f/60.0f
 
-#define BITMAP_PATH L"Samples/Images/level1-side.png"
+#define BITMAP_PATH L"Samples/Images/level2-side.png"
 #define TEXTURE_PATH L"Samples/Images/SPA_Player_Ginger.png"
 
 #define BGM_AUDIO "Samples/Sounds/Ensoniq-ZR-76-01-Dope-77.wav"

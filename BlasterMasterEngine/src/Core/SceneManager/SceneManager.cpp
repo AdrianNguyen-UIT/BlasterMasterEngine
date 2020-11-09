@@ -196,6 +196,8 @@ void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> childIt, std::sh
 
 void SceneManager::Instantiate(std::shared_ptr<Object2D> p_Object, D3DXVECTOR3 location)
 {
+	static int index = 0;
+	p_Object->name +=  std::to_string(index);
 	p_Object->transform->position = location;
 	waitingObjects.emplace_back(p_Object);
 	updateAfterInstantiate = true;

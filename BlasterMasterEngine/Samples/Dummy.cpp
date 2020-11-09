@@ -25,18 +25,18 @@ void Dummy::Update()
 }
 void Dummy::CreateResources()
 {
-	//int spriteWidth = 32;
-	//int spriteHeight = 32;
-	//int xOffset = 6;
-	//int yOffset = 6;
+	/*int spriteWidth = 32;
+	int spriteHeight = 32;
+	int xOffset = 6;
+	int yOffset = 6;
 
-	//RECT rect;
-	//rect.left = 0;
-	//rect.top = spriteHeight + yOffset;
-	//rect.right = rect.left + spriteWidth;
-	//rect.bottom = rect.top + spriteHeight;
+	RECT rect;
+	rect.left = 0;
+	rect.top = spriteHeight + yOffset;
+	rect.right = rect.left + spriteWidth;
+	rect.bottom = rect.top + spriteHeight;
 
-	//spriteRenderer->rect = rect;
+	spriteRenderer->rect = rect;*/
 }
 
 void Dummy::OnCollisionEnter()
