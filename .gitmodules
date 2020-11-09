@@ -1,0 +1,4 @@
+[submodule "\\BlasterMasterEngine\\vendor\\spdlog"]
+	path = \\BlasterMasterEngine\\vendor\\spdlog
+	url = https://github.com/gabime/spdlog
+
