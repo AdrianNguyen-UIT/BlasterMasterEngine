@@ -1,15 +1,15 @@
 #pragma once
 #include "Core/SceneManager/Scene.h"
 
-class MainScene : public Scene
+class Area2 : public Scene
 {
 public:
-	MainScene()
+	Area2()
 	{
-		name = "MainScene";
+		name = "Area2";
 	}
 
-	~MainScene() {}
+	~Area2() {}
 
 	virtual void CreateScene() override;
 };

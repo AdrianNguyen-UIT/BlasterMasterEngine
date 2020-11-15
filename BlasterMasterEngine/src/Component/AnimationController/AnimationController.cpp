@@ -5,91 +5,93 @@
 AnimationController::AnimationController()
 {
 	currentAnimationIndex = 0;
+	playCurrentAnimation = true;
+	forward = true;
 }
 
 
-std::shared_ptr<Animation> AnimationController::GetCurrentAnimation()
+std::shared_ptr<Animation> &AnimationController::GetCurrentAnimation()
 {
 	return animations[currentAnimationIndex];
 }
 
-void AnimationController::AddAnimation(std::shared_ptr<Animation> animation)
+void AnimationController::AddAnimation(std::shared_ptr<Animation>&animation)
 {
 	animations.emplace_back(animation);
 }
 
-void AnimationController::SetBool(std::wstring p_Name, bool p_Value)
+void AnimationController::SetBool(std::string p_Name, bool p_Value)
 {
 	for (size_t index = 0; index < boolParameters.size(); index++)
 	{
-		if (boolParameters[index]->name == p_Name)
+		if (boolParameters[index]->GetName() == p_Name)
 		{
-			boolParameters[index]->value = p_Value;
+			boolParameters[index]->SetValue(p_Value);
 		}
 	}
 }
 
-void AnimationController::SetInt(std::wstring p_Name, int p_Value)
+void AnimationController::SetInt(std::string p_Name, int p_Value)
 {
 	for (size_t index = 0; index < intParameters.size(); index++)
 	{
-		if (intParameters[index]->name == p_Name)
+		if (intParameters[index]->GetName() == p_Name)
 		{
-			intParameters[index]->value = p_Value;
+			intParameters[index]->SetValue(p_Value);
 		}
 	}
 }
 
-void AnimationController::SetFloat(std::wstring p_Name, float p_Value)
+void AnimationController::SetFloat(std::string p_Name, float p_Value)
 {
 	for (size_t index = 0; index < floatParameters.size(); index++)
 	{
-		if (floatParameters[index]->name == p_Name)
+		if (floatParameters[index]->GetName() == p_Name)
 		{
-			floatParameters[index]->value = p_Value;
+			floatParameters[index]->SetValue(p_Value);
 		}
 	}
 }
 
-bool AnimationController::GetBool(std::wstring p_Name)
+bool AnimationController::GetBool(std::string p_Name)
 {
 	for (size_t index = 0; index < boolParameters.size(); index++)
 	{
-		if (boolParameters[index]->name == p_Name)
+		if (boolParameters[index]->GetName() == p_Name)
 		{
-			return boolParameters[index]->value;
+			return boolParameters[index]->GetValue();
 		}
 	}
 	return false;
 }
 
-int AnimationController::GetInt(std::wstring p_Name)
+int AnimationController::GetInt(std::string p_Name)
 {
 	for (size_t index = 0; index < intParameters.size(); index++)
 	{
-		if (intParameters[index]->name == p_Name)
+		if (intParameters[index]->GetName() == p_Name)
 		{
-			return intParameters[index]->value;
+			return intParameters[index]->GetValue();
 		}
 	}
 
 	return -1;
 }
 
-float AnimationController::GetFloat(std::wstring p_Name)
+float AnimationController::GetFloat(std::string p_Name)
 {
 	for (size_t index = 0; index < floatParameters.size(); index++)
 	{
-		if (floatParameters[index]->name == p_Name)
+		if (floatParameters[index]->GetName() == p_Name)
 		{
-			return floatParameters[index]->value;
+			return floatParameters[index]->GetValue();
 		}
 	}
 	return -1.0f;
 }
 
 
-void AnimationController::SetDefaultAnimation(std::shared_ptr<Animation> p_Animation)
+void AnimationController::SetDefaultAnimation(std::shared_ptr<Animation> &p_Animation)
 {
 	for (size_t index = 0; index < animations.size(); index++)
 	{
@@ -101,9 +103,20 @@ void AnimationController::SetDefaultAnimation(std::shared_ptr<Animation> p_Anima
 	}
 }
 
-void AnimationController::AddTransition(std::shared_ptr<Transition> p_Transition)
+void AnimationController::AddTransition(std::shared_ptr<Transition> &p_Transition)
 {
 	transitions.emplace_back(p_Transition);
+}
+
+void AnimationController::PauseAnimation()
+{
+	playCurrentAnimation = false;
+}
+
+void AnimationController::PlayAnimation(bool p_Forward)
+{
+	playCurrentAnimation = true;
+	forward = p_Forward;
 }
 
 void AnimationController::PlayCurrentAnimation()
@@ -112,7 +125,7 @@ void AnimationController::PlayCurrentAnimation()
 	{
 		if (index == currentAnimationIndex)
 		{
-			animations[index]->Play();
+			animations[index]->Play(forward, !playCurrentAnimation);
 			return;
 		}
 	}
@@ -124,11 +137,16 @@ void AnimationController::CheckTransition()
 	{
 		if (transitions[index]->sourceAnimationIndex == currentAnimationIndex)
 		{
-			if (transitions[index]->MeetCondition())
+			if (!animations[currentAnimationIndex]->GetHasExitTime() || (
+				animations[currentAnimationIndex]->GetHasExitTime() &&
+				animations[currentAnimationIndex]->IsFinished()))
 			{
-				animations[currentAnimationIndex]->Reset();
-				currentAnimationIndex = transitions[index]->desAnimationIndex;
-				return;
+				if (transitions[index]->MeetCondition())
+				{
+					animations[currentAnimationIndex]->Reset();
+					currentAnimationIndex = transitions[index]->desAnimationIndex;
+					return;
+				}
 			}
 		}
 	}
@@ -136,11 +154,11 @@ void AnimationController::CheckTransition()
 
 void AnimationController::Update()
 {
-	PlayCurrentAnimation();
 	CheckTransition();
+	PlayCurrentAnimation();
 }
 
-int AnimationController::GetAnimationIndex(std::shared_ptr<Animation> animation)
+int AnimationController::GetAnimationIndex(std::shared_ptr<Animation> &animation)
 {
 	for (size_t index = 0; index < animations.size(); index++)
 	{
@@ -152,17 +170,17 @@ int AnimationController::GetAnimationIndex(std::shared_ptr<Animation> animation)
 	return -1;
 }
 
-void AnimationController::AddBoolParameter(std::shared_ptr<Parameter<bool>> parameter)
+void AnimationController::AddBoolParameter(std::shared_ptr<Parameter<bool>> &parameter)
 {
 	boolParameters.emplace_back(parameter);
 }
 
-void AnimationController::AddIntParameter(std::shared_ptr<Parameter<int>> parameter)
+void AnimationController::AddIntParameter(std::shared_ptr<Parameter<int>> &parameter)
 {
 	intParameters.emplace_back(parameter);
 }
 
-void AnimationController::AddFloatParameter(std::shared_ptr<Parameter<float>> parameter)
+void AnimationController::AddFloatParameter(std::shared_ptr<Parameter<float>> &parameter)
 {
 	floatParameters.emplace_back(parameter);
 }

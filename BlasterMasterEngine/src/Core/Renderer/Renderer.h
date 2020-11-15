@@ -5,15 +5,12 @@
 class Renderer
 {
 public:
-	Renderer(std::shared_ptr<DeviceResources> deviceResources);
+	Renderer();
 	~Renderer();
 
 	HRESULT CreateRendererResources();
 	void Update();
 	void Render();
-
-private:
-	std::shared_ptr<DeviceResources> m_deviceResources;
 
 private:
 	void RenderBackground();

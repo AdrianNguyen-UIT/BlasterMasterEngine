@@ -5,12 +5,15 @@
 #define HEIGHT 600.0f
 #define MONITOR_REFESH_RATE 1.0f/60.0f
 
-#define BITMAP_PATH L"Samples/Images/level2-side.png"
+
 #define TEXTURE_PATH L"Samples/Images/SPA_Player_Ginger.png"
 
 #define BGM_AUDIO "Samples/Sounds/Ensoniq-ZR-76-01-Dope-77.wav"
 #define BIP_SOUND "Samples/Sounds/Blaster Master SFX (1).wav"
 
+#define SOPHIA_JASON_TEXTURE_PATH L"Assets/Images/Jason-Sohpia-III-nobackground.png"
+
+#define AREA2_MAP_PATH L"Samples/Images/level2-side.png"
 
 ////////////////////////////////
 ////////////////////////////////

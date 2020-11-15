@@ -16,7 +16,10 @@ public:
 
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	HRESULT Run(std::shared_ptr<DeviceResources> deviceResources, std::shared_ptr<Renderer> renderer, std::shared_ptr<Input> input, int nCmdShow);
+	HRESULT Run(std::unique_ptr<DeviceResources> &deviceResources, 
+		std::unique_ptr<Renderer> &renderer, 
+		std::unique_ptr<Input> &input, 
+		int nCmdShow);
 
 private:
 	HWND m_HWnd;

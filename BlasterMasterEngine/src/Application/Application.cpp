@@ -4,10 +4,10 @@
 Application::Application()
 {
 	window = std::make_unique<Window>();
-	deviceResources = std::make_shared<DeviceResources>();
-	renderer = std::make_shared<Renderer>(deviceResources);
-    sceneManager = std::make_unique<SceneManager>(deviceResources);
-    input = std::make_shared<Input>();
+	deviceResources = std::make_unique<DeviceResources>();
+	renderer = std::make_unique<Renderer>();
+    sceneManager = std::make_unique<SceneManager>();
+    input = std::make_unique<Input>();
     audioMixer = std::make_unique<AudioMixer>();
 }
 

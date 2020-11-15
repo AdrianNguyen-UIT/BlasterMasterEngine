@@ -87,7 +87,7 @@ void Player::Update()
 		camera->SetPosition(camera->GetPosition().x, transform->position.y + 200.0f, 0.0f);
 	}*/
 
-	animationController->SetFloat(L"runSpeed", abs(horizontalMove));
+	animationController->SetFloat("runSpeed", abs(horizontalMove));
 
 	if (Input::GetKeyDown(KeyCode_C))
 	{
@@ -99,7 +99,7 @@ void Player::Update()
 	{
 		copy = std::make_shared<Bullet>();
 		copy->name = "bullet";
-		copy->spriteRenderer->sprite = deviceResources->LoadTexture(TEXTURE_PATH, 0);
+		copy->spriteRenderer->sprite = DeviceResources::LoadTexture(TEXTURE_PATH, 0);
 		copy->CreateResources();
 		D3DXVECTOR3 location = { transform->position.x + 30, transform->position.y + 40, 0.0f };
 		SceneManager::Instantiate(copy, location);
@@ -114,7 +114,7 @@ void Player::CreateResources()
 	int yOffset = 6;
 
 	//Create Idle Animation
-	std::shared_ptr<Animation> playerIdle = std::make_shared<Animation>(L"Player_Idle");
+	std::shared_ptr<Animation> playerIdle = std::make_shared<Animation>("Player_Idle");
 	playerIdle->SetAnimationFPS(6);
 	for (size_t index = 0; index < 4; index++)
 	{
@@ -123,13 +123,15 @@ void Player::CreateResources()
 		rect.top = spriteHeight + yOffset;
 		rect.right = rect.left + spriteWidth;
 		rect.bottom = rect.top + spriteHeight;
-		playerIdle->AddRect(rect);
+		KeyFrame keyFrame;
+		keyFrame.rect = rect;
+		playerIdle->AddKeyFrames(keyFrame);
 	}
 	animationController->AddAnimation(playerIdle);
 	animationController->SetDefaultAnimation(playerIdle);
 
 	//Create Run Animation
-	std::shared_ptr<Animation> playerRun = std::make_shared<Animation>(L"Player_Run");
+	std::shared_ptr<Animation> playerRun = std::make_shared<Animation>("Player_Run");
 	playerRun->SetAnimationFPS(12);
 
 	for (size_t index = 0; index < 10; index++)
@@ -139,12 +141,14 @@ void Player::CreateResources()
 		rect.top = 5 * (spriteHeight + yOffset);
 		rect.right = rect.left + spriteWidth;
 		rect.bottom = rect.top + spriteHeight;
-		playerRun->AddRect(rect);
+		KeyFrame keyFrame;
+		keyFrame.rect = rect;
+		playerRun->AddKeyFrames(keyFrame);
 	}
 	animationController->AddAnimation(playerRun);
 
 	//Add parameter of type float: runSpeed
-	std::shared_ptr<Parameter<float>> runSpeed = std::make_shared<Parameter<float>>(L"runSpeed");
+	std::shared_ptr<Parameter<float>> runSpeed = std::make_shared<Parameter<float>>("runSpeed");
 	animationController->AddFloatParameter(runSpeed);
 
 	//Create IdleToRun Transition

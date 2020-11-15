@@ -1,8 +1,7 @@
 #include "d3dpch.h"
 #include "Renderer.h"
 
-Renderer::Renderer(std::shared_ptr<DeviceResources> deviceResources)
-	:m_deviceResources(deviceResources)
+Renderer::Renderer()
 {
 }
 
@@ -14,14 +13,15 @@ void Renderer::Update()
 {
 	SceneManager::UpdateScene();
 
-	for (auto object : SceneManager::GetActiveScene()->objects)
+	std::list<std::shared_ptr<Object2D>> objects = SceneManager::GetActiveScene()->GetObjectList();
+	for (auto object : objects)
 	{
-		object->InnerUpdate(SceneManager::GetActiveScene()->camera->GetWorldToViewportMat());
+		object->InnerUpdate(SceneManager::GetActiveScene()->GetActiceCamaera()->GetWorldToViewportMat());
 	}
 
-	for (auto object : SceneManager::GetActiveScene()->objects)
+	for (auto object : objects)
 	{
-		for (auto innerObject : SceneManager::GetActiveScene()->objects)
+		for (auto innerObject : objects)
 		{
 			if (object != innerObject)
 				object->DoCollision(innerObject);
@@ -33,35 +33,35 @@ HRESULT Renderer::CreateRendererResources()
 {
 	HRESULT hr = S_OK;
 
-	bool result = SceneManager::LoadScene(L"MainScene");
+	bool result = SceneManager::LoadScene("Area2");
 	__ASSERT(result, "Unable to load scene");
 
-	for (auto object : SceneManager::GetActiveScene()->objects)
+	for (auto object : SceneManager::GetActiveScene()->GetObjectList())
 	{
-		object->InnerStart(m_deviceResources);
+		object->InnerStart();
 	}
 	return hr;
 }
 
 void Renderer::Render()
 {
-	HRESULT hr = m_deviceResources->GetDevice()->BeginScene();
-
+	HRESULT hr = DeviceResources::GetDevice()->BeginScene();
 	if (SUCCEEDED(hr))
 	{
 		RenderBackground();
 
-		for (auto object : SceneManager::GetActiveScene()->objects)
+		for (auto object : SceneManager::GetActiveScene()->GetObjectList())
 		{
 			object->Draw(D3DXSPRITE_ALPHABLEND);
-			//object->RenderDebugRectangle(SceneManager::GetActiveScene()->camera->GetWorldToViewportMat());
+			//object->RenderDebugRectangle(SceneManager::GetActiveScene()->GetActiceCamaera()->GetWorldToViewportMat());
 		}
 
-		m_deviceResources->GetDevice()->EndScene();
+		DeviceResources::GetDevice()->EndScene();
 	}
 }
 
 void Renderer::RenderBackground()
 {
-	m_deviceResources->GetDevice()->StretchRect(SceneManager::GetActiveScene()->backGround, &SceneManager::GetActiveScene()->mapRect, m_deviceResources->GetBackBuffer(), NULL, D3DTEXF_NONE);
+
+	DeviceResources::GetDevice()->StretchRect(SceneManager::GetActiveScene()->GetBackground(), &SceneManager::GetActiveScene()->GetMapRect(), DeviceResources::GetBackBuffer(), NULL, D3DTEXF_NONE);
 }

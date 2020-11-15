@@ -1,29 +1,74 @@
 #include "d3dpch.h"
 #include "Animation.h"
 
-Animation::Animation(std::wstring p_Name, int p_FramePerSecond, bool p_IsLooping)
+Animation::Animation(std::string p_Name, int p_FramePerSecond, bool p_IsLooping)
 	: name(p_Name), framePerSecond(p_FramePerSecond), isLooping(p_IsLooping)
 {
 	frameTime = 1.0f / p_FramePerSecond;
+	hasExitTime = false;
+	allowPause = true;
+	initFrameIndex = 0;
+	allowBackward = false;
 	Reset();
 }
 
 RECT Animation::GetCurrentFrameRect()
 {
-	return rects[currentFrameIndex];
+	return keyFrames[currentFrameIndex].rect;
+}
+D3DXVECTOR3 Animation::GetCurrentFramePosition()
+{
+	return keyFrames[currentFrameIndex].position;
 }
 
-void Animation::Play()
+D3DXVECTOR3 Animation::GetCurrentFrameRotation()
 {
+	return keyFrames[currentFrameIndex].rotation;
+}
+
+D3DXVECTOR3 Animation::GetCurrentFrameScale()
+{
+	return keyFrames[currentFrameIndex].scale;
+}
+
+void Animation::Play(bool forward, bool pause)
+{
+	if (pause && allowPause)
+		return;
+
 	currentFrameTime += Time::GetDeltaTime();
 	if (currentFrameTime >= frameTime)
 	{
-		++currentFrameIndex;
-		if (isLooping)
+		if (forward || !allowBackward)
 		{
-			if (currentFrameIndex >= rects.size())
+			++currentFrameIndex;
+			if (currentFrameIndex == keyFrames.size())
 			{
-				currentFrameIndex = 0;
+				if (isLooping)
+				{
+					currentFrameIndex = 0;
+				}
+				else
+				{
+					currentFrameIndex = keyFrames.size() - 1;
+					isFinished = true;
+				}
+			}
+		}
+		else
+		{
+			--currentFrameIndex;
+			if (currentFrameIndex < 0)
+			{
+				if (isLooping)
+				{
+					currentFrameIndex = keyFrames.size() - 1;
+				}
+				else
+				{
+					currentFrameIndex = 0;
+					isFinished = true;
+				}
 			}
 		}
 		currentFrameTime = 0.0f;
@@ -33,7 +78,8 @@ void Animation::Play()
 void Animation::Reset()
 {
 	currentFrameTime = 0.0f;
-	currentFrameIndex = 0;
+	currentFrameIndex = initFrameIndex;
+	isFinished = false;
 }
 
 void Animation::SetAnimationFPS(int p_FramePerSecond)
@@ -47,7 +93,33 @@ void Animation::SetIsLooping(bool enable)
 	isLooping = enable;
 }
 
-void Animation::AddRect(RECT p_Rect)
+void Animation::AddKeyFrames(const KeyFrame& p_KeyFrame)
 {
-	rects.emplace_back(p_Rect);
+	keyFrames.emplace_back(p_KeyFrame);
+}
+
+void Animation::SetHasExitTime(bool doHave)
+{
+	hasExitTime = doHave;
+}
+
+bool Animation::IsFinished()
+{
+	return isFinished;
+}
+
+void Animation::SetAllowPause(bool allow)
+{
+	allowPause = allow;
+}
+
+void Animation::SetInitFrameIndex(int frameIndex)
+{
+	initFrameIndex = frameIndex;
+	Reset();
+}
+
+void Animation::SetAllowBackward(bool allow)
+{
+	allowBackward = allow;
 }

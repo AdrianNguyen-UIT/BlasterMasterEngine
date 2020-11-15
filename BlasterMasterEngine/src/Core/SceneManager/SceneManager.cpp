@@ -1,17 +1,16 @@
 #include "d3dpch.h"
 #include "SceneManager.h"
 #include "Samples/MainScene.h"
+#include "Assets/Area2.h"
 
 std::list<std::shared_ptr<Scene>> SceneManager::scenes;
 std::shared_ptr<Scene> SceneManager::activeScene;
-std::shared_ptr<DeviceResources> SceneManager::m_DeviceResources;
 std::list<std::shared_ptr<Object2D>> SceneManager::waitingObjects;
 bool SceneManager::updateAfterDestroy = false;
 bool SceneManager::updateAfterInstantiate = false;
 
-SceneManager::SceneManager(std::shared_ptr<DeviceResources> p_DeviceResources)
+SceneManager::SceneManager()
 {
-	m_DeviceResources = p_DeviceResources;
 }
 
 SceneManager::~SceneManager()
@@ -20,24 +19,24 @@ SceneManager::~SceneManager()
 
 HRESULT SceneManager::CreateScenesResources()
 {
-	std::shared_ptr<Scene> mainScene = std::make_shared<MainScene>();
-	if (mainScene == NULL)
+	std::shared_ptr<Scene> scene = std::make_shared<Area2>();
+	if (scene == NULL)
 	{
 		__ASSERT(false, "Unable to create scene");
 		DWORD dwError = GetLastError();
 		return HRESULT_FROM_WIN32(dwError);
 	}
-	scenes.emplace_back(mainScene);
+	scenes.emplace_back(scene);
 	return S_OK;
 }
 
-bool SceneManager::LoadScene(std::wstring p_Name)
+bool SceneManager::LoadScene(std::string p_Name)
 {
 	for (auto scene : scenes)
 	{
-		if (scene->name == p_Name)
+		if (scene->GetName() == p_Name)
 		{
-			scene->CreateScene(m_DeviceResources);
+			scene->CreateScene();
 			activeScene = scene;
 			return true;
 		}
@@ -52,7 +51,7 @@ bool SceneManager::LoadScene(size_t index)
 	{
 		if (currentIndex == index)
 		{
-			scene->CreateScene(m_DeviceResources);
+			scene->CreateScene();
 			activeScene = scene;
 			return true;
 		}
@@ -66,11 +65,11 @@ std::shared_ptr<Scene> SceneManager::GetActiveScene()
 	return activeScene;
 }
 
-std::shared_ptr<Scene> SceneManager::GetSceneByName(std::wstring p_Name)
+std::shared_ptr<Scene> SceneManager::GetSceneByName(std::string p_Name)
 {
 	for (auto scene : scenes)
 	{
-		if (scene->name == p_Name)
+		if (scene->GetName() == p_Name)
 		{
 			return scene;
 		}
@@ -96,7 +95,7 @@ std::shared_ptr<Scene> SceneManager::GetSceneByIndex(size_t index)
 
 void SceneManager::DestroyObject(std::shared_ptr<Object2D> p_Object)
 {
-	for (auto object : activeScene->objects)
+	for (auto object : activeScene->GetObjectList())
 	{
 		if (object->name == p_Object->name)
 		{
@@ -106,7 +105,7 @@ void SceneManager::DestroyObject(std::shared_ptr<Object2D> p_Object)
 		}
 	}
 
-	for (auto object : activeScene->objects)
+	for (auto object : activeScene->GetObjectList())
 	{
 		InnerDestroyObject(object, p_Object);
 	}
@@ -118,11 +117,11 @@ void SceneManager::UpdateScene()
 
 	if (updateAfterDestroy)
 	{
-		for (auto it = activeScene->objects.begin(); it != activeScene->objects.end();)
+		for (auto it = activeScene->GetObjectList().begin(); it != activeScene->GetObjectList().end();)
 		{
 			if (CheckReadyToBeDestroy(*it))
 			{
-				it = activeScene->objects.erase(it);
+				it = activeScene->GetObjectList().erase(it);
 				updateAfterDestroy = false;
 			}
 			else
@@ -131,7 +130,7 @@ void SceneManager::UpdateScene()
 			}
 		}
 
-		for (auto it = activeScene->objects.begin(); it != activeScene->objects.end();)
+		for (auto it = activeScene->GetObjectList().begin(); it != activeScene->GetObjectList().end();)
 		{
 			InnerUpdate(*it);
 			++it;
@@ -142,8 +141,8 @@ void SceneManager::UpdateScene()
 	{
 		for (auto object : waitingObjects)
 		{
-			object->InnerStart(m_DeviceResources);
-			activeScene->objects.emplace_back(object);
+			object->InnerStart();
+			activeScene->AddObject(object);
 		}
 		waitingObjects.clear();
 		updateAfterInstantiate = false;

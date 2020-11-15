@@ -4,11 +4,11 @@
 #include "Samples/Dummy.h"
 #include "Core/Core.h"
 
-void MainScene::CreateScene(std::shared_ptr<DeviceResources> deviceResources)
+void MainScene::CreateScene()
 {
 	camera = std::make_shared<OrthographicCamera>(0.0f, 600.0f, WIDTH, HEIGHT);
 
-	backGround = deviceResources->LoadSurface(BITMAP_PATH, 0);
+	backGround = deviceResources->LoadSurface(AREA2_MAP_PATH, 0);
 
 	mapRectSize.width = 298;
 	mapRectSize.height = 224;
@@ -18,7 +18,7 @@ void MainScene::CreateScene(std::shared_ptr<DeviceResources> deviceResources)
 
 	{
 		std::shared_ptr<Object2D> player = std::make_shared<Player>(300.0f, 600.0f);
-		player->spriteRenderer->sprite = deviceResources->LoadTexture(TEXTURE_PATH, 0);
+		player->spriteRenderer->sprite = DeviceResources::LoadTexture(TEXTURE_PATH, 0);
 		player->CreateResources();
 		objects.emplace_back(player);
 	}

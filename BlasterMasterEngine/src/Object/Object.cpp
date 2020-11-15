@@ -3,8 +3,11 @@
 
 Object2D::Object2D(float x, float y)
 {
-	transform = GetComponent<Transform>();
+	transform = std::make_shared<Transform>();
 	transform->position = { x, y, 0.0f };
+	positionAsChild = transform->position;
+	rotationAsChild = transform->rotation;
+	scaleAsChild = transform->scale;
 	name = "Object2D";
 	tag = Tag::Default;
 	enable = true;
@@ -30,7 +33,7 @@ void Object2D::Draw(DWORD flags)
 				&rect,
 				&center,
 				NULL,
-				D3DCOLOR_XRGB(255, 255, 255));
+				D3DCOLOR_ARGB(255, 255, 255, 255));
 			spriteRenderer->End();
 		}
 	}
@@ -43,16 +46,6 @@ void Object2D::Draw(DWORD flags)
 
 void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 {
-
-	if (parentObject != NULL)
-	{
-		static D3DXVECTOR3 tempPos = transform->position;
-		static D3DXVECTOR3 tempRot = transform->rotation;
-
-		transform->position = parentObject->transform->position + tempPos;
-		transform->rotation = parentObject->transform->rotation + tempRot;
-	}
-
 	if (rigidbody != NULL)
 	{
 		if (rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
@@ -116,12 +109,9 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 
 		if (boxCollider != NULL)
 		{
-			boxCollider->topLeft = { transform->position.x - boxCollider->size.width / 2.0f, transform->position.y + boxCollider->size.height / 2.0f };
+			boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
 		}
 	}
-
-	transform->TranslateWorldToViewport(worldToViewportMat);
-	transform->Update();
 
 	if (spriteRenderer != NULL)
 	{
@@ -131,28 +121,46 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 		{
 			animationController->Update();
 			spriteRenderer->rect = animationController->GetCurrentAnimation()->GetCurrentFrameRect();
+			if (parentObject != NULL)
+			{
+				positionAsChild = animationController->GetCurrentAnimation()->GetCurrentFramePosition();
+				rotationAsChild = animationController->GetCurrentAnimation()->GetCurrentFrameRotation();
+				scaleAsChild = animationController->GetCurrentAnimation()->GetCurrentFrameScale();
+			}
 		}
 	}
-	
+
 	Update();
+
+	if (parentObject != NULL)
+	{
+		transform->position = parentObject->transform->position + positionAsChild;
+		transform->rotation = parentObject->transform->rotation + rotationAsChild;
+		transform->scale.x = parentObject->transform->scale.x * scaleAsChild.x;
+		transform->scale.y = parentObject->transform->scale.y * scaleAsChild.y;
+		transform->scale.z = parentObject->transform->scale.z * scaleAsChild.z;
+	}
+
+	transform->TranslateWorldToViewport(worldToViewportMat);
+	transform->Update();
+
 	for (auto object : childObjects)
 	{
 		object->InnerUpdate(worldToViewportMat);
 	}
 }
 
-void Object2D::InnerStart(std::shared_ptr<DeviceResources> p_DeviceResources)
+void Object2D::InnerStart()
 {
-	deviceResources = p_DeviceResources;
 	if (spriteRenderer != NULL)
 	{
-		spriteRenderer->InitSpriteRenderer(p_DeviceResources->GetDevice());
+		spriteRenderer->InitSpriteRenderer(DeviceResources::GetDevice());
 	}
 	Start();
 
 	for (auto object : childObjects)
 	{
-		object->InnerStart(p_DeviceResources);
+		object->InnerStart();
 	}
 }
 
@@ -185,14 +193,6 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 		{
 			if (collidedObject.first == object)
 			{
-				if (boxCollider->isTrigger)
-				{
-					OnTriggerEnter();
-				}
-				else
-				{
-					OnCollisionEnter();
-				}
 				return;
 			}
 		}
@@ -395,17 +395,18 @@ void Object2D::RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat)
 		(LONG)tempPos.y, 
 		(LONG)(tempPos.x + boxCollider->size.width), 
 		(LONG)(tempPos.y + boxCollider->size.height) };
+
 	if (rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
 	{
-		deviceResources->GetDevice()->Clear(1, &rectToDraw, D3DCLEAR_TARGET, D3DCOLOR_XRGB(84, 236, 117), 1.0f, NULL);
+		DeviceResources::GetDevice()->Clear(1, &rectToDraw, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 84, 236, 117), 1.0f, NULL);
 	}
 	else if (rigidbody->bodyType == Rigidbody::BodyType::Kinematic)
 	{
-		deviceResources->GetDevice()->Clear(1, &rectToDraw, D3DCLEAR_TARGET, D3DCOLOR_XRGB(186, 3, 252), 1.0f, NULL);
+		DeviceResources::GetDevice()->Clear(1, &rectToDraw, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 186, 3, 252), 1.0f, NULL);
 	}
 	else if (rigidbody->bodyType == Rigidbody::BodyType::Static)
 	{
-		deviceResources->GetDevice()->Clear(1, &rectToDraw, D3DCLEAR_TARGET, D3DCOLOR_XRGB(249, 80, 80), 1.0f, NULL);
+		DeviceResources::GetDevice()->Clear(1, &rectToDraw, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 249, 80, 80), 1.0f, NULL);
 	}
 	/*position = { broadphaseBox.topLeft.x, broadphaseBox.topLeft.y, 0.0f };
 	D3DXVec3Transform(&tempPos, &position, &worldToViewportMat);
@@ -414,4 +415,9 @@ void Object2D::RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat)
 		(LONG)(tempPos.x + broadphaseBox.size.width),
 		(LONG)(tempPos.y + broadphaseBox.size.height) };
 	deviceResources->GetDevice()->Clear(1, &rectToDraw, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 0), 1.0f, NULL);*/
+}
+
+void Object2D::AddChildObject(const std::shared_ptr<Object2D> child)
+{
+	childObjects.emplace_back(child);
 }

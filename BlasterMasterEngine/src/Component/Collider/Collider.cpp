@@ -8,4 +8,5 @@ BoxCollider2D::BoxCollider2D()
 	topLeft = { 0.0f, 0.0f };
 	size.width = 0.0f;
 	size.height = 0.0f;
+	offset = { 0.0f, 0.0f };
 }

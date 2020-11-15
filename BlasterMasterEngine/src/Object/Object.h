@@ -18,7 +18,8 @@ enum class Tag
 	Player,
 	Monster,
 	Boss,
-	Item
+	Item,
+	Terrain
 };
 
 class Object2D : public std::enable_shared_from_this<Object2D>
@@ -32,7 +33,9 @@ public:
 
 private:
 	bool readyToBeDestroy;
-
+	D3DXVECTOR3 positionAsChild;
+	D3DXVECTOR3 rotationAsChild;
+	D3DXVECTOR3 scaleAsChild;
 protected:
 	int upCollision;
 	int downCollision;
@@ -42,11 +45,10 @@ protected:
 	std::list<std::pair<std::shared_ptr<Object2D>, Direction>> collidedObjects;
 
 public:
-	std::unique_ptr<Transform> transform;
+	std::shared_ptr<Transform> transform;
 	std::string name;
 	Tag tag;
 	bool enable;
-	std::shared_ptr<DeviceResources> deviceResources;
 
 	//Instances define
 	std::unique_ptr<SpriteRenderer> spriteRenderer;
@@ -73,10 +75,11 @@ public:
 	bool GetEnable() { return enable; }
 
 	void RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat);
+	void AddChildObject(const std::shared_ptr<Object2D> child);
 private:
 	void Draw(DWORD flags);
 	void InnerUpdate(const D3DXMATRIX& worldToViewportMat);
-	void InnerStart(std::shared_ptr<DeviceResources> p_DeviceResources);
+	void InnerStart();
 	void DoCollision(std::shared_ptr<Object2D> object);
 	bool CheckCollision(std::unique_ptr<BoxCollider2D>& col1, std::unique_ptr<BoxCollider2D>& col2);
 	float SweptAABB(std::unique_ptr<BoxCollider2D>& col, Direction& result);

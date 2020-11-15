@@ -87,7 +87,7 @@ LRESULT CALLBACK Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 
 }
 
-HRESULT Window::Run(std::shared_ptr<DeviceResources> deviceResources, std::shared_ptr<Renderer> renderer, std::shared_ptr<Input> input, int nCmdShow)
+HRESULT Window::Run(std::unique_ptr<DeviceResources>& deviceResources, std::unique_ptr<Renderer>& renderer, std::unique_ptr<Input>& input, int nCmdShow)
 {
     if (!IsWindowVisible(m_HWnd))
     {

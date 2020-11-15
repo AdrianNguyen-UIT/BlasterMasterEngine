@@ -14,9 +14,9 @@ public:
 	HRESULT Run(int nCmdShow);
 private:
 	std::unique_ptr<Window> window;
-	std::shared_ptr<DeviceResources> deviceResources;
-	std::shared_ptr<Renderer> renderer;
-	std::shared_ptr<Input> input;
+	std::unique_ptr<DeviceResources> deviceResources;
+	std::unique_ptr<Renderer> renderer;
+	std::unique_ptr<Input> input;
 	std::unique_ptr<AudioMixer> audioMixer;
 	std::unique_ptr<SceneManager> sceneManager;
 };

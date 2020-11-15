@@ -1,15 +1,22 @@
 #pragma once
 
 template <typename T>
-struct Parameter
+class Parameter
 {
-	std::wstring name;
+private:
+	std::string name;
 	T value;
 
-	Parameter(std::wstring p_Name = L"Parameter_00", T p_Value = 0)
+public:
+	Parameter(std::string p_Name = "Parameter_00", T p_Value = 0)
 		: name(p_Name), value(p_Value)
 	{
 	}
+
+	void SetName(std::string p_Name) { name = p_Name; }
+	void SetValue(T p_Value) { value = p_Value; }
+	std::string GetName() { return name; }
+	T GetValue() { return value; }
 };
 
 enum class Condition
@@ -20,24 +27,28 @@ enum class Condition
 };
 
 template <typename T>
-struct TransitionCondition
+class TransitionCondition
 {
+private:
 	std::shared_ptr<Parameter<T>> parameter;
 	Condition condition;
 	T value;
 
-	TransitionCondition() 
-	{
-		condition = Condition::Default;
-		value = 0;
-	}
-
-	TransitionCondition(std::shared_ptr<Parameter<T>> p_Parameter, Condition p_Condition, T p_Value)
+public:
+	TransitionCondition(const std::shared_ptr<Parameter<T>> & p_Parameter = {}, const Condition &p_Condition = Condition::Default, const T &p_Value = 0)
 	{
 		parameter = p_Parameter;
 		condition = p_Condition;
 		value = p_Value;
 	}
+
+	void SetParameter(std::shared_ptr<Parameter<T>> &p_Parameter) { parameter = p_Parameter; }
+	void SetCondition(Condition p_Condition) { condition = p_Condition; }
+	void SetValue(T p_Value) { value = p_Value; }
+
+	std::shared_ptr<Parameter<T>> &GetParameter() { return parameter; }
+	Condition GetCondition() { return condition; }
+	T GetValue() { return value; }
 };
 
 class Transition
@@ -55,9 +66,9 @@ public:
 	Transition(int p_Source = 0, int p_Des = 0);
 	friend class AnimationController;
 
-	void AddBoolTransitionCondition(std::shared_ptr<TransitionCondition<bool>> p_TransitionCondition);
-	void AddIntTransitionCondition(std::shared_ptr<TransitionCondition<int>> p_TransitionCondition);
-	void AddFloatTransitionCondition(std::shared_ptr<TransitionCondition<float>> p_TransitionCondition);
+	void AddBoolTransitionCondition(std::shared_ptr<TransitionCondition<bool>> &p_TransitionCondition);
+	void AddIntTransitionCondition(std::shared_ptr<TransitionCondition<int>> &p_TransitionCondition);
+	void AddFloatTransitionCondition(std::shared_ptr<TransitionCondition<float>> &p_TransitionCondition);
 
 private:
 	bool MeetCondition();

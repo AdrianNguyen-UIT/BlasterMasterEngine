@@ -51,3 +51,8 @@ void Scene::AddMapRectPosition(float left, float top)
 	mapRect.top += (LONG)top;
 	UpdateScene();
 }
+
+void Scene::AddObject(const std::shared_ptr<Object2D>& object) 
+{ 
+	objects.emplace_back(object); 
+}
