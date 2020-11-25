@@ -54,13 +54,13 @@ Size OrthographicCamera::GetSize()
 
 void OrthographicCamera::UpdateWorldToViewportMat()
 {
-	worldToViewportMat._22 = -1.0f;
-	worldToViewportMat._41 = -position.x;
-	worldToViewportMat._42 = position.y;
+	worldToViewportMat._11= 1.0f * WINDOW_CAMERA_SCALE_X;
+	worldToViewportMat._22 = -(1.0f * WINDOW_CAMERA_SCALE_Y);
+	worldToViewportMat._41 = -(position.x * WINDOW_CAMERA_SCALE_X);
+	worldToViewportMat._42 = position.y * WINDOW_CAMERA_SCALE_Y;
 }
 
 D3DXMATRIX OrthographicCamera::GetWorldToViewportMat()
 {
 	return worldToViewportMat;
 }
-

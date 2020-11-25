@@ -197,13 +197,13 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 			}
 		}
 
-		if (boxCollider->isTrigger)
+		if (boxCollider->isTrigger || object->boxCollider->isTrigger)
 		{
 			OnTriggerEnter();
+			object->OnTriggerEnter();
 		}
 		else
 		{
-			OnCollisionEnter();
 			Direction direction;
 			float collisionTime = SweptAABB(object->boxCollider, direction);
 
@@ -227,6 +227,8 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 				++leftCollision;
 			}
 			collidedObjects.emplace_back(std::make_pair(object, direction));
+			OnCollisionEnter();
+			object->OnCollisionEnter();
 		}
 	}
 	else
@@ -393,8 +395,8 @@ void Object2D::RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat)
 	D3DXVec3Transform(&tempPos, &position, &worldToViewportMat);
 	D3DRECT rectToDraw = { (LONG)tempPos.x, 
 		(LONG)tempPos.y, 
-		(LONG)(tempPos.x + boxCollider->size.width), 
-		(LONG)(tempPos.y + boxCollider->size.height) };
+		(LONG)(tempPos.x + boxCollider->size.width * WINDOW_CAMERA_SCALE_X), 
+		(LONG)(tempPos.y + boxCollider->size.height * WINDOW_CAMERA_SCALE_Y) };
 
 	if (rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
 	{

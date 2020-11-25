@@ -3,56 +3,56 @@
 
 Scene::Scene()
 {
+	mapRender = {0, 0, 0, 0};
+	mapSize = {0.0f, 0.0f};
 	backGround = NULL;
 }
 
 Scene::~Scene()
 {
 	backGround->Release();
+	quadTree->Clear();
 }
 
 void Scene::UpdateScene()
 {
-	mapRect.left = (LONG)(leftInit + camera->GetPosition().x * (mapRectSize.width / camera->GetSize().width));
-	mapRect.top = (LONG)(topInit - (camera->GetPosition().y - 600.0f) * (mapRectSize.height / camera->GetSize().height));
-
-	if (mapRect.left < boundaryRect.left)
-	{
-		mapRect.left = boundaryRect.left;
-	}
-	else if (mapRect.left > boundaryRect.right - mapRectSize.width)
-	{
-		mapRect.left = boundaryRect.right - (LONG)mapRectSize.width;
-	}
-
-	if (mapRect.top < boundaryRect.top)
-	{
-		mapRect.top = boundaryRect.top;
-	}
-	else if (mapRect.top > boundaryRect.bottom - mapRectSize.height)
-	{
-		mapRect.top = boundaryRect.bottom - (LONG)mapRectSize.height;
-	}
-
-	mapRect.right = mapRect.left + (LONG)mapRectSize.width;
-	mapRect.bottom = mapRect.top + (LONG)mapRectSize.height;
+	mapRender.left = (LONG)(camera->GetPosition().x);
+	mapRender.top = (LONG)(mapSize.height - camera->GetPosition().y);
+	mapRender.right = mapRender.left + (LONG)(camera->GetSize().width);
+	mapRender.bottom = mapRender.top + (LONG)(camera->GetSize().height);
 }
 
 void Scene::SetMapRectPosition(float left, float top)
 {
-	mapRect.left = (LONG)left;
-	mapRect.top = (LONG)top;
+	mapRender.left = (LONG)left;
+	mapRender.top = (LONG)top;
 	UpdateScene();
 }
 
 void Scene::AddMapRectPosition(float left, float top)
 {
-	mapRect.left += (LONG)left;
-	mapRect.top += (LONG)top;
+	mapRender.left += (LONG)left;
+	mapRender.top += (LONG)top;
 	UpdateScene();
 }
 
 void Scene::AddObject(const std::shared_ptr<Object2D>& object) 
 { 
 	objects.emplace_back(object); 
+}
+
+void Scene::AddPlayer(const std::shared_ptr<Object2D>& object)
+{
+	player = object;
+}
+
+void Scene::LoadXmlMap(char* filePath)
+{
+	xmlMap.ParseFile(filePath);
+}
+
+void  Scene::UpdateCollideableObjects()
+{
+	collideableObjects.clear();
+	quadTree->GetObjectsCollideAble(collideableObjects, player);
 }

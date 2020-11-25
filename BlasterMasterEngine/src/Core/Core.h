@@ -1,20 +1,27 @@
 #pragma once
 
 #define WINDOW_TITLE L"D3DTutorial"
-#define WIDTH  800.0f
-#define HEIGHT 600.0f
+#define WINDOW_WIDTH  800.0f
+#define WINDOW_HEIGHT 600.0f
+#define CAMERA_WIDTH 254.0f
+#define CAMERA_HEIGHT 224.0f
+#define WINDOW_CAMERA_SCALE_X WINDOW_WIDTH/CAMERA_WIDTH
+#define WINDOW_CAMERA_SCALE_Y WINDOW_HEIGHT/CAMERA_HEIGHT
 #define MONITOR_REFESH_RATE 1.0f/60.0f
 
-
-#define TEXTURE_PATH L"Samples/Images/SPA_Player_Ginger.png"
+#define OBJECTS_TMX "Assets/Terrains/Resources/Area2ObjectsTMX.tmx"
 
 #define BGM_AUDIO "Samples/Sounds/Ensoniq-ZR-76-01-Dope-77.wav"
 #define BIP_SOUND "Samples/Sounds/Blaster Master SFX (1).wav"
 
 #define SOPHIA_JASON_TEXTURE_PATH L"Assets/Images/Jason-Sohpia-III-nobackground.png"
 
-#define AREA2_MAP_PATH L"Samples/Images/level2-side.png"
+#define AREA2_MAP_PATH L"Assets/Images/Area2Map.png"
+#define AREA2_MAP_WIDTH 3072
+#define AREA2_MAP_HEIGHT 3072
 
+#define MAX_OBJECTS_QUADTREE 10
+#define MAX_LEVELS_QUADTREE 5
 ////////////////////////////////
 ////////////////////////////////
 

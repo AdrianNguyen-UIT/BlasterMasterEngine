@@ -30,17 +30,15 @@ project "BlasterMasterEngine"
     {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
-        "%{prj.name}/Samples/**.h",
-        "%{prj.name}/Samples/**.cpp",
         "%{prj.name}/Assets/**.h",
-        "%{prj.name}/Assets/**.cpp",
+        "%{prj.name}/Assets/**.cpp"
     }
 
     includedirs
     {
         "%{prj.name}",
         "%{prj.name}/src",
-        "%{IncludeDir.spdlog}",
+        "%{IncludeDir.spdlog}"
     }
 
     sysincludedirs

@@ -1,6 +1,8 @@
 #include "d3dpch.h"
 #include "Jason.h"
 #include "Core/SceneManager/SceneManager.h"
+#include "Assets/CharacterController.h"
+
 Jason::Jason(float x, float y)
 	: Object2D(x, y)
 {
@@ -175,64 +177,92 @@ void Jason::Start()
 
 void Jason::Update()
 {
-	static float speedMulti = 0.0f;
-	if (Input::GetKey(KeyCode_D))
+	std::shared_ptr<OrthographicCamera> camera = SceneManager::GetActiveScene()->GetActiceCamaera();
+	if (CharacterController::GetCharacterInControl() == Character::Jason)
 	{
-		horizontalMove = 1.0f * runSpeed * speedMulti;
-		speedMulti += 0.2f;
+		rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+		boxCollider->isTrigger = false;
+		static float speedMulti = 0.0f;
+		if (Input::GetKey(KeyCode_D))
+		{
+			horizontalMove = 1.0f * runSpeed * speedMulti;
+			speedMulti += 0.2f;
 
-	}
-	else if (Input::GetKey(KeyCode_A))
-	{
-		horizontalMove = -1.0f * runSpeed * speedMulti;
-		speedMulti += 0.2f;
-	}
-	else
-	{
-		horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
-		speedMulti -= 0.2f;
-	}
+		}
+		else if (Input::GetKey(KeyCode_A))
+		{
+			horizontalMove = -1.0f * runSpeed * speedMulti;
+			speedMulti += 0.2f;
+		}
+		else
+		{
+			horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
+			speedMulti -= 0.2f;
+		}
 
-	if (Input::GetKeyDown(KeyCode_SPACE) && downCollision != 0)
-	{
-		isJumping = true;
-		D3DXVECTOR2 force(0.0f, 1800.0f);
-		rigidbody->AddForce(force);
-	}
+		if (Input::GetKeyDown(KeyCode_SPACE) && downCollision != 0)
+		{
+			isJumping = true;
+			D3DXVECTOR2 force(0.0f, 1800.0f);
+			rigidbody->AddForce(force);
+		}
 
-	if (speedMulti > 1.0f)
-	{
-		speedMulti = 1.0f;
-	}
-	else if (speedMulti < 0.0f)
-	{
-		speedMulti = 0.0f;
-	}
+		if (Input::GetKeyDown(KeyCode_C))
+		{
+			CharacterController::SetCharacterInControl(Character::Sophia);
+			SceneManager::DestroyObject(shared_from_this());
+		}
 
-	rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
+		if (speedMulti > 1.0f)
+		{
+			speedMulti = 1.0f;
+		}
+		else if (speedMulti < 0.0f)
+		{
+			speedMulti = 0.0f;
+		}
 
-	if (rigidbody->velocity.y < 0.0f)
-	{
-		rigidbody->velocity.y += Physic::gravity.y * (fallMultiplier - 1) * Time::GetFixedDeltaTime();
+		rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
+
+		if (rigidbody->velocity.y < 0.0f)
+		{
+			rigidbody->velocity.y += Physic::gravity.y * (fallMultiplier - 1) * Time::GetFixedDeltaTime();
+		}
+		animationController->SetBool("isJumping", isJumping);
+		animationController->SetFloat("runSpeed", abs(horizontalMove));
+		if (horizontalMove > 0 && !isFacingRight)
+		{
+			speedMulti = 0.0f;
+			Flip();
+		}
+		else if (horizontalMove < 0 && isFacingRight)
+		{
+			speedMulti = 0.0f;
+			Flip();
+		}
+
+		float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
+		LOG_INFO("camera x {0}", camera->GetPosition().x);
+		if (distanceXBetweenCamPlay <= 200.0f)
+		{
+			camera->SetPosition(transform->position.x - 200.0f, camera->GetPosition().y, 0.0f);
+		}
+		else if (distanceXBetweenCamPlay >= 600.0f && camera->GetPosition().x < 2048 - 100)
+		{
+			camera->SetPosition(transform->position.x - 600.0f, camera->GetPosition().y, 0.0f);
+		}
 	}
-	animationController->SetBool("isJumping", isJumping);
-	animationController->SetFloat("runSpeed", abs(horizontalMove));
-	if (horizontalMove > 0 && !isFacingRight)
+	else if (downCollision != 0)
 	{
-		speedMulti = 0.0f;
-		Flip();
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		boxCollider->isTrigger = true;
 	}
-	else if (horizontalMove < 0 && isFacingRight)
-	{
-		speedMulti = 0.0f;
-		Flip();
-	}
-	LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
 }
 
 void Jason::OnCollisionEnter()
 {
-	isJumping = false;
+	if (downCollision != 0)
+		isJumping = false;
 }
 
 void Jason::OnTriggerEnter()

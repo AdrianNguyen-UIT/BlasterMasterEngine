@@ -16,7 +16,8 @@ void SophiaWheelConnector::CreateResources()
 	int spriteHeight = 7;
 	int xOffset = 2;
 	int yOffset = 2;
-
+	float scaleX = WINDOW_CAMERA_SCALE_X;
+	float scaleY = WINDOW_CAMERA_SCALE_Y;
 	KeyFrame keyFrame;
 	RECT rect;
 	rect.left = 3;
@@ -28,18 +29,18 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorRunRight = std::make_shared<Animation>("Wheel Connector Run Right");
 	{
 		wheelConnectorRunRight->SetAnimationFPS(20);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, -2.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y - 2.0f / scaleY, 0.0f };
 		wheelConnectorRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 2.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 2.0f / scaleY, 0.0f };
 		wheelConnectorRunRight->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRunRight);
@@ -51,16 +52,16 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorRunLeft->SetAnimationFPS(20);
 		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y, 0.0f };
 		wheelConnectorRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, -2.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y - 2.0f / scaleY, 0.0f };
 		wheelConnectorRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y, 0.0f };
 		wheelConnectorRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 2.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 2.0f / scaleY, 0.0f };
 		wheelConnectorRunLeft->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRunLeft);
@@ -73,12 +74,11 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorTurnLeft->SetHasExitTime(true);
 		wheelConnectorTurnLeft->SetAllowPause(false);
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, -2.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y - 2.0f / scaleY, 0.0f };
 		wheelConnectorTurnLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, -2.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 		wheelConnectorTurnLeft->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorTurnLeft);
@@ -91,12 +91,11 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorTurnRight->SetHasExitTime(true);
 		wheelConnectorTurnRight->SetAllowPause(false);
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, -2.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y - 2.0f / scaleY, 0.0f };
 		wheelConnectorTurnRight->AddKeyFrames(keyFrame);
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, -2.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 		wheelConnectorTurnRight->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorTurnRight);
@@ -108,9 +107,9 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorRunRightPointUp->SetAllowPause(false);
 		wheelConnectorRunRightPointUp->SetIsLooping(false);
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorRunRightPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRunRightPointUp);
@@ -122,9 +121,9 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorRunLeftPointUp->SetAllowPause(false);
 		wheelConnectorRunLeftPointUp->SetIsLooping(false);
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x * -1.0f, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorRunLeftPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRunLeftPointUp);
@@ -137,15 +136,15 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorRightPushDown->SetAllowPause(false);
 		wheelConnectorRightPushDown->SetHasExitTime(true);
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorRightPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, -8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y - 8.0f / scaleY, 0.0f };
 		wheelConnectorRightPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorRightPushDown->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(wheelConnectorRightPushDown);
 	}
@@ -157,15 +156,15 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorRightPushDownPointUp ->SetAllowPause(false);
 		wheelConnectorRightPushDownPointUp ->SetHasExitTime(true);
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f/ scaleY, 0.0f };
 		wheelConnectorRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorRightPushDownPointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(wheelConnectorRightPushDownPointUp);
 	}
@@ -177,15 +176,15 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorLeftPushDown->SetAllowPause(false);
 		wheelConnectorLeftPushDown->SetHasExitTime(true);
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorLeftPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, -8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y - 8.0f / scaleY, 0.0f };
 		wheelConnectorLeftPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorLeftPushDown->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorLeftPushDown);
@@ -198,15 +197,15 @@ void SophiaWheelConnector::CreateResources()
 		wheelConnectorLeftPushDownPointUp->SetAllowPause(false);
 		wheelConnectorLeftPushDownPointUp->SetHasExitTime(true);
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorLeftPushDownPointUp);
@@ -215,9 +214,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorRightJumping = std::make_shared<Animation>("Wheel Connector Right Jumping");
 	{
 		wheelConnectorRightJumping->SetAnimationFPS(20);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorRightJumping->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRightJumping);
@@ -226,9 +225,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorRightJumpingPointUp = std::make_shared<Animation>("Wheel Connector Right Jumping Point Up");
 	{
 		wheelConnectorRightJumpingPointUp->SetAnimationFPS(20);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 16.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 16.0f / scaleY, 0.0f };
 		wheelConnectorRightJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRightJumpingPointUp);
@@ -237,9 +236,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorLeftJumping = std::make_shared<Animation>("Wheel Connector Left Jumping");
 	{
 		wheelConnectorLeftJumping->SetAnimationFPS(20);
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorLeftJumping->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorLeftJumping);
@@ -248,9 +247,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorLeftJumpingPointUp = std::make_shared<Animation>("Wheel Connector Left Jumping Point Up");
 	{
 		wheelConnectorLeftJumpingPointUp->SetAnimationFPS(20);
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 16.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 16.0f / scaleY, 0.0f };
 		wheelConnectorLeftJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorLeftJumpingPointUp);
@@ -259,9 +258,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorRightFalling = std::make_shared<Animation>("Wheel Connector Right Falling");
 	{
 		wheelConnectorRightFalling->SetAnimationFPS(20);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorRightFalling->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRightFalling);
@@ -270,9 +269,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorRightFallingPointUp = std::make_shared<Animation>("Wheel Connector Right Falling Point Up");
 	{
 		wheelConnectorRightFallingPointUp->SetAnimationFPS(20);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorRightFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorRightFallingPointUp);
@@ -281,9 +280,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorLeftFalling = std::make_shared<Animation>("Wheel Connector Left Falling");
 	{
 		wheelConnectorLeftFalling->SetAnimationFPS(20);
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 0.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y, 0.0f };
 		wheelConnectorLeftFalling->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorLeftFalling);
@@ -292,9 +291,9 @@ void SophiaWheelConnector::CreateResources()
 	std::shared_ptr<Animation> wheelConnectorLeftFallingPointUp = std::make_shared<Animation>("Wheel Connector Left Falling Point Up");
 	{
 		wheelConnectorLeftFallingPointUp->SetAnimationFPS(20);
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
 
-		keyFrame.position = { transform->position.x, 8.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
 		wheelConnectorLeftFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(wheelConnectorLeftFallingPointUp);
@@ -488,6 +487,7 @@ void SophiaWheelConnector::CreateResources()
 		animationController->GetAnimationIndex(wheelConnectorRightPushDown),
 		animationController->GetAnimationIndex(wheelConnectorRunRight));
 	{
+		rightPushDownToRightTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(rightPushDownToRightTrans);
 	}
 
@@ -527,6 +527,7 @@ void SophiaWheelConnector::CreateResources()
 		animationController->GetAnimationIndex(wheelConnectorRightPushDownPointUp),
 		animationController->GetAnimationIndex(wheelConnectorRunRightPointUp));
 	{
+		rightPushDownPointUpToRightPointUpTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(rightPushDownPointUpToRightPointUpTrans);
 	}
 
@@ -614,6 +615,7 @@ void SophiaWheelConnector::CreateResources()
 		animationController->GetAnimationIndex(wheelConnectorLeftPushDown),
 		animationController->GetAnimationIndex(wheelConnectorRunLeft));
 	{
+		leftPushDownToLeftTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(leftPushDownToLeftTrans);
 	}
 
@@ -653,6 +655,7 @@ void SophiaWheelConnector::CreateResources()
 		animationController->GetAnimationIndex(wheelConnectorLeftPushDownPointUp),
 		animationController->GetAnimationIndex(wheelConnectorRunLeftPointUp));
 	{
+		leftPushDownPointUpToLeftPointUpTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(leftPushDownPointUpToLeftPointUpTrans);
 	}
 

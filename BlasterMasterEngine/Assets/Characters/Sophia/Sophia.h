@@ -19,6 +19,7 @@ private:
 	std::shared_ptr<Object2D> cabin;
 	std::shared_ptr<Object2D> barrel;
 
+	std::shared_ptr<Object2D> jason;
 public:
 	Sophia(float x = 0, float y = 0);
 

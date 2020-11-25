@@ -1,7 +1,7 @@
 #include "d3dpch.h"
 #include "SceneManager.h"
 #include "Samples/MainScene.h"
-#include "Assets/Area2.h"
+#include "Assets/Scenes/Area2.h"
 
 std::list<std::shared_ptr<Scene>> SceneManager::scenes;
 std::shared_ptr<Scene> SceneManager::activeScene;
@@ -130,10 +130,9 @@ void SceneManager::UpdateScene()
 			}
 		}
 
-		for (auto it = activeScene->GetObjectList().begin(); it != activeScene->GetObjectList().end();)
+		for (auto object : activeScene->GetObjectList())
 		{
-			InnerUpdate(*it);
-			++it;
+			InnerUpdate(object);
 		}
 	}
 
@@ -196,7 +195,7 @@ void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> childIt, std::sh
 void SceneManager::Instantiate(std::shared_ptr<Object2D> p_Object, D3DXVECTOR3 location)
 {
 	static int index = 0;
-	p_Object->name +=  std::to_string(index);
+	p_Object->name += std::to_string(index);
 	p_Object->transform->position = location;
 	waitingObjects.emplace_back(p_Object);
 	updateAfterInstantiate = true;

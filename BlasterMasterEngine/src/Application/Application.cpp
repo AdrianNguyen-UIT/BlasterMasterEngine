@@ -20,7 +20,7 @@ HRESULT Application::Run(int nCmdShow)
 	HRESULT hr = S_OK;
 
     LOG_TRACE("Creating window...");
-	hr = window->Create(WINDOW_TITLE, (UINT)WIDTH, (UINT)HEIGHT);
+	hr = window->Create(WINDOW_TITLE, (UINT)WINDOW_WIDTH, (UINT)WINDOW_HEIGHT);
 
     if (SUCCEEDED(hr))
     {

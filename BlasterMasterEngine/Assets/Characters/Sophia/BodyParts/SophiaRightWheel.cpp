@@ -13,6 +13,8 @@ SophiaRightWheel::SophiaRightWheel(float x, float y)
 
 void SophiaRightWheel::CreateResources()
 {
+	float scaleX = WINDOW_CAMERA_SCALE_X;
+	float scaleY = WINDOW_CAMERA_SCALE_Y;
 	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
 	int spriteWidth = 7;
 	int spriteHeight = 7;
@@ -35,7 +37,7 @@ void SophiaRightWheel::CreateResources()
 			rect.bottom = rect.top + spriteHeight + 1;
 			keyFrame.rect = rect;
 			keyFrame.position = transform->position;
-			keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+			keyFrame.scale = { scaleX, scaleY, 0.0f };
 			wheelRun->AddKeyFrames(keyFrame);
 		}
 
@@ -62,8 +64,7 @@ void SophiaRightWheel::CreateResources()
 			rect.right = rect.left + spriteWidth + 1;
 			rect.bottom = rect.top + spriteHeight + 1;
 			keyFrame.rect = rect;
-			keyFrame.position = { transform->position.x - 5.0f, transform->position.y, 0.0f };
-			keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+			keyFrame.position = { transform->position.x - 5.0f / scaleX, transform->position.y, 0.0f };
 			wheelRunWhileUp->AddKeyFrames(keyFrame);
 		}
 

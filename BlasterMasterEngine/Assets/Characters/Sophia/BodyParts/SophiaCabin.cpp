@@ -16,7 +16,10 @@ void SophiaCabin::CreateResources()
 	RECT normRect;
 	RECT pointUpRect;
 	RECT turnRect;
-
+	float scaleX = WINDOW_CAMERA_SCALE_X;
+	float scaleY = WINDOW_CAMERA_SCALE_Y;
+	D3DXVECTOR3 rightScale = { -scaleX , scaleY , 0.0f};
+	D3DXVECTOR3 leftScale = { scaleX , scaleY , 0.0f};
 	normRect.left = 39;
 	normRect.top = 3;
 	normRect.right = 55;
@@ -36,18 +39,18 @@ void SophiaCabin::CreateResources()
 		cabinRunRight->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 22.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 22.0f / scaleY, 0.0f };
 		cabinRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 26.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 26.0f / scaleY, 0.0f };
 		cabinRunRight->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRunRight);
@@ -59,18 +62,18 @@ void SophiaCabin::CreateResources()
 		cabinRunLeft->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 22.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 22.0f / scaleY, 0.0f };
 		cabinRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 26.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 26.0f / scaleY, 0.0f };
 		cabinRunLeft->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRunLeft);
@@ -84,12 +87,12 @@ void SophiaCabin::CreateResources()
 		cabinTurnLeft->SetAllowPause(false);
 
 		keyFrame.rect = turnRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x + 9.0f, 22.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x + 9.0f / scaleX, transform->position.y + 22.0f / scaleY, 0.0f };
 		cabinTurnLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x * -1.0f - 9.0f, 22.0f, 0.0f };
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f - 9.0f / scaleX, transform->position.y + 22.0f / scaleY, 0.0f };
 		cabinTurnLeft->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinTurnLeft);
@@ -104,12 +107,12 @@ void SophiaCabin::CreateResources()
 		
 		keyFrame.rect = turnRect;
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x * -1.0f - 9.0f, 22.0f, 0.0f };
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f - 9.0f / scaleX, transform->position.y + 22.0f / scaleY, 0.0f };
 		cabinTurnRight->AddKeyFrames(keyFrame);
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x + 9.0f, 22.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x + 9.0f / scaleX, transform->position.y + 22.0f / scaleY, 0.0f };
 		cabinTurnRight->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinTurnRight);
@@ -123,8 +126,8 @@ void SophiaCabin::CreateResources()
 		cabinRunRightPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRunRightPrePointUp->AddKeyFrames(keyFrame);
 		cabinRunRightPrePointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(cabinRunRightPrePointUp);
@@ -138,8 +141,8 @@ void SophiaCabin::CreateResources()
 		cabinRunLeftPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRunLeftPrePointUp->AddKeyFrames(keyFrame);
 		cabinRunLeftPrePointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(cabinRunLeftPrePointUp);
@@ -152,8 +155,8 @@ void SophiaCabin::CreateResources()
 		cabinRunRightPointUp->SetIsLooping(false);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRunRightPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRunRightPointUp);
@@ -166,8 +169,8 @@ void SophiaCabin::CreateResources()
 		cabinRunLeftPointUp->SetIsLooping(false);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRunLeftPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRunLeftPointUp);
@@ -182,14 +185,14 @@ void SophiaCabin::CreateResources()
 
 		keyFrame.rect = normRect;
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRightPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 16.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 16.0f / scaleY, 0.0f };
 		cabinRightPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRightPushDown->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(cabinRightPushDown);
 	}
@@ -203,14 +206,14 @@ void SophiaCabin::CreateResources()
 
 		keyFrame.rect = normRect;
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRightPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRightPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRightPushDownPrePointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(cabinRightPushDownPrePointUp);
 	}
@@ -223,15 +226,15 @@ void SophiaCabin::CreateResources()
 		cabinRightPushDownPointUp->SetHasExitTime(true);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRightPushDownPointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(cabinRightPushDownPointUp);
 	}
@@ -244,15 +247,15 @@ void SophiaCabin::CreateResources()
 		cabinLeftPushDown->SetHasExitTime(true);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinLeftPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 16.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 16.0f / scaleY, 0.0f };
 		cabinLeftPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinLeftPushDown->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftPushDown);
@@ -266,15 +269,15 @@ void SophiaCabin::CreateResources()
 		cabinLeftPushDownPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinLeftPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinLeftPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinLeftPushDownPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftPushDownPrePointUp);
@@ -288,15 +291,15 @@ void SophiaCabin::CreateResources()
 		cabinLeftPushDownPointUp->SetHasExitTime(true);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftPushDownPointUp);
@@ -305,10 +308,10 @@ void SophiaCabin::CreateResources()
 	std::shared_ptr<Animation> cabinRightJumping = std::make_shared<Animation>("Barrel Right Jumping");
 	{
 		cabinRightJumping->SetAnimationFPS(20);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
 		keyFrame.rect = normRect;
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRightJumping->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRightJumping);
@@ -320,10 +323,10 @@ void SophiaCabin::CreateResources()
 		cabinRightJumpingPrePointUp->SetIsLooping(false);
 		cabinRightJumpingPrePointUp->SetAllowPause(false);
 		cabinRightJumpingPrePointUp->SetHasExitTime(true);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
 		keyFrame.rect = normRect;
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRightJumpingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRightJumpingPrePointUp);
@@ -334,9 +337,9 @@ void SophiaCabin::CreateResources()
 		cabinRightJumpingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 40.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 40.0f / scaleY, 0.0f };
 		cabinRightJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRightJumpingPointUp);
@@ -347,9 +350,9 @@ void SophiaCabin::CreateResources()
 		cabinLeftJumping->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinLeftJumping->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftJumping);
@@ -363,9 +366,9 @@ void SophiaCabin::CreateResources()
 		cabinLeftJumpingPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinLeftJumpingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftJumpingPrePointUp);
@@ -376,9 +379,9 @@ void SophiaCabin::CreateResources()
 		cabinLeftJumpingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 40.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 40.0f / scaleY, 0.0f };
 		cabinLeftJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftJumpingPointUp);
@@ -388,9 +391,9 @@ void SophiaCabin::CreateResources()
 	{
 		cabinRightFalling->SetAnimationFPS(20);
 		keyFrame.rect = normRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRightFalling->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRightFalling);
@@ -403,9 +406,9 @@ void SophiaCabin::CreateResources()
 		cabinRightFallingPrePointUp->SetAllowPause(false);
 		cabinRightFallingPrePointUp->SetHasExitTime(true);
 		keyFrame.rect = normRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinRightFallingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRightFallingPrePointUp);
@@ -416,9 +419,9 @@ void SophiaCabin::CreateResources()
 		cabinRightFallingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinRightFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinRightFallingPointUp);
@@ -429,9 +432,9 @@ void SophiaCabin::CreateResources()
 		cabinLeftFalling->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinLeftFalling->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftFalling);
@@ -444,9 +447,9 @@ void SophiaCabin::CreateResources()
 		cabinLeftFallingPrePointUp->SetAllowPause(false);
 		cabinLeftFallingPrePointUp->SetHasExitTime(true);
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		cabinLeftFallingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftFallingPrePointUp);
@@ -457,9 +460,9 @@ void SophiaCabin::CreateResources()
 		cabinLeftFallingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		cabinLeftFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(cabinLeftFallingPointUp);
@@ -683,6 +686,7 @@ void SophiaCabin::CreateResources()
 		animationController->GetAnimationIndex(cabinRightPushDown),
 		animationController->GetAnimationIndex(cabinRunRight));
 	{
+		rightPushDownToRightTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(rightPushDownToRightTrans);
 	}
 
@@ -722,6 +726,7 @@ void SophiaCabin::CreateResources()
 		animationController->GetAnimationIndex(cabinRightPushDownPointUp),
 		animationController->GetAnimationIndex(cabinRunRightPointUp));
 	{
+		rightPushDownPointUpToRightPointUpTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(rightPushDownPointUpToRightPointUpTrans);
 	}
 
@@ -857,6 +862,7 @@ void SophiaCabin::CreateResources()
 		animationController->GetAnimationIndex(cabinLeftPushDown),
 		animationController->GetAnimationIndex(cabinRunLeft));
 	{
+		leftPushDownToLeftTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(leftPushDownToLeftTrans);
 	}
 
@@ -896,6 +902,7 @@ void SophiaCabin::CreateResources()
 		animationController->GetAnimationIndex(cabinLeftPushDownPointUp),
 		animationController->GetAnimationIndex(cabinRunLeftPointUp));
 	{
+		leftPushDownPointUpToLeftPointUpTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(leftPushDownPointUpToLeftPointUpTrans);
 	}
 

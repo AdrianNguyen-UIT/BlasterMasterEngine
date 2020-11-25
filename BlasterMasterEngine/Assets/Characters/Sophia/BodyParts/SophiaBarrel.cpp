@@ -22,7 +22,10 @@ void SophiaBarrel::CreateResources()
 	RECT normRect;
 	RECT pointUpRect;
 	RECT prePointUpRect;
-
+	float scaleX = WINDOW_CAMERA_SCALE_X;
+	float scaleY = WINDOW_CAMERA_SCALE_Y;
+	D3DXVECTOR3 rightScale = { -scaleX , scaleY , 0.0f };
+	D3DXVECTOR3 leftScale = { scaleX , scaleY , 0.0f };
 	normRect.left = 3 + spriteWidth + xOffset;
 	normRect.top = 3;
 	normRect.right = normRect.left + spriteWidth + 1;
@@ -43,18 +46,18 @@ void SophiaBarrel::CreateResources()
 		barrelRunRight->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 22.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 22.0f / scaleY, 0.0f };
 		barrelRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelRunRight->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 26.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 26.0f / scaleY, 0.0f };
 		barrelRunRight->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRunRight);
@@ -65,18 +68,18 @@ void SophiaBarrel::CreateResources()
 	{
 		barrelRunLeft->SetAnimationFPS(20);
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 22.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 22.0f / scaleY, 0.0f };
 		barrelRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelRunLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 26.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 26.0f / scaleY, 0.0f };
 		barrelRunLeft->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRunLeft);
@@ -90,13 +93,13 @@ void SophiaBarrel::CreateResources()
 		barrelTurnRight->SetAllowPause(false);
 
 		keyFrame.rect = { 0, 0, 0, 0 };
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 22.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 22.0f / scaleY, 0.0f };
 		barrelTurnRight->AddKeyFrames(keyFrame);
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x * -1.0f, 22.0f, 0.0f };
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 22.0f / scaleY, 0.0f };
 		barrelTurnRight->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelTurnRight);
@@ -111,12 +114,12 @@ void SophiaBarrel::CreateResources()
 
 		keyFrame.rect = { 0, 0, 0, 0 };
 
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 22.0f / scaleY, 0.0f };
 		barrelTurnLeft->AddKeyFrames(keyFrame);
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 22.0f / scaleY, 0.0f };
 		barrelTurnLeft->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelTurnLeft);
@@ -130,8 +133,8 @@ void SophiaBarrel::CreateResources()
 		barrelRunRightPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = prePointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 48.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 48.0f / scaleY, 0.0f };
 		barrelRunRightPrePointUp->AddKeyFrames(keyFrame);
 		barrelRunRightPrePointUp->AddKeyFrames(keyFrame);
 
@@ -146,8 +149,8 @@ void SophiaBarrel::CreateResources()
 		barrelRunLeftPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = prePointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x * -1.0f, 48.0f, 0.0f };
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 48.0f / scaleY, 0.0f };
 		barrelRunLeftPrePointUp->AddKeyFrames(keyFrame);
 
 		barrelRunLeftPrePointUp->AddKeyFrames(keyFrame);
@@ -162,8 +165,8 @@ void SophiaBarrel::CreateResources()
 		barrelRunRightPointUp->SetIsLooping(false);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x - 19.0f, 63.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + 63.0f / scaleY, 0.0f };
 		barrelRunRightPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRunRightPointUp);
@@ -174,9 +177,9 @@ void SophiaBarrel::CreateResources()
 		barrelRunLeftPointUp->SetAnimationFPS(20);
 		barrelRunLeftPointUp->SetAllowPause(false);
 		barrelRunLeftPointUp->SetIsLooping(false);
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 		keyFrame.rect = pointUpRect;
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f, 63.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + 63.0f / scaleY, 0.0f };
 		barrelRunLeftPointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(barrelRunLeftPointUp);
 	}
@@ -190,14 +193,14 @@ void SophiaBarrel::CreateResources()
 
 		keyFrame.rect = normRect;
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelRightPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 16.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 16.0f / scaleY, 0.0f };
 		barrelRightPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelRightPushDown->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(barrelRightPushDown);
 	}
@@ -211,14 +214,14 @@ void SophiaBarrel::CreateResources()
 
 		keyFrame.rect = prePointUpRect;
 
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
-		keyFrame.position = { transform->position.x, 24.0f + 24.0f, 0.0f };
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + (24.0f + 24.0f) / scaleY, 0.0f };
 		barrelRightPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 16.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + (16.0f + 24.0f) / scaleY, 0.0f };
 		barrelRightPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x, 24.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + (24.0f + 24.0f) / scaleY, 0.0f };
 		barrelRightPushDownPrePointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(barrelRightPushDownPrePointUp);
 	}
@@ -231,15 +234,15 @@ void SophiaBarrel::CreateResources()
 		barrelRightPushDownPointUp->SetHasExitTime(true);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x - 19.0f, 24.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
 		barrelRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x - 19.0f, 16.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX , transform->position.y + (16.0f + 24.0f) / scaleY, 0.0f };
 		barrelRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x - 19.0f, 24.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX ,transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
 		barrelRightPushDownPointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(barrelRightPushDownPointUp);
 	}
@@ -252,15 +255,15 @@ void SophiaBarrel::CreateResources()
 		barrelLeftPushDown->SetHasExitTime(true);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelLeftPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 16.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 16.0f / scaleY, 0.0f };
 		barrelLeftPushDown->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelLeftPushDown->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftPushDown);
@@ -274,15 +277,15 @@ void SophiaBarrel::CreateResources()
 		barrelLeftPushDownPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + (24.0f + 24.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 16.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + (16.0f + 24.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPrePointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f,transform->position.y + (24.0f + 24.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftPushDownPrePointUp);
@@ -296,15 +299,15 @@ void SophiaBarrel::CreateResources()
 		barrelLeftPushDownPointUp->SetHasExitTime(true);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f, 24.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f , 16.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (16.0f + 39.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f, 24.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftPushDownPointUp);
@@ -313,10 +316,10 @@ void SophiaBarrel::CreateResources()
 	std::shared_ptr<Animation> barrelRightJumping = std::make_shared<Animation>("Barrel Right Jumping");
 	{
 		barrelRightJumping->SetAnimationFPS(20);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
 		keyFrame.rect = normRect;
-		keyFrame.position = { transform->position.x, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
 		barrelRightJumping->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightJumping);
@@ -328,10 +331,10 @@ void SophiaBarrel::CreateResources()
 		barrelRightJumpingPrePointUp->SetIsLooping(false);
 		barrelRightJumpingPrePointUp->SetAllowPause(false);
 		barrelRightJumpingPrePointUp->SetHasExitTime(true);
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
 		keyFrame.rect = prePointUpRect;
-		keyFrame.position = { transform->position.x, 32.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + (32.0f + 24.0f) / scaleY, 0.0f };
 		barrelRightJumpingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightJumpingPrePointUp);
@@ -342,9 +345,9 @@ void SophiaBarrel::CreateResources()
 		barrelRightJumpingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x - 19.0f, 32.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (32.0f + 39.0f) / scaleY, 0.0f };
 		barrelRightJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightJumpingPointUp);
@@ -355,9 +358,9 @@ void SophiaBarrel::CreateResources()
 		barrelLeftJumping->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
 		barrelLeftJumping->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftJumping);
@@ -371,9 +374,9 @@ void SophiaBarrel::CreateResources()
 		barrelLeftJumpingPrePointUp->SetHasExitTime(true);
 
 		keyFrame.rect = prePointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 32.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + (32.0f + 24.0f) / scaleY, 0.0f };
 		barrelLeftJumpingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftJumpingPrePointUp);
@@ -384,9 +387,9 @@ void SophiaBarrel::CreateResources()
 		barrelLeftJumpingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f, 32.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (32.0f + 39.0f) / scaleY, 0.0f };
 		barrelLeftJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftJumpingPointUp);
@@ -397,9 +400,9 @@ void SophiaBarrel::CreateResources()
 		barrelRightFalling->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelRightFalling->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightFalling);
@@ -412,9 +415,9 @@ void SophiaBarrel::CreateResources()
 		barrelRightFallingPrePointUp->SetAllowPause(false);
 		barrelRightFallingPrePointUp->SetHasExitTime(true);
 		keyFrame.rect = prePointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x, 24.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + (24.0f + 24.0f) / scaleY, 0.0f };
 		barrelRightFallingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightFallingPrePointUp);
@@ -425,9 +428,9 @@ void SophiaBarrel::CreateResources()
 		barrelRightFallingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { -3.0f, 3.0f, 0.0f };
+		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x - 19.0f, 24.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
 		barrelRightFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightFallingPointUp);
@@ -438,9 +441,9 @@ void SophiaBarrel::CreateResources()
 		barrelLeftFalling->SetAnimationFPS(20);
 
 		keyFrame.rect = normRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
 		barrelLeftFalling->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftFalling);
@@ -453,9 +456,9 @@ void SophiaBarrel::CreateResources()
 		barrelLeftFallingPrePointUp->SetAllowPause(false);
 		barrelLeftFallingPrePointUp->SetHasExitTime(true);
 		keyFrame.rect = prePointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f, 24.0f + 24.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + (24.0f + 24.0f) / scaleY, 0.0f };
 		barrelLeftFallingPrePointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftFallingPrePointUp);
@@ -466,9 +469,9 @@ void SophiaBarrel::CreateResources()
 		barrelLeftFallingPointUp->SetAnimationFPS(20);
 
 		keyFrame.rect = pointUpRect;
-		keyFrame.scale = { 3.0f, 3.0f, 0.0f };
+		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f, 24.0f + 39.0f, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
 		barrelLeftFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftFallingPointUp);
@@ -693,6 +696,7 @@ void SophiaBarrel::CreateResources()
 		animationController->GetAnimationIndex(barrelRightPushDown),
 		animationController->GetAnimationIndex(barrelRunRight));
 	{
+		rightPushDownToRightTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(rightPushDownToRightTrans);
 	}
 
@@ -732,6 +736,7 @@ void SophiaBarrel::CreateResources()
 		animationController->GetAnimationIndex(barrelRightPushDownPointUp),
 		animationController->GetAnimationIndex(barrelRunRightPointUp));
 	{
+		rightPushDownPointUpToRightPointUpTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(rightPushDownPointUpToRightPointUpTrans);
 	}
 
@@ -868,6 +873,7 @@ void SophiaBarrel::CreateResources()
 		animationController->GetAnimationIndex(barrelLeftPushDown),
 		animationController->GetAnimationIndex(barrelRunLeft));
 	{
+		leftPushDownToLeftTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(leftPushDownToLeftTrans);
 	}
 
@@ -907,6 +913,7 @@ void SophiaBarrel::CreateResources()
 		animationController->GetAnimationIndex(barrelLeftPushDownPointUp),
 		animationController->GetAnimationIndex(barrelRunLeftPointUp));
 	{
+		leftPushDownPointUpToLeftPointUpTrans->AddBoolTransitionCondition(fallingBoolCond);
 		animationController->AddTransition(leftPushDownPointUpToLeftPointUpTrans);
 	}
 
@@ -1013,7 +1020,7 @@ void SophiaBarrel::Start()
 
 void SophiaBarrel::Update()
 {
-	LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
+	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
 }
 
 void SophiaBarrel::OnCollisionEnter()
