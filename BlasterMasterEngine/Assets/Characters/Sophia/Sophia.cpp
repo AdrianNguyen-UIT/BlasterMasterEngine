@@ -3,14 +3,16 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Assets/CharacterController.h"
 #include "Assets/Characters/Jason/Jason.h"
+#include "Assets/CameraBound.h"
+#include "Assets/Particles/PlayerDeadExplosion.h"
+
 Sophia::Sophia(float x, float y)
 	: Object2D(x, y)
 {
-	name = "Shophia";
+	name = "Sophia";
 	tag = Tag::Player;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
-
 	jason = std::make_shared<Jason>();
 }
 
@@ -58,172 +60,328 @@ void Sophia::CreateResources()
 
 void Sophia::Start()
 {
-	runSpeed = 60.0f;
+	runSpeed = 80.0f;
 	horizontalMove = 0.0f;
 	isFacingRight = true;
 	pointUp = false;
 	isJumping = false;
-	frameBeforeJump = 20;
-	frameCount = 0;
-	fallMultiplier = 1.5f;
+	fallMultiplier = 0.3f;
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
-	rigidbody->gravityScale = 2.0f;
+	rigidbody->gravityScale = 1.0f;
 	rigidbody->bounciness = 0.0f;
 	boxCollider->size = { 20.0f, 20.0f };
 	boxCollider->offset = { 0.0f, 5.0f };
 	boxCollider->isTrigger = false;
+	camera = SceneManager::GetActiveScene()->GetActiceCamera();
+	state = State::Normal;
+
+	boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
+	RECT rect;
+	rect.left = boxCollider->topLeft.x;
+	rect.top = SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y;
+	rect.right = rect.left + boxCollider->size.width;
+	rect.bottom = rect.top + boxCollider->size.height;
+
+	CameraBound::SetCurrentBound(rect);
 }
 
 void Sophia::Update()
 {
-	std::shared_ptr<OrthographicCamera> camera = SceneManager::GetActiveScene()->GetActiceCamaera();
-	if (CharacterController::GetCharacterInControl() == Character::Sophia)
+	if (state == State::Normal)
 	{
-		rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
-		boxCollider->isTrigger = false;
-		static float speedMulti = 0.0f;
-		if (downCollision)
+		if (CharacterController::GetCharacterInControl() == Character::Sophia)
 		{
-			if (Input::GetKey(KeyCode_D))
-			{
-				horizontalMove = 1.0f * runSpeed * speedMulti;
-				speedMulti += 0.2f;
+			rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+			boxCollider->isTrigger = false;
 
-			}
-			else if (Input::GetKey(KeyCode_A))
+			static float speedMulti = 0.0f;
+			static bool jump = false;
+			if (downCollision != 0)
 			{
-				horizontalMove = -1.0f * runSpeed * speedMulti;
-				speedMulti += 0.2f;
+				if (Input::GetKey(KeyCode_D))
+				{
+					horizontalMove = 1.0f * runSpeed * speedMulti;
+					speedMulti += 0.2f;
+
+				}
+				else if (Input::GetKey(KeyCode_A))
+				{
+					horizontalMove = -1.0f * runSpeed * speedMulti;
+					speedMulti += 0.2f;
+				}
+				else
+				{
+					horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
+					speedMulti -= 0.2f;
+				}
+
+				if (Input::GetKeyDown(KeyCode_SPACE))
+				{
+					jump = true;
+				}
+
+				if (Input::GetKeyDown(KeyCode_V))
+				{
+					SpawnJason();
+				}
+
+				if (speedMulti > 1.0f)
+				{
+					speedMulti = 1.0f;
+				}
+				else if (speedMulti < 0.0f)
+				{
+					speedMulti = 0.0f;
+				}
 			}
 			else
 			{
-				horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
-				speedMulti -= 0.2f;
+				speedMulti = 0.4f;
+				jump = false;
+				if (Input::GetKey(KeyCode_D) && horizontalMove <= 0)
+				{
+					horizontalMove = 1.0f * runSpeed * speedMulti;
+				}
+				else if (Input::GetKey(KeyCode_A) && horizontalMove >= 0)
+				{
+					horizontalMove = -1.0f * runSpeed * speedMulti;
+				}
 			}
-		}
 
-		if (Input::GetKey(KeyCode_W))
-		{
-			pointUp = true;
-		}
-		else
-		{
-			pointUp = false;
-		}
-		if (Input::GetKeyDown(KeyCode_SPACE) && downCollision != 0 && frameCount == 0)
-		{
-			++frameCount;
-		}
+			Jump(jump);
 
-		if (frameCount != 0)
-		{
-			++frameCount;
-			isJumping = true;
-			if (frameCount == frameBeforeJump)
+			rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
+
+			if (Input::GetKey(KeyCode_W))
 			{
-				D3DXVECTOR2 force(0.0f, 1200.0f);
-				rigidbody->AddForce(force);
-				frameCount = 0;
+				pointUp = true;
 			}
-		}
-		if (Input::GetKeyDown(KeyCode_V))
-		{
-
-			CharacterController::SetCharacterInControl(Character::Jason);
-			D3DXVECTOR3 location = { transform->position.x, transform->position.y + 10.0f, 0.0f };
-			SceneManager::Instantiate(jason, location);
-		}
-
-		if (speedMulti > 1.0f)
-		{
-			speedMulti = 1.0f;
-		}
-		else if (speedMulti < 0.0f)
-		{
-			speedMulti = 0.0f;
-		}
-
-		rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
-
-		if (rigidbody->velocity.y < 0.0f)
-		{
-			rigidbody->velocity.y += Physic::gravity.y * (fallMultiplier - 1) * Time::GetFixedDeltaTime();
-		}
-
-		if (horizontalMove == 0.0f)
-		{
-			for (auto object : childObjects)
+			else
 			{
-				object->animationController->PauseAnimation();
+				pointUp = false;
 			}
-		}
-		else
-		{
-			for (auto object : childObjects)
+
+			if (Input::GetKeyDown(KeyCode_J))
 			{
-				object->animationController->PlayAnimation(isFacingRight);
+				Shoot();
 			}
+
+			if (rigidbody->velocity.y < 0.0f)
+			{
+				rigidbody->velocity.y += Physic::gravity.y * fallMultiplier * Time::GetFixedDeltaTime();
+			}
+
+			if (horizontalMove == 0.0f)
+			{
+				for (auto object : childObjects)
+				{
+					object->animationController->PauseAnimation();
+				}
+			}
+			else
+			{
+				for (auto object : childObjects)
+				{
+					object->animationController->PlayAnimation(isFacingRight);
+				}
+			}
+
+			if (horizontalMove > 0 && !isFacingRight)
+			{
+				speedMulti = 0.0f;
+				Flip();
+			}
+			else if (horizontalMove < 0 && isFacingRight)
+			{
+				speedMulti = 0.0f;
+				Flip();
+			}
+
+			SetAnimationParameter();
+			MoveCameraAccordingly();
+			ApplyCameraBound();
 		}
-
-		leftWheel->animationController->SetBool("pointUp", pointUp);
-		rightWheel->animationController->SetBool("pointUp", pointUp);
-		wheelConnector->animationController->SetBool("pointUp", pointUp);
-		cabin->animationController->SetBool("pointUp", pointUp);
-		barrel->animationController->SetBool("pointUp", pointUp);
-
-		wheelConnector->animationController->SetBool("isJumping", isJumping);
-		barrel->animationController->SetBool("isJumping", isJumping);
-		cabin->animationController->SetBool("isJumping", isJumping);
-
-		wheelConnector->animationController->SetFloat("verticalVelocity", rigidbody->velocity.y);
-		barrel->animationController->SetFloat("verticalVelocity", rigidbody->velocity.y);
-		cabin->animationController->SetFloat("verticalVelocity", rigidbody->velocity.y);
-
-		wheelConnector->animationController->SetFloat("runSpeed", horizontalMove);
-		cabin->animationController->SetFloat("runSpeed", horizontalMove);
-		barrel->animationController->SetFloat("runSpeed", horizontalMove); 
-
-		if (horizontalMove > 0 && !isFacingRight)
+		else if (downCollision != 0)
 		{
-			speedMulti = 0.0f;
-			Flip();
+			rigidbody->bodyType = Rigidbody::BodyType::Static;
+			boxCollider->isTrigger = true;
 		}
-		else if (horizontalMove < 0 && isFacingRight)
-		{
-			speedMulti = 0.0f;
-			Flip();
-		}
-
-		/*float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
-		LOG_INFO("camera x {0}", camera->GetPosition().x);
-		if (distanceXBetweenCamPlay <= 200.0f)
-		{
-			camera->SetPosition(transform->position.x - 200.0f, camera->GetPosition().y, 0.0f);
-		}
-		else if (distanceXBetweenCamPlay >= 600.0f && camera->GetPosition().x < 2048 - 100)
-		{
-			camera->SetPosition(transform->position.x - 600.0f, camera->GetPosition().y, 0.0f);
-		}*/
-
 	}
-	else if (downCollision != 0)
+	else if (state == State::CheckPointMove)
 	{
-		rigidbody->bodyType = Rigidbody::BodyType::Static;
-		boxCollider->isTrigger = true;
+		rigidbody->velocity.x = (isFacingRight ? 1.0f : -1.0f) * runSpeed * Time::GetFixedDeltaTime();
+		//transform->Translate(transform->position.x + 0.4f, transform->position.y, 0.0f);
+
+		camera->MoveCamera(rigidbody->velocity.x * 2.24f, 0.0f, 0.0f);
+
+	}
+}
+
+void Sophia::OnCollisionEnter(std::shared_ptr<Object2D> object)
+{
+	if (object->tag == Tag::Terrain)
+	{
+		isJumping = false;
 	}
 
+	if (object->tag == Tag::CheckPoint)
+	{
+		state = State::CheckPointMove;
+
+	}
+
+	if (object->tag == Tag::Trap)
+	{
+		LOG_INFO("trap");
+	}
+
+	if (object->tag == Tag::EnemyBullet)
+	{
+		playerDeadExplosion = std::make_shared<PlayerDeadExplosion>(transform->position.x, transform->position.y + 16.0f);
+		playerDeadExplosion->CreateResources();
+		SceneManager::Instantiate(playerDeadExplosion, playerDeadExplosion->transform->position);
+		enable = false;
+		//SceneManager::LoadScene("Loading Screen");
+	}
 }
 
-void Sophia::OnCollisionEnter()
+void Sophia::OnCollisionExit(std::shared_ptr<Object2D> object)
 {
-		isJumping = false;
-}
+	if (object->tag == Tag::CheckPoint)
+	{
+		state = State::Normal;
 
-void Sophia::OnTriggerEnter()
-{
+		RECT rect;
+		rect.left = boxCollider->topLeft.x;
+		rect.top = SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y;
+		rect.right = rect.left + boxCollider->size.width;
+		rect.bottom = rect.top + boxCollider->size.height;
+
+		CameraBound::SetCurrentBound(rect);
+	}
+
 }
 
 void Sophia::Flip()
 {
 	isFacingRight = !isFacingRight;
+}
+
+void Sophia::SpawnJason()
+{
+	CharacterController::SetCharacterInControl(Character::Jason);
+	D3DXVECTOR3 location = { transform->position.x, transform->position.y + 10.0f, 0.0f };
+	SceneManager::Instantiate(jason, location);
+}
+
+void Sophia::Shoot()
+{
+	D3DXVECTOR3 location = { transform->position.x, transform->position.y + 10.0f, 0.0f };
+	if (pointUp)
+	{
+		bullet = std::make_shared<NormalFireBullet>(location.x, location.y, false, isFacingRight);
+	}
+	else
+	{
+		bullet = std::make_shared<NormalFireBullet>(location.x, location.y, true, isFacingRight);
+	}
+	bullet->CreateResources();
+	SceneManager::Instantiate(bullet, location);
+}
+
+void Sophia::Jump(bool& jump)
+{
+	static float timeLapse = 0.0f;
+
+	if (!jump)
+	{
+		timeLapse = 0.0f;
+		return;
+	}
+
+	isJumping = true;
+
+	if (timeLapse >= 0.2f)
+	{
+		jump = false;
+
+		if (downCollision != 0)
+		{
+			D3DXVECTOR2 force(0.0f, 850.0f);
+			rigidbody->AddForce(force);
+		}
+		return;
+	}
+	timeLapse += Time::GetDeltaTime();
+}
+
+void Sophia::MoveCameraAccordingly()
+{
+	float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
+
+	if (distanceXBetweenCamPlay > (camera->GetSize().width / 2) + 30.0f)
+	{
+		camera->SetPosition(transform->position.x - (camera->GetSize().width / 2) - 30.0f, camera->GetPosition().y, 0.0f);
+	}
+	else if (distanceXBetweenCamPlay < (camera->GetSize().width / 2) - 30.0f)
+	{
+		camera->SetPosition(transform->position.x - (camera->GetSize().width / 2) + 30.0f, camera->GetPosition().y, 0.0f);
+	}
+
+	RECT currentBound = CameraBound::GetCurrentBound();
+	if (currentBound.bottom - currentBound.top < 300.0f)
+		return;
+
+	float distanceYBetweenCamPlay = camera->GetPosition().y - transform->position.y;
+	if (distanceYBetweenCamPlay < (camera->GetSize().height / 2) - 30.0f)
+	{
+		camera->SetPosition(camera->GetPosition().x, transform->position.y + (camera->GetSize().height / 2) - 30.0f, 0.0f);
+	}
+	else if (distanceYBetweenCamPlay > (camera->GetSize().height / 2) + 30.0f)
+	{
+		camera->SetPosition(camera->GetPosition().x, transform->position.y + (camera->GetSize().height / 2) + 30.0f, 0.0f);
+	}
+}
+
+void Sophia::ApplyCameraBound()
+{
+	if (camera->GetPosition().x < CameraBound::GetCurrentBound().left)
+	{
+		camera->SetPosition(CameraBound::GetCurrentBound().left, camera->GetPosition().y, 0.0f);
+	}
+	else if (camera->GetPosition().x > CameraBound::GetCurrentBound().right - camera->GetSize().width)
+	{
+		camera->SetPosition(CameraBound::GetCurrentBound().right - camera->GetSize().width, camera->GetPosition().y, 0.0f);
+	}
+
+	float mapHeight = SceneManager::GetActiveScene()->GetMapSize().height;
+	if (mapHeight - camera->GetPosition().y < CameraBound::GetCurrentBound().top)
+	{
+		camera->SetPosition(camera->GetPosition().x, mapHeight - CameraBound::GetCurrentBound().top, 0.0f);
+	}
+	else if (mapHeight - camera->GetPosition().y > CameraBound::GetCurrentBound().bottom - camera->GetSize().height)
+	{
+		camera->SetPosition(camera->GetPosition().x, mapHeight - (CameraBound::GetCurrentBound().bottom - camera->GetSize().height), 0.0f);
+	}
+}
+
+void Sophia::SetAnimationParameter()
+{
+	leftWheel->animationController->SetBool("pointUp", pointUp);
+	rightWheel->animationController->SetBool("pointUp", pointUp);
+	wheelConnector->animationController->SetBool("pointUp", pointUp);
+	cabin->animationController->SetBool("pointUp", pointUp);
+	barrel->animationController->SetBool("pointUp", pointUp);
+
+	wheelConnector->animationController->SetBool("isJumping", isJumping);
+	barrel->animationController->SetBool("isJumping", isJumping);
+	cabin->animationController->SetBool("isJumping", isJumping);
+
+	wheelConnector->animationController->SetFloat("verticalVelocity", rigidbody->velocity.y);
+	barrel->animationController->SetFloat("verticalVelocity", rigidbody->velocity.y);
+	cabin->animationController->SetFloat("verticalVelocity", rigidbody->velocity.y);
+
+	wheelConnector->animationController->SetFloat("runSpeed", horizontalMove);
+	cabin->animationController->SetFloat("runSpeed", horizontalMove);
+	barrel->animationController->SetFloat("runSpeed", horizontalMove);
 }

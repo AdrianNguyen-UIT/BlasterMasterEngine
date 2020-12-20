@@ -104,10 +104,10 @@ void SophiaLeftWheel::Update()
 	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
 }
 
-void SophiaLeftWheel::OnCollisionEnter()
+void SophiaLeftWheel::OnCollisionEnter(std::shared_ptr<Object2D> object)
 {
 }
 
-void SophiaLeftWheel::OnTriggerEnter()
+void SophiaLeftWheel::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
 }

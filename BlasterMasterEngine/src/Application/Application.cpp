@@ -69,7 +69,7 @@ HRESULT Application::Run(int nCmdShow)
         LOG_INFO("SUCCESS!");
 
         LOG_INFO("Run");
-        hr = window->Run(deviceResources, renderer, input, nCmdShow);
+        hr = window->Run(deviceResources, renderer, input, sceneManager, nCmdShow);
     }
     else
     {

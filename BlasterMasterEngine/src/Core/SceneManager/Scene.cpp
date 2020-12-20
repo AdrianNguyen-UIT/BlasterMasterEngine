@@ -3,15 +3,16 @@
 
 Scene::Scene()
 {
+	readyToLoad = false;
 	mapRender = {0, 0, 0, 0};
 	mapSize = {0.0f, 0.0f};
 	backGround = NULL;
+	xmlMap = NULL;
 }
 
 Scene::~Scene()
 {
-	backGround->Release();
-	quadTree->Clear();
+	ClearScene();
 }
 
 void Scene::UpdateScene()
@@ -20,6 +21,8 @@ void Scene::UpdateScene()
 	mapRender.top = (LONG)(mapSize.height - camera->GetPosition().y);
 	mapRender.right = mapRender.left + (LONG)(camera->GetSize().width);
 	mapRender.bottom = mapRender.top + (LONG)(camera->GetSize().height);
+
+	UpdateRenderableObjects();
 }
 
 void Scene::SetMapRectPosition(float left, float top)
@@ -36,23 +39,42 @@ void Scene::AddMapRectPosition(float left, float top)
 	UpdateScene();
 }
 
-void Scene::AddObject(const std::shared_ptr<Object2D>& object) 
-{ 
-	objects.emplace_back(object); 
-}
-
-void Scene::AddPlayer(const std::shared_ptr<Object2D>& object)
+void Scene::AddObject(const std::shared_ptr<Object2D>& object)
 {
-	player = object;
+	objects.emplace_back(object);
 }
 
 void Scene::LoadXmlMap(char* filePath)
 {
-	xmlMap.ParseFile(filePath);
+	xmlMap = std::make_unique<XmlMap>();
+	xmlMap->ParseFile(filePath);
 }
 
-void  Scene::UpdateCollideableObjects()
+void  Scene::UpdateRenderableObjects()
 {
-	collideableObjects.clear();
-	quadTree->GetObjectsCollideAble(collideableObjects, player);
+	renderableObjects.clear();
+	for (auto object : objects)
+	{
+		if (object->boxCollider == NULL)
+		{
+			renderableObjects.emplace_back(object);
+		}
+		else if (object->boxCollider->topLeft.x + object->boxCollider->size.width >= camera->GetPosition().x - 100.0f && 
+			object->boxCollider->topLeft.x <= (camera->GetPosition().x - 100.0f) + (camera->GetSize().width + 100.0f * 2) &&
+			object->boxCollider->topLeft.y - object->boxCollider->size.height <= camera->GetPosition().y + 100.0f &&
+			object->boxCollider->topLeft.y >= (camera->GetPosition().y + 100.0f) - (camera->GetSize().height + 100.0f * 2))
+		{
+			renderableObjects.emplace_back(object);
+		}
+	}
+}
+
+void Scene::ClearScene()
+{
+	readyToLoad = false;
+	objects.clear();
+	renderableObjects.clear();
+
+	if (camera != NULL)
+		camera = NULL;
 }

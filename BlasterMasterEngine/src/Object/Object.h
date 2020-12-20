@@ -6,6 +6,7 @@
 
 enum class Direction
 {
+	NONE,
 	UP,
 	RIGHT,
 	DOWN,
@@ -19,7 +20,12 @@ enum class Tag
 	Monster,
 	Boss,
 	Item,
-	Terrain
+	Terrain,
+	PlayerBullet,
+	EnemyBullet,
+	CheckPoint,
+	Gate,
+	Trap
 };
 
 class Object2D : public std::enable_shared_from_this<Object2D>
@@ -33,9 +39,10 @@ public:
 
 private:
 	bool readyToBeDestroy;
-	D3DXVECTOR3 positionAsChild;
-	D3DXVECTOR3 rotationAsChild;
-	D3DXVECTOR3 scaleAsChild;
+	D3DXVECTOR3 subPosition;
+	D3DXVECTOR3 subRotation;
+	D3DXVECTOR3 subScale;
+
 protected:
 	int upCollision;
 	int downCollision;
@@ -49,7 +56,7 @@ public:
 	std::string name;
 	Tag tag;
 	bool enable;
-
+	Color color;
 	//Instances define
 	std::unique_ptr<SpriteRenderer> spriteRenderer;
 	std::unique_ptr<AnimationController> animationController;
@@ -59,12 +66,16 @@ public:
 	std::list<std::shared_ptr<Object2D>> childObjects;
 
 public:
-	virtual void Start() = 0;
-	virtual void Update() = 0;
-	virtual void CreateResources() = 0;
+	virtual void Start() {}
+	virtual void Update() {}
+	virtual void CreateResources() {}
 
-	virtual void OnCollisionEnter() = 0;
-	virtual void OnTriggerEnter() = 0;
+	virtual void OnCollisionEnter(std::shared_ptr<Object2D> object) {}
+	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) {}
+	virtual void OnCollisionStay(std::shared_ptr<Object2D> object) {}
+	virtual void OnTriggerStay(std::shared_ptr<Object2D> object) {}
+	virtual void OnCollisionExit(std::shared_ptr<Object2D> object) {}
+	virtual void OnTriggerExit(std::shared_ptr<Object2D> object) {}
 
 public:
 	template <class T>

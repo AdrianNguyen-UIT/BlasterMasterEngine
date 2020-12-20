@@ -14,7 +14,7 @@ public:
 	void SetSize(const Size& p_Size);
 	Size GetSize();
 	D3DXMATRIX GetWorldToViewportMat();
-
+	void MoveCamera(float x, float y, float z);
 private:
 	D3DXVECTOR3 position;
 	Size size;

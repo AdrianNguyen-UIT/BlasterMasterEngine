@@ -11,35 +11,31 @@ Renderer::~Renderer()
 
 void Renderer::Update()
 {
-	D3DXMATRIX worldToVPMatrix = SceneManager::GetActiveScene()->GetActiceCamaera()->GetWorldToViewportMat();
-	SceneManager::GetActiveScene()->UpdateCollideableObjects();
-	std::list<std::shared_ptr<Object2D>> objects = SceneManager::GetActiveScene()->GetAllCollideableObjects();
-	std::shared_ptr<Object2D> player = SceneManager::GetActiveScene()->GetPlayer();
-
 	SceneManager::UpdateScene();
 
-	player->InnerUpdate(worldToVPMatrix);
-	
-	for (auto object : objects)
-	{
-		object->InnerUpdate(worldToVPMatrix);
-	}
+	std::list<std::shared_ptr<Object2D>> objects = SceneManager::GetActiveScene()->GetAllRenderableObjects();
 
 	for (auto object : objects)
 	{
-		player->DoCollision(object);
+		object->InnerUpdate(SceneManager::GetActiveScene()->GetActiceCamera()->GetWorldToViewportMat());
 	}
+	//LOG_INFO("{0}", objects.size());
 
+	for (auto object : objects)
+	{
+		for (auto innerObject : objects)
+		{
+			if (object != innerObject)
+			{
+				object->DoCollision(innerObject);
+			}
+		}
+	}
 }
 
 HRESULT Renderer::CreateRendererResources()
 {
 	HRESULT hr = S_OK;
-
-	bool result = SceneManager::LoadScene("Area2");
-	__ASSERT(result, "Unable to load scene");
-
-	SceneManager::GetActiveScene()->GetPlayer()->InnerStart();
 
 	for (auto object : SceneManager::GetActiveScene()->GetObjectList())
 	{
@@ -50,25 +46,20 @@ HRESULT Renderer::CreateRendererResources()
 
 void Renderer::Render()
 {
-	D3DXMATRIX worldToVPMatrix = SceneManager::GetActiveScene()->GetActiceCamaera()->GetWorldToViewportMat();
-	std::shared_ptr<Object2D> player = SceneManager::GetActiveScene()->GetPlayer();
+	D3DXMATRIX worldToVPMatrix = SceneManager::GetActiveScene()->GetActiceCamera()->GetWorldToViewportMat();
 	HRESULT hr = DeviceResources::GetDevice()->BeginScene();
 	if (SUCCEEDED(hr))
 	{
 		RenderBackground();
 
-		player->Draw(D3DXSPRITE_ALPHABLEND);
-		player->RenderDebugRectangle(worldToVPMatrix);
-
-		for (auto object : SceneManager::GetActiveScene()->GetAllCollideableObjects())
+		for (auto object : SceneManager::GetActiveScene()->GetAllRenderableObjects())
 		{
 			object->Draw(D3DXSPRITE_ALPHABLEND);
-			object->RenderDebugRectangle(worldToVPMatrix);
+			//object->RenderDebugRectangle(worldToVPMatrix);
 		}
 
 		DeviceResources::GetDevice()->EndScene();
 	}
-	LOG_INFO("{0}", SceneManager::GetActiveScene()->GetAllCollideableObjects().size());
 }
 
 void Renderer::RenderBackground()

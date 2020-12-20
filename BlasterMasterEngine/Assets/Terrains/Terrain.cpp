@@ -11,28 +11,3 @@ Terrain::Terrain(float x, float y)
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
 	boxCollider->isTrigger = false;
 }
-
-void Terrain::Start()
-{
-
-}
-
-void Terrain::Update()
-{
-
-}
-
-void Terrain::CreateResources()
-{
-
-}
-
-void Terrain::OnCollisionEnter()
-{
-	//LOG_INFO("Terrain: Collide!");
-}
-
-void Terrain::OnTriggerEnter()
-{
-	//LOG_INFO("Terrain: Collide - Trigger!");
-}

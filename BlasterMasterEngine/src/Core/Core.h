@@ -20,6 +20,9 @@
 #define AREA2_MAP_WIDTH 3072
 #define AREA2_MAP_HEIGHT 3072
 
+#define BLACK_BACKGROUND_PATH L"Assets/Images/BlackImage.png"
+#define BLACK_BACKGROUND_WIDTH 800
+#define BLACK_BACKGROUND_HEIGHT 600
 #define MAX_OBJECTS_QUADTREE 10
 #define MAX_LEVELS_QUADTREE 5
 ////////////////////////////////
@@ -53,6 +56,19 @@ struct Size
 
 	Size(const float& p_Width = 0.0f, const float& p_Height = 0.0f)
 		: width(p_Width), height(p_Height)
+	{
+	}
+};
+
+struct Color
+{
+	int red;
+	int green;
+	int blue;
+	int alpha;
+
+	Color(const int& r = 255, const int& g = 255, const int& b = 255, const int& a = 255)
+		: red(r), green(g), blue(b), alpha(a)
 	{
 	}
 };

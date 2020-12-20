@@ -299,6 +299,76 @@ void SophiaWheelConnector::CreateResources()
 		animationController->AddAnimation(wheelConnectorLeftFallingPointUp);
 	}
 
+
+	std::shared_ptr<Animation> wheelConnectorJumpingTurnLeft = std::make_shared<Animation>("Wheel Connector Jumping Turn Left");
+	{
+		wheelConnectorJumpingTurnLeft->SetAnimationFPS(20);
+		wheelConnectorJumpingTurnLeft->SetIsLooping(false);
+		wheelConnectorJumpingTurnLeft->SetHasExitTime(true);
+		wheelConnectorJumpingTurnLeft->SetAllowPause(false);
+
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
+		wheelConnectorJumpingTurnLeft->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
+		wheelConnectorJumpingTurnLeft->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(wheelConnectorJumpingTurnLeft);
+	}
+
+	std::shared_ptr<Animation> wheelConnectorJumpingTurnRight = std::make_shared<Animation>("Wheel Connector Jumping Turn Right");
+	{
+		wheelConnectorJumpingTurnRight->SetAnimationFPS(20);
+		wheelConnectorJumpingTurnRight->SetIsLooping(false);
+		wheelConnectorJumpingTurnRight->SetHasExitTime(true);
+		wheelConnectorJumpingTurnRight->SetAllowPause(false);
+
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y + 8.0f / scaleY, 0.0f };
+		wheelConnectorJumpingTurnRight->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
+		wheelConnectorJumpingTurnRight->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(wheelConnectorJumpingTurnRight);
+	}
+
+	std::shared_ptr<Animation> wheelConnectorFallingTurnLeft = std::make_shared<Animation>("Wheel Connector Falling Turn Left");
+	{
+		wheelConnectorFallingTurnLeft->SetAnimationFPS(20);
+		wheelConnectorFallingTurnLeft->SetIsLooping(false);
+		wheelConnectorFallingTurnLeft->SetHasExitTime(true);
+		wheelConnectorFallingTurnLeft->SetAllowPause(false);
+
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y / scaleY, 0.0f };
+		wheelConnectorFallingTurnLeft->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
+		wheelConnectorFallingTurnLeft->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(wheelConnectorFallingTurnLeft);
+	}
+
+	std::shared_ptr<Animation> wheelConnectorFallingTurnRight = std::make_shared<Animation>("Wheel Connector Falling Turn Right");
+	{
+		wheelConnectorFallingTurnRight->SetAnimationFPS(20);
+		wheelConnectorFallingTurnRight->SetIsLooping(false);
+		wheelConnectorFallingTurnRight->SetHasExitTime(true);
+		wheelConnectorFallingTurnRight->SetAllowPause(false);
+
+		keyFrame.scale = { scaleX, scaleY, 0.0f };
+		keyFrame.position = { transform->position.x, transform->position.y / scaleY, 0.0f };
+		wheelConnectorFallingTurnRight->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = { -scaleX, scaleY, 0.0f };
+		wheelConnectorFallingTurnRight->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(wheelConnectorFallingTurnRight);
+	}
+
+
 	std::shared_ptr<Parameter<float>> runSpeed = std::make_shared<Parameter<float>>("runSpeed");
 	{
 		animationController->AddFloatParameter(runSpeed);
@@ -706,21 +776,103 @@ void SophiaWheelConnector::CreateResources()
 		leftFallingPointUpToLeftFallingTrans->AddBoolTransitionCondition(backFromPointUpBoolCond);
 		animationController->AddTransition(leftFallingPointUpToLeftFallingTrans);
 	}
-}
 
-void SophiaWheelConnector::Start()
-{
-}
 
-void SophiaWheelConnector::Update()
-{
-	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
-}
 
-void SophiaWheelConnector::OnCollisionEnter()
-{
-}
 
-void SophiaWheelConnector::OnTriggerEnter()
-{
+	std::shared_ptr<Transition> rightJumpingToJumpingTurnLeftTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorRightJumping),
+		animationController->GetAnimationIndex(wheelConnectorJumpingTurnLeft));
+	{
+		rightJumpingToJumpingTurnLeftTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightJumpingToJumpingTurnLeftTrans);
+	}
+
+	std::shared_ptr<Transition> jumpingTurnLeftToLeftJumpingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorJumpingTurnLeft),
+		animationController->GetAnimationIndex(wheelConnectorLeftJumping));
+	{
+		animationController->AddTransition(jumpingTurnLeftToLeftJumpingTrans);
+	}
+
+	std::shared_ptr<Transition> leftJumpingToJumpingTurnRightTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorLeftJumping),
+		animationController->GetAnimationIndex(wheelConnectorJumpingTurnRight));
+	{
+		leftJumpingToJumpingTurnRightTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftJumpingToJumpingTurnRightTrans);
+	}
+
+	std::shared_ptr<Transition> jumpingTurnRightToRightJumpingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorJumpingTurnRight),
+		animationController->GetAnimationIndex(wheelConnectorRightJumping));
+	{
+		animationController->AddTransition(jumpingTurnRightToRightJumpingTrans);
+	}
+
+
+	std::shared_ptr<Transition> rightFallingToFallingTurnLeftTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorRightFalling),
+		animationController->GetAnimationIndex(wheelConnectorFallingTurnLeft));
+	{
+		rightFallingToFallingTurnLeftTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightFallingToFallingTurnLeftTrans);
+	}
+
+
+	std::shared_ptr<Transition> fallingTurnLeftToLeftFallingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorFallingTurnLeft),
+		animationController->GetAnimationIndex(wheelConnectorLeftFalling));
+	{
+		animationController->AddTransition(fallingTurnLeftToLeftFallingTrans);
+	}
+
+
+	std::shared_ptr<Transition> leftFallingToFallingTurnRightTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorLeftFalling),
+		animationController->GetAnimationIndex(wheelConnectorFallingTurnRight));
+	{
+		leftFallingToFallingTurnRightTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftFallingToFallingTurnRightTrans);
+	}
+
+	std::shared_ptr<Transition> fallingTurnRightToRightFallingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorFallingTurnRight),
+		animationController->GetAnimationIndex(wheelConnectorRightFalling));
+	{
+		animationController->AddTransition(fallingTurnRightToRightFallingTrans);
+	}
+
+
+	std::shared_ptr<Transition> rightJumpingPointUpToLeftJumpingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorRightJumpingPointUp),
+		animationController->GetAnimationIndex(wheelConnectorLeftJumpingPointUp));
+	{
+		rightJumpingPointUpToLeftJumpingPointUpTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightJumpingPointUpToLeftJumpingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> leftJumpingPointUpToRightJumpingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorLeftJumpingPointUp),
+		animationController->GetAnimationIndex(wheelConnectorRightJumpingPointUp));
+	{
+		leftJumpingPointUpToRightJumpingPointUpTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftJumpingPointUpToRightJumpingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> rightFallingPointUpToLeftFallingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorRightFallingPointUp),
+		animationController->GetAnimationIndex(wheelConnectorLeftFallingPointUp));
+	{
+		rightFallingPointUpToLeftFallingPointUpTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightFallingPointUpToLeftFallingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> leftFallingPointUpToRightFallingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(wheelConnectorLeftFallingPointUp),
+		animationController->GetAnimationIndex(wheelConnectorRightFallingPointUp));
+	{
+		leftJumpingPointUpToRightJumpingPointUpTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftFallingPointUpToRightFallingPointUpTrans);
+	}
 }
