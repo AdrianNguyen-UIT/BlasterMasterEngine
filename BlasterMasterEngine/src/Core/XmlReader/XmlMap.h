@@ -119,7 +119,6 @@ public:
     const std::string& GetErrorText() const { return error_text; }
 
     unsigned char GetErrorCode() const { return error_code; }
-
 private:
     std::string file_name;
     std::string file_path;

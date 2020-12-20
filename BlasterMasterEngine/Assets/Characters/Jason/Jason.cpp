@@ -12,6 +12,7 @@ Jason::Jason(float x, float y)
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
 	spriteRenderer = GetComponent<SpriteRenderer>();
+
 }
 
 void Jason::CreateResources()
@@ -161,23 +162,23 @@ void Jason::CreateResources()
 
 void Jason::Start()
 {
-	runSpeed = 300.0f;
+	runSpeed = 40.0f;
 	horizontalMove = 0.0f;
 	isFacingRight = true;
 	isJumping = false;
-	fallMultiplier = 4.5f;
-	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+	fallMultiplier = 1.5f;
+	rigidbody->bodyType = Rigidbody::BodyType::Static;
 	rigidbody->gravityScale = 2.0f;
 	rigidbody->bounciness = 0.0f;
-	boxCollider->size = { 25.0f, 44.0f };
-	boxCollider->offset = { 0.0f, 1.0f };
+	boxCollider->size = { 8.0f, 17.0f };
+	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { -3.0f, 3.0f, 3.0f };
 }
 
 void Jason::Update()
 {
-	std::shared_ptr<OrthographicCamera> camera = SceneManager::GetActiveScene()->GetActiceCamaera();
+	std::shared_ptr<OrthographicCamera> camera = SceneManager::GetActiveScene()->GetActiceCamera();
 	if (CharacterController::GetCharacterInControl() == Character::Jason)
 	{
 		rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
@@ -203,7 +204,7 @@ void Jason::Update()
 		if (Input::GetKeyDown(KeyCode_SPACE) && downCollision != 0)
 		{
 			isJumping = true;
-			D3DXVECTOR2 force(0.0f, 1800.0f);
+			D3DXVECTOR2 force(0.0f, 1000.0f);
 			rigidbody->AddForce(force);
 		}
 
@@ -228,8 +229,10 @@ void Jason::Update()
 		{
 			rigidbody->velocity.y += Physic::gravity.y * (fallMultiplier - 1) * Time::GetFixedDeltaTime();
 		}
+
 		animationController->SetBool("isJumping", isJumping);
 		animationController->SetFloat("runSpeed", abs(horizontalMove));
+
 		if (horizontalMove > 0 && !isFacingRight)
 		{
 			speedMulti = 0.0f;
@@ -241,7 +244,7 @@ void Jason::Update()
 			Flip();
 		}
 
-		float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
+		/*float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
 		LOG_INFO("camera x {0}", camera->GetPosition().x);
 		if (distanceXBetweenCamPlay <= 200.0f)
 		{
@@ -250,22 +253,23 @@ void Jason::Update()
 		else if (distanceXBetweenCamPlay >= 600.0f && camera->GetPosition().x < 2048 - 100)
 		{
 			camera->SetPosition(transform->position.x - 600.0f, camera->GetPosition().y, 0.0f);
-		}
+		}*/
 	}
 	else if (downCollision != 0)
 	{
+
 		rigidbody->bodyType = Rigidbody::BodyType::Static;
 		boxCollider->isTrigger = true;
 	}
 }
 
-void Jason::OnCollisionEnter()
+void Jason::OnCollisionEnter(std::shared_ptr<Object2D> object)
 {
 	if (downCollision != 0)
 		isJumping = false;
 }
 
-void Jason::OnTriggerEnter()
+void Jason::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
 }
 

@@ -23,6 +23,7 @@
 #include <unordered_set>
 #include <map>
 #include <math.h>
+#include <thread>
 
 #include "Core/Log/Log.h"
 #include "Core/Time/Time.h"

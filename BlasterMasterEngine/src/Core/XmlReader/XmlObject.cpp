@@ -35,7 +35,7 @@ void XmlObject::Parse(const tinyxml2::XMLNode* objectNode)
     y = objectElem->IntAttribute("y");
     width = objectElem->IntAttribute("width");
     height = objectElem->IntAttribute("height");
-    gid = objectElem->IntAttribute("gid");
+    gid = objectElem->IntAttribute("id");
     rotation = objectElem->IntAttribute("rotation");
     objectElem->QueryBoolAttribute("visible", &visible);
 

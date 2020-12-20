@@ -1,13 +1,17 @@
 #include "d3dpch.h"
-#include "Terrain.h"
+#include "Trap.h"
 
-Terrain::Terrain(float x, float y)
+Trap::Trap(float x, float y)
 	: Object2D(x, y)
 {
-	tag = Tag::Terrain;
+	name = "Trap";
+	tag = Tag::Trap;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
+}
 
+void Trap::Start()
+{
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
-	boxCollider->isTrigger = false;
+	boxCollider->isTrigger = true;
 }

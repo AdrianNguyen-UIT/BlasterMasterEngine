@@ -166,7 +166,7 @@ void SophiaBarrel::CreateResources()
 
 		keyFrame.rect = pointUpRect;
 		keyFrame.scale = rightScale;
-		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + 63.0f / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + 61.0f / scaleY, 0.0f };
 		barrelRunRightPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRunRightPointUp);
@@ -179,7 +179,7 @@ void SophiaBarrel::CreateResources()
 		barrelRunLeftPointUp->SetIsLooping(false);
 		keyFrame.scale = leftScale;
 		keyFrame.rect = pointUpRect;
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + 63.0f / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + 61.0f / scaleY, 0.0f };
 		barrelRunLeftPointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(barrelRunLeftPointUp);
 	}
@@ -236,13 +236,13 @@ void SophiaBarrel::CreateResources()
 		keyFrame.rect = pointUpRect;
 		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (24.0f + 37.0f) / scaleY, 0.0f };
 		barrelRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x - 19.0f / scaleX , transform->position.y + (16.0f + 24.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX , transform->position.y + (16.0f + 22.0f) / scaleY, 0.0f };
 		barrelRightPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x - 19.0f / scaleX ,transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX ,transform->position.y + (24.0f + 37.0f) / scaleY, 0.0f };
 		barrelRightPushDownPointUp->AddKeyFrames(keyFrame);
 		animationController->AddAnimation(barrelRightPushDownPointUp);
 	}
@@ -301,13 +301,13 @@ void SophiaBarrel::CreateResources()
 		keyFrame.rect = pointUpRect;
 		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 37.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (16.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (16.0f + 22.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 37.0f) / scaleY, 0.0f };
 		barrelLeftPushDownPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftPushDownPointUp);
@@ -347,7 +347,7 @@ void SophiaBarrel::CreateResources()
 		keyFrame.rect = pointUpRect;
 		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (32.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (32.0f + 37.0f) / scaleY, 0.0f };
 		barrelRightJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightJumpingPointUp);
@@ -389,7 +389,7 @@ void SophiaBarrel::CreateResources()
 		keyFrame.rect = pointUpRect;
 		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (32.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (32.0f + 37.0f) / scaleY, 0.0f };
 		barrelLeftJumpingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftJumpingPointUp);
@@ -430,7 +430,7 @@ void SophiaBarrel::CreateResources()
 		keyFrame.rect = pointUpRect;
 		keyFrame.scale = rightScale;
 
-		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x - 19.0f / scaleX, transform->position.y + (24.0f + 37.0f) / scaleY, 0.0f };
 		barrelRightFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelRightFallingPointUp);
@@ -471,10 +471,90 @@ void SophiaBarrel::CreateResources()
 		keyFrame.rect = pointUpRect;
 		keyFrame.scale = leftScale;
 
-		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 39.0f) / scaleY, 0.0f };
+		keyFrame.position = { transform->position.x * -1.0f + 19.0f / scaleX, transform->position.y + (24.0f + 37.0f) / scaleY, 0.0f };
 		barrelLeftFallingPointUp->AddKeyFrames(keyFrame);
 
 		animationController->AddAnimation(barrelLeftFallingPointUp);
+	}
+
+	std::shared_ptr<Animation> barrelJumpingTurnLeft = std::make_shared<Animation>("Barrel Jumping Turn Left");
+	{
+		barrelJumpingTurnLeft->SetAnimationFPS(20);
+		barrelJumpingTurnLeft->SetIsLooping(false);
+		barrelJumpingTurnLeft->SetHasExitTime(true);
+		barrelJumpingTurnLeft->SetAllowPause(false);
+
+		keyFrame.rect = { 0, 0, 0, 0 };
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
+		barrelJumpingTurnLeft->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
+		barrelJumpingTurnLeft->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(barrelJumpingTurnLeft);
+	}
+
+	std::shared_ptr<Animation> barrelJumpingTurnRight = std::make_shared<Animation>("Barrel Jumping Turn Right");
+	{
+		barrelJumpingTurnRight->SetAnimationFPS(20);
+		barrelJumpingTurnRight->SetIsLooping(false);
+		barrelJumpingTurnRight->SetHasExitTime(true);
+		barrelJumpingTurnRight->SetAllowPause(false);
+
+		keyFrame.rect = { 0, 0, 0, 0 };
+		keyFrame.scale = rightScale;
+
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
+		barrelJumpingTurnRight->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
+		barrelJumpingTurnRight->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(barrelJumpingTurnRight);
+	}
+
+	std::shared_ptr<Animation> barrelFallingTurnLeft = std::make_shared<Animation>("Barrel Falling Turn Left");
+	{
+		barrelFallingTurnLeft->SetAnimationFPS(20);
+		barrelFallingTurnLeft->SetIsLooping(false);
+		barrelFallingTurnLeft->SetHasExitTime(true);
+		barrelFallingTurnLeft->SetAllowPause(false);
+
+		keyFrame.rect = { 0, 0, 0, 0 };
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 32.0f / scaleY, 0.0f };
+		barrelFallingTurnLeft->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x, transform->position.y + 32.0f / scaleY, 0.0f };
+		barrelFallingTurnLeft->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(barrelFallingTurnLeft);
+	}
+
+	std::shared_ptr<Animation> barrelFallingTurnRight = std::make_shared<Animation>("Barrel Falling Turn Right");
+	{
+		barrelFallingTurnRight->SetAnimationFPS(20);
+		barrelFallingTurnRight->SetIsLooping(false);
+		barrelFallingTurnRight->SetHasExitTime(true);
+		barrelFallingTurnRight->SetAllowPause(false);
+
+		keyFrame.rect = { 0, 0, 0, 0 };
+		keyFrame.scale = rightScale;
+
+		keyFrame.position = { transform->position.x, transform->position.y + 24.0f / scaleY, 0.0f };
+		barrelFallingTurnRight->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f, transform->position.y + 24.0f / scaleY, 0.0f };
+		barrelFallingTurnRight->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(barrelFallingTurnRight);
 	}
 
 	std::shared_ptr<Parameter<float>> runSpeed = std::make_shared<Parameter<float>>("runSpeed");
@@ -658,7 +738,6 @@ void SophiaBarrel::CreateResources()
 		leftPointUpToRightPointUpTrans->AddFloatTransitionCondition(leftToRightFloatCond);
 		animationController->AddTransition(leftPointUpToRightPointUpTrans);
 	}
-
 
 	std::shared_ptr<Transition> rightToRightPushDownTrans = std::make_shared<Transition>(
 		animationController->GetAnimationIndex(barrelRunRight),
@@ -1012,21 +1091,103 @@ void SophiaBarrel::CreateResources()
 		leftFallingPrePointUpToLeftFallingTrans->AddBoolTransitionCondition(backFromPointUpBoolCond);
 		animationController->AddTransition(leftFallingPrePointUpToLeftFallingTrans);
 	}
-}
 
-void SophiaBarrel::Start()
-{
-}
 
-void SophiaBarrel::Update()
-{
-	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
-}
 
-void SophiaBarrel::OnCollisionEnter()
-{
-}
 
-void SophiaBarrel::OnTriggerEnter()
-{
+	std::shared_ptr<Transition> rightJumpingToJumpingTurnLeftTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelRightJumping),
+		animationController->GetAnimationIndex(barrelJumpingTurnLeft));
+	{
+		rightJumpingToJumpingTurnLeftTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightJumpingToJumpingTurnLeftTrans);
+	}
+
+	std::shared_ptr<Transition> jumpingTurnLeftToLeftJumpingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelJumpingTurnLeft),
+		animationController->GetAnimationIndex(barrelLeftJumping));
+	{
+		animationController->AddTransition(jumpingTurnLeftToLeftJumpingTrans);
+	}
+
+	std::shared_ptr<Transition> leftJumpingToJumpingTurnRightTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelLeftJumping),
+		animationController->GetAnimationIndex(barrelJumpingTurnRight));
+	{
+		leftJumpingToJumpingTurnRightTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftJumpingToJumpingTurnRightTrans);
+	}
+
+	std::shared_ptr<Transition> jumpingTurnRightToRightJumpingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelJumpingTurnRight),
+		animationController->GetAnimationIndex(barrelRightJumping));
+	{
+		animationController->AddTransition(jumpingTurnRightToRightJumpingTrans);
+	}
+
+
+	std::shared_ptr<Transition> rightFallingToFallingTurnLeftTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelRightFalling),
+		animationController->GetAnimationIndex(barrelFallingTurnLeft));
+	{
+		rightFallingToFallingTurnLeftTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightFallingToFallingTurnLeftTrans);
+	}
+
+
+	std::shared_ptr<Transition> fallingTurnLeftToLeftFallingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelFallingTurnLeft),
+		animationController->GetAnimationIndex(barrelLeftFalling));
+	{
+		animationController->AddTransition(fallingTurnLeftToLeftFallingTrans);
+	}
+
+
+	std::shared_ptr<Transition> leftFallingToFallingTurnRightTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelLeftFalling),
+		animationController->GetAnimationIndex(barrelFallingTurnRight));
+	{
+		leftFallingToFallingTurnRightTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftFallingToFallingTurnRightTrans);
+	}
+
+	std::shared_ptr<Transition> fallingTurnRightToRightFallingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelFallingTurnRight),
+		animationController->GetAnimationIndex(barrelRightFalling));
+	{
+		animationController->AddTransition(fallingTurnRightToRightFallingTrans);
+	}
+
+
+	std::shared_ptr<Transition> rightJumpingPointUpToLeftJumpingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelRightJumpingPointUp),
+		animationController->GetAnimationIndex(barrelLeftJumpingPointUp));
+	{
+		rightJumpingPointUpToLeftJumpingPointUpTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightJumpingPointUpToLeftJumpingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> leftJumpingPointUpToRightJumpingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelLeftJumpingPointUp),
+		animationController->GetAnimationIndex(barrelRightJumpingPointUp));
+	{
+		leftJumpingPointUpToRightJumpingPointUpTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftJumpingPointUpToRightJumpingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> rightFallingPointUpToLeftFallingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelRightFallingPointUp),
+		animationController->GetAnimationIndex(barrelLeftFallingPointUp));
+	{
+		rightFallingPointUpToLeftFallingPointUpTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightFallingPointUpToLeftFallingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> leftFallingPointUpToRightFallingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(barrelLeftFallingPointUp),
+		animationController->GetAnimationIndex(barrelRightFallingPointUp));
+	{
+		leftJumpingPointUpToRightJumpingPointUpTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftFallingPointUpToRightFallingPointUpTrans);
+	}
 }

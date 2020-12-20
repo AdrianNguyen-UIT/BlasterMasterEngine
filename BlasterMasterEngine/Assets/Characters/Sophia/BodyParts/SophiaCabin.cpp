@@ -197,7 +197,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightPushDown);
 	}
 
-	std::shared_ptr<Animation> cabinRightPushDownPrePointUp = std::make_shared<Animation>("Barrel Right Push Down Pre Point Up");
+	std::shared_ptr<Animation> cabinRightPushDownPrePointUp = std::make_shared<Animation>("Cabin Right Push Down Pre Point Up");
 	{
 		cabinRightPushDownPrePointUp->SetAnimationFPS(20);
 		cabinRightPushDownPrePointUp->SetIsLooping(false);
@@ -218,7 +218,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightPushDownPrePointUp);
 	}
 
-	std::shared_ptr<Animation> cabinRightPushDownPointUp = std::make_shared<Animation>("Barrel Right Push Down Point Up");
+	std::shared_ptr<Animation> cabinRightPushDownPointUp = std::make_shared<Animation>("Cabin Right Push Down Point Up");
 	{
 		cabinRightPushDownPointUp->SetAnimationFPS(12);
 		cabinRightPushDownPointUp->SetIsLooping(false);
@@ -239,7 +239,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightPushDownPointUp);
 	}
 
-	std::shared_ptr<Animation> cabinLeftPushDown = std::make_shared<Animation>("Barrel Left Push Down");
+	std::shared_ptr<Animation> cabinLeftPushDown = std::make_shared<Animation>("Cabin Left Push Down");
 	{
 		cabinLeftPushDown->SetAnimationFPS(12);
 		cabinLeftPushDown->SetIsLooping(false);
@@ -261,7 +261,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftPushDown);
 	}
 
-	std::shared_ptr<Animation> cabinLeftPushDownPrePointUp = std::make_shared<Animation>("Barrel Left Push Down Pre Point Up");
+	std::shared_ptr<Animation> cabinLeftPushDownPrePointUp = std::make_shared<Animation>("Cabin Left Push Down Pre Point Up");
 	{
 		cabinLeftPushDownPrePointUp->SetAnimationFPS(20);
 		cabinLeftPushDownPrePointUp->SetIsLooping(false);
@@ -283,7 +283,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftPushDownPrePointUp);
 	}
 
-	std::shared_ptr<Animation> cabinLeftPushDownPointUp = std::make_shared<Animation>("Barrel Left Push Down Point Up");
+	std::shared_ptr<Animation> cabinLeftPushDownPointUp = std::make_shared<Animation>("Cabin Left Push Down Point Up");
 	{
 		cabinLeftPushDownPointUp->SetAnimationFPS(12);
 		cabinLeftPushDownPointUp->SetIsLooping(false);
@@ -305,7 +305,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftPushDownPointUp);
 	}
 
-	std::shared_ptr<Animation> cabinRightJumping = std::make_shared<Animation>("Barrel Right Jumping");
+	std::shared_ptr<Animation> cabinRightJumping = std::make_shared<Animation>("Cabin Right Jumping");
 	{
 		cabinRightJumping->SetAnimationFPS(20);
 		keyFrame.scale = rightScale;
@@ -317,7 +317,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightJumping);
 	}
 
-	std::shared_ptr<Animation> cabinRightJumpingPrePointUp = std::make_shared<Animation>("Barrel Right Jumping Pre Point Up");
+	std::shared_ptr<Animation> cabinRightJumpingPrePointUp = std::make_shared<Animation>("Cabin Right Jumping Pre Point Up");
 	{
 		cabinRightJumpingPrePointUp->SetAnimationFPS(20);
 		cabinRightJumpingPrePointUp->SetIsLooping(false);
@@ -332,7 +332,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightJumpingPrePointUp);
 	}
 
-	std::shared_ptr<Animation> cabinRightJumpingPointUp = std::make_shared<Animation>("Barrel Right Jumping Point Up");
+	std::shared_ptr<Animation> cabinRightJumpingPointUp = std::make_shared<Animation>("Cabin Right Jumping Point Up");
 	{
 		cabinRightJumpingPointUp->SetAnimationFPS(20);
 
@@ -345,7 +345,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightJumpingPointUp);
 	}
 
-	std::shared_ptr<Animation> cabinLeftJumping = std::make_shared<Animation>("Barrel Left Jumping");
+	std::shared_ptr<Animation> cabinLeftJumping = std::make_shared<Animation>("Cabin Left Jumping");
 	{
 		cabinLeftJumping->SetAnimationFPS(20);
 
@@ -358,7 +358,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftJumping);
 	}
 
-	std::shared_ptr<Animation> cabinLeftJumpingPrePointUp = std::make_shared<Animation>("Barrel Left Jumping Pre Point Up");
+	std::shared_ptr<Animation> cabinLeftJumpingPrePointUp = std::make_shared<Animation>("Cabin Left Jumping Pre Point Up");
 	{
 		cabinLeftJumpingPrePointUp->SetAnimationFPS(20);
 		cabinLeftJumpingPrePointUp->SetIsLooping(false);
@@ -374,7 +374,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftJumpingPrePointUp);
 	}
 
-	std::shared_ptr<Animation> cabinLeftJumpingPointUp = std::make_shared<Animation>("Barrel Left Jumping Point Up");
+	std::shared_ptr<Animation> cabinLeftJumpingPointUp = std::make_shared<Animation>("Cabin Left Jumping Point Up");
 	{
 		cabinLeftJumpingPointUp->SetAnimationFPS(20);
 
@@ -387,7 +387,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftJumpingPointUp);
 	}
 
-	std::shared_ptr<Animation> cabinRightFalling = std::make_shared<Animation>("Barrel Right Falling");
+	std::shared_ptr<Animation> cabinRightFalling = std::make_shared<Animation>("Cabin Right Falling");
 	{
 		cabinRightFalling->SetAnimationFPS(20);
 		keyFrame.rect = normRect;
@@ -399,7 +399,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightFalling);
 	}
 
-	std::shared_ptr<Animation> cabinRightFallingPrePointUp = std::make_shared<Animation>("Barrel Right Falling Pre Point Up");
+	std::shared_ptr<Animation> cabinRightFallingPrePointUp = std::make_shared<Animation>("Cabin Right Falling Pre Point Up");
 	{
 		cabinRightFallingPrePointUp->SetAnimationFPS(20);
 		cabinRightFallingPrePointUp->SetIsLooping(false);
@@ -414,7 +414,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightFallingPrePointUp);
 	}
 
-	std::shared_ptr<Animation> cabinRightFallingPointUp = std::make_shared<Animation>("Barrel Right Falling Point Up");
+	std::shared_ptr<Animation> cabinRightFallingPointUp = std::make_shared<Animation>("Cabin Right Falling Point Up");
 	{
 		cabinRightFallingPointUp->SetAnimationFPS(20);
 
@@ -427,7 +427,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinRightFallingPointUp);
 	}
 
-	std::shared_ptr<Animation> cabinLeftFalling = std::make_shared<Animation>("Barrel Left Falling");
+	std::shared_ptr<Animation> cabinLeftFalling = std::make_shared<Animation>("Cabin Left Falling");
 	{
 		cabinLeftFalling->SetAnimationFPS(20);
 
@@ -440,7 +440,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftFalling);
 	}
 
-	std::shared_ptr<Animation> cabinLeftFallingPrePointUp = std::make_shared<Animation>("Barrel Left Falling Pre Point Up");
+	std::shared_ptr<Animation> cabinLeftFallingPrePointUp = std::make_shared<Animation>("Cabin Left Falling Pre Point Up");
 	{
 		cabinLeftFallingPrePointUp->SetAnimationFPS(20);
 		cabinLeftFallingPrePointUp->SetIsLooping(false);
@@ -455,7 +455,7 @@ void SophiaCabin::CreateResources()
 		animationController->AddAnimation(cabinLeftFallingPrePointUp);
 	}
 
-	std::shared_ptr<Animation> cabinLeftFallingPointUp = std::make_shared<Animation>("Barrel Left Falling Point Up");
+	std::shared_ptr<Animation> cabinLeftFallingPointUp = std::make_shared<Animation>("Cabin Left Falling Point Up");
 	{
 		cabinLeftFallingPointUp->SetAnimationFPS(20);
 
@@ -467,6 +467,87 @@ void SophiaCabin::CreateResources()
 
 		animationController->AddAnimation(cabinLeftFallingPointUp);
 	}
+
+	std::shared_ptr<Animation> cabinJumpingTurnLeft = std::make_shared<Animation>("Cabin Jumping Turn Left");
+	{
+		cabinJumpingTurnLeft->SetAnimationFPS(20);
+		cabinJumpingTurnLeft->SetIsLooping(false);
+		cabinJumpingTurnLeft->SetHasExitTime(true);
+		cabinJumpingTurnLeft->SetAllowPause(false);
+
+		keyFrame.rect = turnRect;
+
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x + 9.0f / scaleX, transform->position.y + 32.0f / scaleY, 0.0f };
+		cabinJumpingTurnLeft->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f - 9.0f / scaleX, transform->position.y + 32.0f / scaleY, 0.0f };
+		cabinJumpingTurnLeft->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(cabinJumpingTurnLeft);
+	}
+
+	std::shared_ptr<Animation> cabinJumpingTurnRight = std::make_shared<Animation>("Cabin Jumping Turn Right");
+	{
+		cabinJumpingTurnRight->SetAnimationFPS(20);
+		cabinJumpingTurnRight->SetIsLooping(false);
+		cabinJumpingTurnRight->SetHasExitTime(true);
+		cabinJumpingTurnRight->SetAllowPause(false);
+
+		keyFrame.rect = turnRect;
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f - 9.0f / scaleX, transform->position.y + 32.0f / scaleY, 0.0f };
+		cabinJumpingTurnRight->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x + 9.0f / scaleX, transform->position.y + 32.0f / scaleY, 0.0f };
+		cabinJumpingTurnRight->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(cabinJumpingTurnRight);
+	}
+
+	std::shared_ptr<Animation> cabinFallingTurnLeft = std::make_shared<Animation>("Cabin Falling Turn Left");
+	{
+		cabinFallingTurnLeft->SetAnimationFPS(20);
+		cabinFallingTurnLeft->SetIsLooping(false);
+		cabinFallingTurnLeft->SetHasExitTime(true);
+		cabinFallingTurnLeft->SetAllowPause(false);
+
+		keyFrame.rect = turnRect;
+
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x + 9.0f / scaleX, transform->position.y + 24.0f / scaleY, 0.0f };
+		cabinFallingTurnLeft->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f - 9.0f / scaleX, transform->position.y + 24.0f / scaleY, 0.0f };
+		cabinFallingTurnLeft->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(cabinFallingTurnLeft);
+	}
+
+	std::shared_ptr<Animation> cabinFallingTurnRight = std::make_shared<Animation>("Cabin Falling Turn Right");
+	{
+		cabinFallingTurnRight->SetAnimationFPS(20);
+		cabinFallingTurnRight->SetIsLooping(false);
+		cabinFallingTurnRight->SetHasExitTime(true);
+		cabinFallingTurnRight->SetAllowPause(false);
+
+		keyFrame.rect = turnRect;
+
+		keyFrame.scale = leftScale;
+		keyFrame.position = { transform->position.x * -1.0f - 9.0f / scaleX, transform->position.y + 24.0f / scaleY, 0.0f };
+		cabinFallingTurnRight->AddKeyFrames(keyFrame);
+
+		keyFrame.scale = rightScale;
+		keyFrame.position = { transform->position.x + 9.0f / scaleX, transform->position.y + 24.0f / scaleY, 0.0f };
+		cabinFallingTurnRight->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(cabinFallingTurnRight);
+	}
+
 
 	std::shared_ptr<Parameter<float>> runSpeed = std::make_shared<Parameter<float>>("runSpeed");
 	{
@@ -1001,21 +1082,103 @@ void SophiaCabin::CreateResources()
 		leftFallingPrePointUpToLeftFallingTrans->AddBoolTransitionCondition(backFromPointUpBoolCond);
 		animationController->AddTransition(leftFallingPrePointUpToLeftFallingTrans);
 	}
-}
 
-void SophiaCabin::Start()
-{
-}
 
-void SophiaCabin::Update()
-{
-	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
-}
 
-void SophiaCabin::OnCollisionEnter()
-{
-}
 
-void SophiaCabin::OnTriggerEnter()
-{
+
+	std::shared_ptr<Transition> rightJumpingToJumpingTurnLeftTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinRightJumping),
+		animationController->GetAnimationIndex(cabinJumpingTurnLeft));
+	{
+		rightJumpingToJumpingTurnLeftTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightJumpingToJumpingTurnLeftTrans);
+	}
+
+	std::shared_ptr<Transition> jumpingTurnLeftToLeftJumpingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinJumpingTurnLeft),
+		animationController->GetAnimationIndex(cabinLeftJumping));
+	{
+		animationController->AddTransition(jumpingTurnLeftToLeftJumpingTrans);
+	}
+
+	std::shared_ptr<Transition> leftJumpingToJumpingTurnRightTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinLeftJumping),
+		animationController->GetAnimationIndex(cabinJumpingTurnRight));
+	{
+		leftJumpingToJumpingTurnRightTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftJumpingToJumpingTurnRightTrans);
+	}
+
+	std::shared_ptr<Transition> jumpingTurnRightToRightJumpingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinJumpingTurnRight),
+		animationController->GetAnimationIndex(cabinRightJumping));
+	{
+		animationController->AddTransition(jumpingTurnRightToRightJumpingTrans);
+	}
+
+
+	std::shared_ptr<Transition> rightFallingToFallingTurnLeftTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinRightFalling),
+		animationController->GetAnimationIndex(cabinFallingTurnLeft));
+	{
+		rightFallingToFallingTurnLeftTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightFallingToFallingTurnLeftTrans);
+	}
+
+
+	std::shared_ptr<Transition> fallingTurnLeftToLeftFallingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinFallingTurnLeft),
+		animationController->GetAnimationIndex(cabinLeftFalling));
+	{
+		animationController->AddTransition(fallingTurnLeftToLeftFallingTrans);
+	}
+
+
+	std::shared_ptr<Transition> leftFallingToFallingTurnRightTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinLeftFalling),
+		animationController->GetAnimationIndex(cabinFallingTurnRight));
+	{
+		leftFallingToFallingTurnRightTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftFallingToFallingTurnRightTrans);
+	}
+
+	std::shared_ptr<Transition> fallingTurnRightToRightFallingTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinFallingTurnRight),
+		animationController->GetAnimationIndex(cabinRightFalling));
+	{
+		animationController->AddTransition(fallingTurnRightToRightFallingTrans);
+	}
+
+	std::shared_ptr<Transition> rightJumpingPointUpToLeftJumpingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinRightJumpingPointUp),
+		animationController->GetAnimationIndex(cabinLeftJumpingPointUp));
+	{
+		rightJumpingPointUpToLeftJumpingPointUpTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightJumpingPointUpToLeftJumpingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> leftJumpingPointUpToRightJumpingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinLeftJumpingPointUp),
+		animationController->GetAnimationIndex(cabinRightJumpingPointUp));
+	{
+		leftJumpingPointUpToRightJumpingPointUpTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftJumpingPointUpToRightJumpingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> rightFallingPointUpToLeftFallingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinRightFallingPointUp),
+		animationController->GetAnimationIndex(cabinLeftFallingPointUp));
+	{
+		rightFallingPointUpToLeftFallingPointUpTrans->AddFloatTransitionCondition(rightToLeftFloatCond);
+		animationController->AddTransition(rightFallingPointUpToLeftFallingPointUpTrans);
+	}
+
+	std::shared_ptr<Transition> leftFallingPointUpToRightFallingPointUpTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(cabinLeftFallingPointUp),
+		animationController->GetAnimationIndex(cabinRightFallingPointUp));
+	{
+		leftJumpingPointUpToRightJumpingPointUpTrans->AddFloatTransitionCondition(leftToRightFloatCond);
+		animationController->AddTransition(leftFallingPointUpToRightFallingPointUpTrans);
+	}
 }

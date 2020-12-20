@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "Samples/MainScene.h"
 #include "Assets/Scenes/Area2.h"
-
+#include "Assets/Scenes/LoadingScreen.h"
 std::list<std::shared_ptr<Scene>> SceneManager::scenes;
 std::shared_ptr<Scene> SceneManager::activeScene;
 std::list<std::shared_ptr<Object2D>> SceneManager::waitingObjects;
@@ -19,45 +19,59 @@ SceneManager::~SceneManager()
 
 HRESULT SceneManager::CreateScenesResources()
 {
-	std::shared_ptr<Scene> scene = std::make_shared<Area2>();
-	if (scene == NULL)
-	{
-		__ASSERT(false, "Unable to create scene");
-		DWORD dwError = GetLastError();
-		return HRESULT_FROM_WIN32(dwError);
-	}
-	scenes.emplace_back(scene);
+	std::shared_ptr<Scene> area2 = std::make_shared<Area2>();
+	std::shared_ptr<Scene> loadingScreen = std::make_shared<LoadingScreen>();
+
+	scenes.emplace_back(area2);
+	scenes.emplace_back(loadingScreen);
+
+	LoadInitScene(0);
+
 	return S_OK;
 }
 
-bool SceneManager::LoadScene(std::string p_Name)
+void SceneManager::LoadScene(std::string p_Name)
 {
-	for (auto scene : scenes)
-	{
-		if (scene->GetName() == p_Name)
+	std::thread thread([=]
 		{
-			scene->CreateScene();
-			activeScene = scene;
-			return true;
-		}
+			for (auto scene : scenes)
+			{
+				if (scene->GetName() == p_Name)
+				{
+					scene->ClearScene();
+					scene->CreateScene();
+					scene->SetReadyToLoad(true);
+				}
+			}
+		});
+
+	if (thread.joinable())
+	{
+		thread.detach();
 	}
-	return false;
 }
 
-bool SceneManager::LoadScene(size_t index)
+void SceneManager::LoadScene(size_t index)
 {
-	size_t currentIndex = 0;
-	for (auto scene : scenes)
-	{
-		if (currentIndex == index)
+	std::thread thread([&index]
 		{
-			scene->CreateScene();
-			activeScene = scene;
-			return true;
-		}
-		++currentIndex;
+			size_t currentIndex = 0;
+			for (auto scene : scenes)
+			{
+				if (currentIndex == index)
+				{
+					scene->ClearScene();
+					scene->CreateScene();
+					scene->SetReadyToLoad(true);
+				}
+				++currentIndex;
+			}
+		});
+
+	if (thread.joinable())
+	{
+		thread.detach();
 	}
-	return false;
 }
 
 std::shared_ptr<Scene> SceneManager::GetActiveScene()
@@ -196,7 +210,53 @@ void SceneManager::Instantiate(std::shared_ptr<Object2D> p_Object, D3DXVECTOR3 l
 {
 	static int index = 0;
 	p_Object->name += std::to_string(index);
+	++index;
 	p_Object->transform->position = location;
 	waitingObjects.emplace_back(p_Object);
 	updateAfterInstantiate = true;
+}
+
+void SceneManager::LoadInitScene(std::string p_Name)
+{
+	for (auto scene : scenes)
+	{
+		if (scene->GetName() == p_Name)
+		{
+			scene->ClearScene();
+			scene->CreateScene();
+			activeScene = scene;
+			break;
+		}
+	}
+}
+
+void SceneManager::LoadInitScene(size_t index)
+{
+	size_t currentIndex = 0;
+	for (auto scene : scenes)
+	{
+		if (currentIndex == index)
+		{
+			scene->ClearScene();
+			scene->CreateScene();
+			activeScene = scene;
+			break;
+		}
+		++currentIndex;
+	}
+}
+
+bool SceneManager::LoadActiveScene()
+{
+	for (auto scene : scenes)
+	{
+		if (scene->GetReadyToLoad() == true)
+		{
+			scene->SetReadyToLoad(false);
+			activeScene = scene;
+			return true;
+			break;
+		}
+	}
+	return false;
 }

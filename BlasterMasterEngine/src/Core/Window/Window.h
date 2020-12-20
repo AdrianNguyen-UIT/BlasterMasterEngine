@@ -3,7 +3,7 @@
 #include "Core/DeviceResources/DeviceResources.h"
 #include "Core/Renderer/Renderer.h"
 #include "Core/Input/Input.h"
-
+#include "Core/SceneManager/SceneManager.h"
 class Window
 {
 public:
@@ -18,7 +18,8 @@ public:
 
 	HRESULT Run(std::unique_ptr<DeviceResources> &deviceResources, 
 		std::unique_ptr<Renderer> &renderer, 
-		std::unique_ptr<Input> &input, 
+		std::unique_ptr<Input> &input,
+		std::unique_ptr<SceneManager> &sceneManager,
 		int nCmdShow);
 
 private:

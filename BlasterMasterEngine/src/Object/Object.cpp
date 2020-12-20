@@ -5,9 +5,9 @@ Object2D::Object2D(float x, float y)
 {
 	transform = std::make_shared<Transform>();
 	transform->position = { x, y, 0.0f };
-	positionAsChild = transform->position;
-	rotationAsChild = transform->rotation;
-	scaleAsChild = transform->scale;
+	subPosition = {0.0f, 0.0f, 0.0f};
+	subRotation = { 0.0f, 0.0f, 0.0f };
+	subScale = { 1.0f, 1.0f, 1.0f };
 	name = "Object2D";
 	tag = Tag::Default;
 	enable = true;
@@ -16,6 +16,7 @@ Object2D::Object2D(float x, float y)
 	downCollision = 0;
 	leftCollision = 0;
 	rightCollision = 0;
+	color = { 255, 255, 255, 255 };
 }
 
 void Object2D::Draw(DWORD flags)
@@ -33,120 +34,119 @@ void Object2D::Draw(DWORD flags)
 				&rect,
 				&center,
 				NULL,
-				D3DCOLOR_ARGB(255, 255, 255, 255));
+				D3DCOLOR_RGBA(color.red, color.green, color.blue, color.alpha));
 			spriteRenderer->End();
 		}
-	}
 
-	for (auto object : childObjects)
-	{
-		object->Draw(flags);
+		for (auto object : childObjects)
+		{
+			object->Draw(flags);
+		}
 	}
 }
 
 void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 {
-	if (rigidbody != NULL)
+	if (enable)
 	{
-		if (rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
+		if (rigidbody != NULL)
 		{
-			if (downCollision != 0)
+			if (rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
 			{
-				D3DXVECTOR2 groundReactionForce = -1.0f * rigidbody->mass * Physic::gravity * rigidbody->gravityScale;
-				rigidbody->AddForce(groundReactionForce);
-				rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
-				if (rigidbody->velocity.y < 0.05f)
+				if (downCollision != 0)
 				{
-					rigidbody->velocity.y = 0.0f;
-				}
-			}
-
-			if (upCollision != 0)
-			{
-				rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
-				if (rigidbody->velocity.y > -0.05f)
-				{
-					rigidbody->velocity.y = 0.0f;
-				}
-			}
-
-			if (rightCollision != 0)
-			{
-				rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
-
-				if (rigidbody->velocity.x > -0.05f)
-				{
-					rigidbody->velocity.x = 0.0f;
-				}
-			}
-
-			if (leftCollision != 0)
-			{
-				rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
-
-				if (rigidbody->velocity.x < 0.05f)
-				{
-					rigidbody->velocity.x = 0.0f;
+					D3DXVECTOR2 groundReactionForce = -1.0f * rigidbody->mass * Physic::gravity * rigidbody->gravityScale;
+					rigidbody->AddForce(groundReactionForce);
+					rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
+					if (rigidbody->velocity.y < 0.05f)
+					{
+						rigidbody->velocity.y = 0.0f;
+					}
 				}
 
+				if (upCollision != 0)
+				{
+					rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
+					if (rigidbody->velocity.y > -0.05f)
+					{
+						rigidbody->velocity.y = 0.0f;
+					}
+				}
+
+				if (rightCollision != 0)
+				{
+					rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
+
+					if (rigidbody->velocity.x > -0.05f)
+					{
+						rigidbody->velocity.x = 0.0f;
+					}
+				}
+
+				if (leftCollision != 0)
+				{
+					rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
+
+					if (rigidbody->velocity.x < 0.05f)
+					{
+						rigidbody->velocity.x = 0.0f;
+					}
+
+				}
+				rigidbody->UpdateForce();
+				transform->position.x += rigidbody->velocity.x;
+				transform->position.y += rigidbody->velocity.y;
 			}
-			rigidbody->UpdateForce();
-			transform->position.x += rigidbody->velocity.x;
-			transform->position.y += rigidbody->velocity.y;
-			
-			//LOG_INFO("velocity {0} {1}", rigidbody->velocity.x, rigidbody->velocity.y);
-			//LOG_INFO("down up left right {0} {1} {2} {3}", downCollision, upCollision, leftCollision, rightCollision);
-		}
-		else if (rigidbody->bodyType == Rigidbody::BodyType::Static)
-		{
-			rigidbody->velocity = { 0.0f, 0.0f };
-		}
-		else if (rigidbody->bodyType == Rigidbody::BodyType::Kinematic)
-		{
-			transform->position.x += rigidbody->velocity.x;
-			transform->position.y += rigidbody->velocity.y;
-		}
-
-		if (boxCollider != NULL)
-		{
-			boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
-		}
-	}
-
-	if (spriteRenderer != NULL)
-	{
-		spriteRenderer->spriteHandler->SetTransform(&transform->GetTransformMatrix());
-
-		if (animationController != NULL)
-		{
-			animationController->Update();
-			spriteRenderer->rect = animationController->GetCurrentAnimation()->GetCurrentFrameRect();
-			if (parentObject != NULL)
+			else if (rigidbody->bodyType == Rigidbody::BodyType::Static)
 			{
-				positionAsChild = animationController->GetCurrentAnimation()->GetCurrentFramePosition();
-				rotationAsChild = animationController->GetCurrentAnimation()->GetCurrentFrameRotation();
-				scaleAsChild = animationController->GetCurrentAnimation()->GetCurrentFrameScale();
+				rigidbody->velocity = { 0.0f, 0.0f };
+			}
+			else if (rigidbody->bodyType == Rigidbody::BodyType::Kinematic)
+			{
+				transform->position.x += rigidbody->velocity.x;
+				transform->position.y += rigidbody->velocity.y;
+			}
+
+			if (boxCollider != NULL)
+			{
+				boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
 			}
 		}
-	}
 
-	Update();
 
-	if (parentObject != NULL)
-	{
-		transform->position = parentObject->transform->position + positionAsChild;
-		transform->rotation = parentObject->transform->rotation + rotationAsChild;
-		transform->scale.x = parentObject->transform->scale.x * scaleAsChild.x;
-		transform->scale.y = parentObject->transform->scale.y * scaleAsChild.y;
-		transform->scale.z = parentObject->transform->scale.z * scaleAsChild.z;
-	}
+		if (spriteRenderer != NULL)
+		{
+			spriteRenderer->spriteHandler->SetTransform(&transform->GetTransformMatrix());
 
-	transform->TranslateWorldToViewport(worldToViewportMat);
-	transform->Update();
+			if (animationController != NULL)
+			{
+				animationController->Update();
+				spriteRenderer->rect = animationController->GetCurrentAnimation()->GetCurrentFrameRect();
+				subPosition = animationController->GetCurrentAnimation()->GetCurrentFramePosition();
+				subRotation = animationController->GetCurrentAnimation()->GetCurrentFrameRotation();
+				subScale = animationController->GetCurrentAnimation()->GetCurrentFrameScale();
+				color = animationController->GetCurrentAnimation()->GetCurrentFrameColor();
+			}
+		}
 
-	for (auto object : childObjects)
-	{
-		object->InnerUpdate(worldToViewportMat);
+		if (parentObject != NULL)
+		{
+			transform->position = parentObject->transform->position + subPosition;
+			transform->rotation = parentObject->transform->rotation + subRotation;
+			transform->scale.x = parentObject->transform->scale.x * subScale.x;
+			transform->scale.y = parentObject->transform->scale.y * subScale.y;
+			transform->scale.z = parentObject->transform->scale.z * subScale.z;
+		}
+
+		transform->TranslateWorldToViewport(worldToViewportMat);
+		transform->Update();
+
+		Update();
+
+		for (auto object : childObjects)
+		{
+			object->InnerUpdate(worldToViewportMat);
+		}
 	}
 }
 
@@ -156,6 +156,12 @@ void Object2D::InnerStart()
 	{
 		spriteRenderer->InitSpriteRenderer(DeviceResources::GetDevice());
 	}
+
+	if (boxCollider != NULL)
+	{
+		boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
+	}
+
 	Start();
 
 	for (auto object : childObjects)
@@ -173,6 +179,28 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 		return;
 
 	if (!boxCollider->isEnable || !object->boxCollider->isEnable)
+		return;
+
+	if ((tag == Tag::PlayerBullet && object->tag == Tag::PlayerBullet) || 
+		(tag == Tag::PlayerBullet && object->tag == Tag::Trap) ||
+		(tag == Tag::PlayerBullet && object->tag == Tag::Item) ||
+		(tag == Tag::PlayerBullet && object->tag == Tag::Player))
+		return;
+
+	if ((tag == Tag::EnemyBullet && object->tag == Tag::EnemyBullet) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Trap) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Item))
+		return;
+
+	if (tag == Tag::Player && object->tag == Tag::PlayerBullet)
+		return;
+
+	if ((tag == Tag::Trap && object->tag == Tag::PlayerBullet) ||
+		(tag == Tag::Trap && object->tag == Tag::EnemyBullet))
+		return;
+
+	if ((tag == Tag::Item && object->tag == Tag::PlayerBullet) ||
+		(tag == Tag::Trap && object->tag == Tag::EnemyBullet))
 		return;
 
 	if (rigidbody->bodyType == Rigidbody::BodyType::Static)
@@ -193,42 +221,58 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 		{
 			if (collidedObject.first == object)
 			{
+				if (boxCollider->isTrigger)
+				{
+					OnTriggerStay(object);
+				}
+				else
+				{
+					OnCollisionStay(object);
+				}
 				return;
 			}
 		}
 
-		if (boxCollider->isTrigger || object->boxCollider->isTrigger)
+		if (boxCollider->isTrigger)
 		{
-			OnTriggerEnter();
-			object->OnTriggerEnter();
+			collidedObjects.emplace_back(std::make_pair(object, Direction::NONE));
+
+			OnTriggerEnter(object);
 		}
 		else
 		{
-			Direction direction;
-			float collisionTime = SweptAABB(object->boxCollider, direction);
+			if (object->boxCollider->isTrigger)
+			{
+				collidedObjects.emplace_back(std::make_pair(object, Direction::NONE));
+			}
+			else
+			{
+				Direction direction;
+				float collisionTime = SweptAABB(object->boxCollider, direction);
 
-			transform->position.x += rigidbody->velocity.x * collisionTime;
-			transform->position.y += rigidbody->velocity.y * collisionTime;
+				if (direction == Direction::UP)
+				{
+					++upCollision;
+				}
+				else if (direction == Direction::DOWN)
+				{
+					++downCollision;
+				}
+				else if (direction == Direction::RIGHT)
+				{
+					++rightCollision;
+				}
+				else if (direction == Direction::LEFT)
+				{
+					++leftCollision;
+				}
 
-			if (direction == Direction::UP)
-			{
-				++upCollision;
+				collidedObjects.emplace_back(std::make_pair(object, direction));
+				transform->position.x += rigidbody->velocity.x * collisionTime;
+				transform->position.y += rigidbody->velocity.y * collisionTime;
 			}
-			else if (direction == Direction::DOWN)
-			{
-				++downCollision;
-			}
-			else if (direction == Direction::RIGHT)
-			{
-				++rightCollision;
-			}
-			else if (direction == Direction::LEFT)
-			{
-				++leftCollision;
-			}
-			collidedObjects.emplace_back(std::make_pair(object, direction));
-			OnCollisionEnter();
-			object->OnCollisionEnter();
+
+			OnCollisionEnter(object);
 		}
 	}
 	else
@@ -253,7 +297,18 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 				{
 					--rightCollision;
 				}
+
+				if (boxCollider->isTrigger)
+				{
+					OnTriggerExit(object);
+				}
+				else
+				{
+					OnCollisionExit(object);
+				}
+
 				it = collidedObjects.erase(it);
+				return;
 			}
 			else
 			{
@@ -265,14 +320,6 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 
 bool Object2D::CheckCollision(std::unique_ptr<BoxCollider2D>& col1, std::unique_ptr<BoxCollider2D>& col2)
 {
-	//bool collisionX = col1->topLeft.x + col1->size.width >= col2->topLeft.x &&
-	//	col2->topLeft.x + col2->size.width >= col1->topLeft.x;
-
-	//bool collisionY = col1->topLeft.y - col1->size.height <= col2->topLeft.y &&
-	//	col2->topLeft.y - col2->size.height <= col1->topLeft.y;
-
-	//return collisionX && collisionY;
-
 	return !(col1->topLeft.x + col1->size.width < col2->topLeft.x ||
 		col2->topLeft.x + col2->size.width < col1->topLeft.x ||
 		col1->topLeft.y - col1->size.height > col2->topLeft.y ||
@@ -389,6 +436,9 @@ BoxCollider2D Object2D::GetSweptBroadphaseBox()
 
 void Object2D::RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat)
 {
+	if (!boxCollider)
+		return;
+
 	D3DXVECTOR4 tempPos;
 
 	D3DXVECTOR3 position = { boxCollider->topLeft.x, boxCollider->topLeft.y, 0.0f };

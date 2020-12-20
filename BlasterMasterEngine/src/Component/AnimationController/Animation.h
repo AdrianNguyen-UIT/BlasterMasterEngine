@@ -8,12 +8,14 @@ struct KeyFrame
 	D3DXVECTOR3 position;
 	D3DXVECTOR3 rotation;
 	D3DXVECTOR3 scale;
+	Color color;
 
 	KeyFrame(const RECT &p_Rect = { 0, 0, 0, 0 },
 		const D3DXVECTOR3& p_Position = { 0.0f, 0.0f, 0.0f },
 		const D3DXVECTOR3& p_Rotation = { 0.0f, 0.0f, 0.0f },
-		const D3DXVECTOR3& p_Scale = { 1.0f, 1.0f, 1.0f })
-		: rect(p_Rect), position(p_Position), rotation(p_Rotation), scale(p_Scale)
+		const D3DXVECTOR3& p_Scale = { 1.0f, 1.0f, 1.0f },
+		const Color& p_Color = {255, 255, 255, 255})
+		: rect(p_Rect), position(p_Position), rotation(p_Rotation), scale(p_Scale), color(p_Color)
 	{
 	}
 };
@@ -28,6 +30,7 @@ public:
 	D3DXVECTOR3 GetCurrentFramePosition();
 	D3DXVECTOR3 GetCurrentFrameRotation();
 	D3DXVECTOR3 GetCurrentFrameScale();
+	Color GetCurrentFrameColor();
 	void Play(bool forward = true, bool pause = false);
 	void Reset();
 	void SetAnimationFPS(int p_FramePerSecond);

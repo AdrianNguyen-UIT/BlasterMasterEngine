@@ -64,3 +64,8 @@ D3DXMATRIX OrthographicCamera::GetWorldToViewportMat()
 {
 	return worldToViewportMat;
 }
+
+void OrthographicCamera::MoveCamera(float x, float y, float z)
+{
+	AddPosition(x, y, z);
+}

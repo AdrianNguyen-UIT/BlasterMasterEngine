@@ -120,10 +120,10 @@ void SophiaRightWheel::Update()
 {
 }
 
-void SophiaRightWheel::OnCollisionEnter()
+void SophiaRightWheel::OnCollisionEnter(std::shared_ptr<Object2D> object)
 {
 }
 
-void SophiaRightWheel::OnTriggerEnter()
+void SophiaRightWheel::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
 }
