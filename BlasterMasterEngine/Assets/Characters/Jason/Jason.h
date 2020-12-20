@@ -1,7 +1,6 @@
 #pragma once
 #include "Object/OrthographicCamera/OrthographicCamera.h"
 #include "Object/Object.h"
-
 class Jason : public Object2D
 {
 private:
@@ -10,7 +9,6 @@ private:
 	bool isFacingRight;
 	bool isJumping;
 	float fallMultiplier;
-
 public:
 	Jason(float x = 0, float y = 0);
 

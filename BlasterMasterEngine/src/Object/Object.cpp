@@ -16,7 +16,7 @@ Object2D::Object2D(float x, float y)
 	downCollision = 0;
 	leftCollision = 0;
 	rightCollision = 0;
-	color = { 255, 255, 255, 255 };
+	//color = { 255, 255, 255, 255 };
 }
 
 void Object2D::Draw(DWORD flags)
@@ -37,11 +37,11 @@ void Object2D::Draw(DWORD flags)
 				D3DCOLOR_RGBA(color.red, color.green, color.blue, color.alpha));
 			spriteRenderer->End();
 		}
+	}
 
-		for (auto object : childObjects)
-		{
-			object->Draw(flags);
-		}
+	for (auto object : childObjects)
+	{
+		object->Draw(flags);
 	}
 }
 
@@ -136,17 +136,18 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 			transform->scale.x = parentObject->transform->scale.x * subScale.x;
 			transform->scale.y = parentObject->transform->scale.y * subScale.y;
 			transform->scale.z = parentObject->transform->scale.z * subScale.z;
+			color = parentObject->color;
 		}
 
 		transform->TranslateWorldToViewport(worldToViewportMat);
 		transform->Update();
 
 		Update();
+	}
 
-		for (auto object : childObjects)
-		{
-			object->InnerUpdate(worldToViewportMat);
-		}
+	for (auto object : childObjects)
+	{
+		object->InnerUpdate(worldToViewportMat);
 	}
 }
 
@@ -189,10 +190,15 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 
 	if ((tag == Tag::EnemyBullet && object->tag == Tag::EnemyBullet) ||
 		(tag == Tag::EnemyBullet && object->tag == Tag::Trap) ||
-		(tag == Tag::EnemyBullet && object->tag == Tag::Item))
+		(tag == Tag::EnemyBullet && object->tag == Tag::Item) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Enemy))
 		return;
 
 	if (tag == Tag::Player && object->tag == Tag::PlayerBullet)
+		return;
+
+	if ((tag == Tag::Enemy && object->tag == Tag::Enemy) || 
+		(tag == Tag::Enemy && object->tag == Tag::EnemyBullet))
 		return;
 
 	if ((tag == Tag::Trap && object->tag == Tag::PlayerBullet) ||

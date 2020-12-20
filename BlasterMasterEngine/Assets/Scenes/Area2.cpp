@@ -33,8 +33,22 @@ void Area2::CreateScene()
 	}
 
 	{
-		std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(200.0f, mapSize.height - 2956.0f, true, false);
+		std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(100.0f, mapSize.height - 2956.0f, true, false);
 		bullet->CreateResources();
+		AddObject(bullet);
+	}
+
+	{
+		std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(120.0f, mapSize.height - 2956.0f, true, false);
+		bullet->name = "1";
+		bullet->CreateResources();
+		AddObject(bullet);
+	}
+
+	{
+		std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(220.0f, mapSize.height - 2956.0f, true, false);
+		bullet->CreateResources();
+		bullet->name = "2";
 		AddObject(bullet);
 	}
 

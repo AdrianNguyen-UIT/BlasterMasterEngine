@@ -5,6 +5,8 @@
 #include "Assets/Characters/Jason/Jason.h"
 #include "Assets/CameraBound.h"
 #include "Assets/Particles/PlayerDeadExplosion.h"
+#include "Assets/Characters/Sophia/Bullets/EnemyBullet.h"
+#include "Assets/Trap/Trap.h"
 
 Sophia::Sophia(float x, float y)
 	: Object2D(x, y)
@@ -74,7 +76,8 @@ void Sophia::Start()
 	boxCollider->isTrigger = false;
 	camera = SceneManager::GetActiveScene()->GetActiceCamera();
 	state = State::Normal;
-
+	hitPoint = 8;
+	iFrame = false;
 	boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
 	RECT rect;
 	rect.left = boxCollider->topLeft.x;
@@ -83,6 +86,13 @@ void Sophia::Start()
 	rect.bottom = rect.top + boxCollider->size.height;
 
 	CameraBound::SetCurrentBound(rect);
+	iFrameColors[0] = {0, 255, 0, 255};
+	iFrameColors[1] = {255, 51, 0, 255};
+	iFrameColors[2] = {255, 255, 255, 255};
+	iFrameColors[3] = {255, 204, 255, 2255};
+
+	color = iFrameColors[2];
+
 }
 
 void Sophia::Update()
@@ -197,6 +207,37 @@ void Sophia::Update()
 				Flip();
 			}
 
+			if (iFrame)
+			{
+				static float iFrameTime = 0.0f;
+				static int iFrameColorIndex = 0;
+
+				if (iFrameTime > 0.45f)
+				{
+					iFrameTime = 0.0f;
+					iFrame = false;
+					iFrameColorIndex = 0;
+					color = iFrameColors[2];
+				}
+				else
+				{
+					color = iFrameColors[iFrameColorIndex];
+					++iFrameColorIndex;
+					if (iFrameColorIndex > iFrameColors.size() - 1)
+					{
+						iFrameColorIndex = 0;
+					}
+					iFrameTime += Time::GetDeltaTime();
+				}
+			}
+
+			if (hitPoint <= 0)
+			{
+				Die();
+			}
+
+			LOG_INFO("{0}", hitPoint);
+
 			SetAnimationParameter();
 			MoveCameraAccordingly();
 			ApplyCameraBound();
@@ -215,6 +256,16 @@ void Sophia::Update()
 		camera->MoveCamera(rigidbody->velocity.x * 2.24f, 0.0f, 0.0f);
 
 	}
+	else if (state == State::Die)
+	{
+		static float timeBeforLoadScreen = 0.0f;
+
+		if (timeBeforLoadScreen >= 1.5f)
+		{
+			SceneManager::LoadScene("Loading Screen");
+		}
+		timeBeforLoadScreen += Time::GetDeltaTime();
+	}
 }
 
 void Sophia::OnCollisionEnter(std::shared_ptr<Object2D> object)
@@ -232,16 +283,40 @@ void Sophia::OnCollisionEnter(std::shared_ptr<Object2D> object)
 
 	if (object->tag == Tag::Trap)
 	{
-		LOG_INFO("trap");
+		if (!iFrame)
+		{
+			std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(object);
+			hitPoint -= trap->GetDamage();
+			iFrame = true;
+		}
+
+		if (hitPoint == 0)
+		{
+			Die();
+		}
 	}
 
 	if (object->tag == Tag::EnemyBullet)
 	{
-		playerDeadExplosion = std::make_shared<PlayerDeadExplosion>(transform->position.x, transform->position.y + 16.0f);
-		playerDeadExplosion->CreateResources();
-		SceneManager::Instantiate(playerDeadExplosion, playerDeadExplosion->transform->position);
-		enable = false;
-		//SceneManager::LoadScene("Loading Screen");
+		if (!iFrame)
+		{
+			std::shared_ptr<EnemyBullet> bullet = std::dynamic_pointer_cast<EnemyBullet>(object);
+			hitPoint -= bullet->GetDamage();
+			iFrame = true;
+		}
+	}
+}
+
+void Sophia::OnCollisionStay(std::shared_ptr<Object2D> object)
+{
+	if (object->tag == Tag::Trap)
+	{
+		if (!iFrame)
+		{
+			std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(object);
+			hitPoint -= trap->GetDamage();
+			iFrame = true;
+		}
 	}
 }
 
@@ -259,7 +334,6 @@ void Sophia::OnCollisionExit(std::shared_ptr<Object2D> object)
 
 		CameraBound::SetCurrentBound(rect);
 	}
-
 }
 
 void Sophia::Flip()
@@ -384,4 +458,16 @@ void Sophia::SetAnimationParameter()
 	wheelConnector->animationController->SetFloat("runSpeed", horizontalMove);
 	cabin->animationController->SetFloat("runSpeed", horizontalMove);
 	barrel->animationController->SetFloat("runSpeed", horizontalMove);
+}
+
+void Sophia::Die()
+{
+	playerDeadExplosion = std::make_shared<PlayerDeadExplosion>(transform->position.x, transform->position.y + 16.0f);
+	playerDeadExplosion->CreateResources();
+	SceneManager::Instantiate(playerDeadExplosion, playerDeadExplosion->transform->position);
+	for (auto child : childObjects)
+	{
+		child->enable = false;
+	}
+	state = State::Die;
 }
