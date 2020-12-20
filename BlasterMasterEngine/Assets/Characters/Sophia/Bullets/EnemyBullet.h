@@ -11,6 +11,7 @@ private:
 	float runSpeed;
 	std::shared_ptr<Object2D> explosion;
 
+	int damage = 1;
 public:
 	EnemyBullet(float x = 0, float y = 0, bool pHorizontal = true, bool pIsFacingRight = true);
 
@@ -19,4 +20,8 @@ public:
 	virtual void CreateResources() override;
 	virtual void OnCollisionEnter(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
+
+	int GetDamage() { return damage; }
+
+	
 };

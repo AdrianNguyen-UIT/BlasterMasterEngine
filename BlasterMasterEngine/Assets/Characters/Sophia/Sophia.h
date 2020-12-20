@@ -11,7 +11,8 @@ private:
 	{
 		Normal,
 		CheckPointMove,
-		Climb
+		Climb,
+		Die
 	};
 
 	float runSpeed;
@@ -20,6 +21,10 @@ private:
 	bool isFacingRight;
 	bool isJumping;
 	float fallMultiplier;
+
+	int hitPoint;
+	bool iFrame;
+	std::array<Color, 4> iFrameColors;
 
 	std::shared_ptr<Object2D> leftWheel;
 	std::shared_ptr<Object2D> rightWheel;
@@ -40,6 +45,7 @@ public:
 	virtual void Update() override;
 	virtual void CreateResources() override;
 	virtual void OnCollisionEnter(std::shared_ptr<Object2D> object) override;
+	virtual void OnCollisionStay(std::shared_ptr<Object2D> object) override;
 	virtual void OnCollisionExit(std::shared_ptr<Object2D> object) override;
 
 private:
@@ -50,4 +56,5 @@ private:
 	void MoveCameraAccordingly();
 	void ApplyCameraBound();
 	void SetAnimationParameter();
+	void Die();
 };

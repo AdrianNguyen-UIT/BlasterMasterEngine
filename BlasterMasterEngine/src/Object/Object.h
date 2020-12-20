@@ -17,7 +17,7 @@ enum class Tag
 {
 	Default,
 	Player,
-	Monster,
+	Enemy,
 	Boss,
 	Item,
 	Terrain,

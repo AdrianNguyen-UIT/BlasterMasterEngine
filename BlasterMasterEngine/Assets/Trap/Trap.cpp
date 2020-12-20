@@ -14,4 +14,5 @@ void Trap::Start()
 {
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
 	boxCollider->isTrigger = true;
+	damage = 2;
 }
