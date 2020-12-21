@@ -10,4 +10,7 @@ public:
 
 	virtual void Start() override;
 	int GetDamage() { return damage; }
+
+	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
+	virtual void OnTriggerStay(std::shared_ptr<Object2D> object) override;
 };

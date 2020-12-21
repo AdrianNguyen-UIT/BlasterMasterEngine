@@ -8,6 +8,7 @@ PlayerDeadExplosion::PlayerDeadExplosion(float x, float y)
 	tag = Tag::Default;
 	animationController = GetComponent<AnimationController>();
 	spriteRenderer = GetComponent<SpriteRenderer>();
+	layer = Layer::Particle;
 }
 
 void PlayerDeadExplosion::CreateResources()
@@ -56,11 +57,11 @@ void PlayerDeadExplosion::CreateResources()
 void PlayerDeadExplosion::Start()
 {
 	transform->scale = { WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f };
+	timeLapse = 0.0f;
 }
 
 void PlayerDeadExplosion::Update()
 {
-	static float timeLapse = 0.0f;
 	if (timeLapse >= 1.5f)
 	{
 		timeLapse = 0.0f;

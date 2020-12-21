@@ -4,6 +4,7 @@
 
 SpriteRenderer::SpriteRenderer()
 {
+	enable = true;
 }
 
 SpriteRenderer::~SpriteRenderer()

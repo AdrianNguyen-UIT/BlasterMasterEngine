@@ -50,14 +50,25 @@ void Scene::LoadXmlMap(char* filePath)
 	xmlMap->ParseFile(filePath);
 }
 
+bool operator<(const std::shared_ptr<Object2D>& object1, const std::shared_ptr<Object2D>& object2)
+{
+	return object1->layer < object2->layer;
+}
+
 void  Scene::UpdateRenderableObjects()
 {
 	renderableObjects.clear();
 	for (auto object : objects)
 	{
-		if (object->boxCollider == NULL)
+		if (object->boxCollider == NULL || !object->boxCollider->isEnable)
 		{
-			renderableObjects.emplace_back(object);
+			if ((object->transform->position.x >= camera->GetPosition().x - 100.0f &&
+				object->transform->position.x <= (camera->GetPosition().x - 100.0f) + (camera->GetSize().width + 100.0f * 2) &&
+				object->transform->position.y <= camera->GetPosition().y + 100.0f &&
+				object->transform->position.y >= (camera->GetPosition().y + 100.0f) - (camera->GetSize().height + 100.0f * 2)))
+			{
+				renderableObjects.emplace_back(object);
+			}
 		}
 		else if (object->boxCollider->topLeft.x + object->boxCollider->size.width >= camera->GetPosition().x - 100.0f && 
 			object->boxCollider->topLeft.x <= (camera->GetPosition().x - 100.0f) + (camera->GetSize().width + 100.0f * 2) &&
@@ -67,6 +78,8 @@ void  Scene::UpdateRenderableObjects()
 			renderableObjects.emplace_back(object);
 		}
 	}
+
+	std::stable_sort(renderableObjects.begin(), renderableObjects.end());
 }
 
 void Scene::ClearScene()

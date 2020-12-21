@@ -6,6 +6,7 @@ class AnimationController
 {
 public:
 	bool forward;
+	bool enable;
 public:
 	AnimationController();
 

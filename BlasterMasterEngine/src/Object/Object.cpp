@@ -16,14 +16,14 @@ Object2D::Object2D(float x, float y)
 	downCollision = 0;
 	leftCollision = 0;
 	rightCollision = 0;
-	//color = { 255, 255, 255, 255 };
+	layer = Layer::Sophia;
 }
 
 void Object2D::Draw(DWORD flags)
 {
 	if (enable)
 	{
-		if (spriteRenderer != NULL)
+		if (spriteRenderer != NULL && spriteRenderer->enable)
 		{
 			RECT rect = spriteRenderer->rect;
 			D3DXVECTOR3 center((float)((rect.right - rect.left) / 2), (float)((rect.bottom - rect.top) / 2), 0.0f);
@@ -107,7 +107,7 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 				transform->position.y += rigidbody->velocity.y;
 			}
 
-			if (boxCollider != NULL)
+			if (boxCollider != NULL && boxCollider->isEnable)
 			{
 				boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
 			}
@@ -118,14 +118,13 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 		{
 			spriteRenderer->spriteHandler->SetTransform(&transform->GetTransformMatrix());
 
-			if (animationController != NULL)
+			if (animationController != NULL && animationController->enable)
 			{
 				animationController->Update();
 				spriteRenderer->rect = animationController->GetCurrentAnimation()->GetCurrentFrameRect();
 				subPosition = animationController->GetCurrentAnimation()->GetCurrentFramePosition();
 				subRotation = animationController->GetCurrentAnimation()->GetCurrentFrameRotation();
 				subScale = animationController->GetCurrentAnimation()->GetCurrentFrameScale();
-				color = animationController->GetCurrentAnimation()->GetCurrentFrameColor();
 			}
 		}
 
@@ -158,7 +157,7 @@ void Object2D::InnerStart()
 		spriteRenderer->InitSpriteRenderer(DeviceResources::GetDevice());
 	}
 
-	if (boxCollider != NULL)
+	if (boxCollider != NULL && boxCollider->isEnable)
 	{
 		boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
 	}
@@ -442,7 +441,7 @@ BoxCollider2D Object2D::GetSweptBroadphaseBox()
 
 void Object2D::RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat)
 {
-	if (!boxCollider)
+	if (!boxCollider || !boxCollider->isEnable)
 		return;
 
 	D3DXVECTOR4 tempPos;

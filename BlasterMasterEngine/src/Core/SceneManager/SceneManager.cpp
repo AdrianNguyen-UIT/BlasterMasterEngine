@@ -107,7 +107,7 @@ std::shared_ptr<Scene> SceneManager::GetSceneByIndex(size_t index)
 	return NULL;
 }
 
-void SceneManager::DestroyObject(std::shared_ptr<Object2D> p_Object)
+void SceneManager::DestroyObject(std::shared_ptr<Object2D> &p_Object)
 {
 	for (auto object : activeScene->GetObjectList())
 	{
@@ -127,8 +127,6 @@ void SceneManager::DestroyObject(std::shared_ptr<Object2D> p_Object)
 
 void SceneManager::UpdateScene()
 {
-	activeScene->UpdateScene();
-
 	if (updateAfterDestroy)
 	{
 		for (auto it = activeScene->GetObjectList().begin(); it != activeScene->GetObjectList().end();)
@@ -160,15 +158,17 @@ void SceneManager::UpdateScene()
 		waitingObjects.clear();
 		updateAfterInstantiate = false;
 	}
+
+	activeScene->UpdateScene();
 }
 
-bool SceneManager::CheckReadyToBeDestroy(std::shared_ptr<Object2D> p_Object)
+bool SceneManager::CheckReadyToBeDestroy(std::shared_ptr<Object2D> &p_Object)
 {
 	return p_Object->readyToBeDestroy;
 
 }
 
-void SceneManager::InnerUpdate(std::shared_ptr<Object2D> p_Object)
+void SceneManager::InnerUpdate(std::shared_ptr<Object2D> &p_Object)
 {
 	for (auto it = p_Object->childObjects.begin(); it != p_Object->childObjects.end();)
 	{
@@ -189,7 +189,7 @@ void SceneManager::InnerUpdate(std::shared_ptr<Object2D> p_Object)
 	}
 }
 
-void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> childIt, std::shared_ptr<Object2D> p_Object)
+void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> &childIt, std::shared_ptr<Object2D> &p_Object)
 {
 	for (auto object : childIt->childObjects)
 	{
@@ -206,12 +206,13 @@ void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> childIt, std::sh
 	}
 }
 
-void SceneManager::Instantiate(std::shared_ptr<Object2D> p_Object, D3DXVECTOR3 location)
+void SceneManager::Instantiate(std::shared_ptr<Object2D> &p_Object, D3DXVECTOR3 location)
 {
 	static int index = 0;
 	p_Object->name += std::to_string(index);
 	++index;
 	p_Object->transform->position = location;
+
 	waitingObjects.emplace_back(p_Object);
 	updateAfterInstantiate = true;
 }

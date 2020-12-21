@@ -9,7 +9,6 @@ private:
 	bool horizontal;
 	bool isFacingRight;
 	float runSpeed;
-	std::shared_ptr<Object2D> explosion;
 
 	int damage = 1;
 public:

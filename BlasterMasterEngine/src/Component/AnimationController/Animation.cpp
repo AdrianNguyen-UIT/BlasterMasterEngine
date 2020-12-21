@@ -31,11 +31,6 @@ D3DXVECTOR3 Animation::GetCurrentFrameScale()
 	return keyFrames[currentFrameIndex].scale;
 }
 
-Color Animation::GetCurrentFrameColor()
-{
-	return keyFrames[currentFrameIndex].color;
-}
-
 void Animation::Play(bool forward, bool pause)
 {
 	if (pause && allowPause)

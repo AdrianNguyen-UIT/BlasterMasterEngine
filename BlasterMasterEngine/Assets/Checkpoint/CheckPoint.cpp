@@ -10,6 +10,7 @@ CheckPoint::CheckPoint(float x, float y)
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	spriteRenderer = GetComponent<SpriteRenderer>();
+	layer = Layer::Gate;
 }
 
 void CheckPoint::CreateResources()

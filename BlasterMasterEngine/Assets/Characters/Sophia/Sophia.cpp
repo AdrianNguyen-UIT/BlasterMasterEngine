@@ -2,11 +2,9 @@
 #include "Sophia.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Assets/CharacterController.h"
-#include "Assets/Characters/Jason/Jason.h"
 #include "Assets/CameraBound.h"
 #include "Assets/Particles/PlayerDeadExplosion.h"
-#include "Assets/Characters/Sophia/Bullets/EnemyBullet.h"
-#include "Assets/Trap/Trap.h"
+#include "Assets/Characters/Jason/Jason.h"
 
 Sophia::Sophia(float x, float y)
 	: Object2D(x, y)
@@ -15,7 +13,6 @@ Sophia::Sophia(float x, float y)
 	tag = Tag::Player;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
-	jason = std::make_shared<Jason>();
 }
 
 void Sophia::CreateResources()
@@ -57,6 +54,7 @@ void Sophia::CreateResources()
 		childObjects.emplace_back(barrel);
 	}
 
+	jason = std::make_shared<Jason>();
 	jason->CreateResources();
 }	
 
@@ -78,7 +76,7 @@ void Sophia::Start()
 	state = State::Normal;
 	hitPoint = 8;
 	iFrame = false;
-	boxCollider->topLeft = { (transform->position.x - boxCollider->size.width / 2.0f) + boxCollider->offset.x, (transform->position.y + boxCollider->size.height / 2.0f) + boxCollider->offset.y };
+
 	RECT rect;
 	rect.left = boxCollider->topLeft.x;
 	rect.top = SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y;
@@ -92,7 +90,6 @@ void Sophia::Start()
 	iFrameColors[3] = {255, 204, 255, 2255};
 
 	color = iFrameColors[2];
-
 }
 
 void Sophia::Update()
@@ -106,6 +103,16 @@ void Sophia::Update()
 
 			static float speedMulti = 0.0f;
 			static bool jump = false;
+
+			if (Input::GetKey(KeyCode_W))
+			{
+				pointUp = true;
+			}
+			else
+			{
+				pointUp = false;
+			}
+
 			if (downCollision != 0)
 			{
 				if (Input::GetKey(KeyCode_D))
@@ -162,15 +169,6 @@ void Sophia::Update()
 
 			rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
 
-			if (Input::GetKey(KeyCode_W))
-			{
-				pointUp = true;
-			}
-			else
-			{
-				pointUp = false;
-			}
-
 			if (Input::GetKeyDown(KeyCode_J))
 			{
 				Shoot();
@@ -179,21 +177,6 @@ void Sophia::Update()
 			if (rigidbody->velocity.y < 0.0f)
 			{
 				rigidbody->velocity.y += Physic::gravity.y * fallMultiplier * Time::GetFixedDeltaTime();
-			}
-
-			if (horizontalMove == 0.0f)
-			{
-				for (auto object : childObjects)
-				{
-					object->animationController->PauseAnimation();
-				}
-			}
-			else
-			{
-				for (auto object : childObjects)
-				{
-					object->animationController->PlayAnimation(isFacingRight);
-				}
 			}
 
 			if (horizontalMove > 0 && !isFacingRight)
@@ -207,38 +190,6 @@ void Sophia::Update()
 				Flip();
 			}
 
-			if (iFrame)
-			{
-				static float iFrameTime = 0.0f;
-				static int iFrameColorIndex = 0;
-
-				if (iFrameTime > 0.45f)
-				{
-					iFrameTime = 0.0f;
-					iFrame = false;
-					iFrameColorIndex = 0;
-					color = iFrameColors[2];
-				}
-				else
-				{
-					color = iFrameColors[iFrameColorIndex];
-					++iFrameColorIndex;
-					if (iFrameColorIndex > iFrameColors.size() - 1)
-					{
-						iFrameColorIndex = 0;
-					}
-					iFrameTime += Time::GetDeltaTime();
-				}
-			}
-
-			if (hitPoint <= 0)
-			{
-				Die();
-			}
-
-			LOG_INFO("{0}", hitPoint);
-
-			SetAnimationParameter();
 			MoveCameraAccordingly();
 			ApplyCameraBound();
 		}
@@ -258,6 +209,7 @@ void Sophia::Update()
 	}
 	else if (state == State::Die)
 	{
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
 		static float timeBeforLoadScreen = 0.0f;
 
 		if (timeBeforLoadScreen >= 1.5f)
@@ -266,6 +218,8 @@ void Sophia::Update()
 		}
 		timeBeforLoadScreen += Time::GetDeltaTime();
 	}
+	SetAnimationParameter();
+	DoIFrame();
 }
 
 void Sophia::OnCollisionEnter(std::shared_ptr<Object2D> object)
@@ -277,47 +231,13 @@ void Sophia::OnCollisionEnter(std::shared_ptr<Object2D> object)
 
 	if (object->tag == Tag::CheckPoint)
 	{
+		pointUp = false;
 		state = State::CheckPointMove;
-
-	}
-
-	if (object->tag == Tag::Trap)
-	{
-		if (!iFrame)
-		{
-			std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(object);
-			hitPoint -= trap->GetDamage();
-			iFrame = true;
-		}
-
-		if (hitPoint == 0)
-		{
-			Die();
-		}
-	}
-
-	if (object->tag == Tag::EnemyBullet)
-	{
-		if (!iFrame)
-		{
-			std::shared_ptr<EnemyBullet> bullet = std::dynamic_pointer_cast<EnemyBullet>(object);
-			hitPoint -= bullet->GetDamage();
-			iFrame = true;
-		}
 	}
 }
 
 void Sophia::OnCollisionStay(std::shared_ptr<Object2D> object)
 {
-	if (object->tag == Tag::Trap)
-	{
-		if (!iFrame)
-		{
-			std::shared_ptr<Trap> trap = std::dynamic_pointer_cast<Trap>(object);
-			hitPoint -= trap->GetDamage();
-			iFrame = true;
-		}
-	}
 }
 
 void Sophia::OnCollisionExit(std::shared_ptr<Object2D> object)
@@ -343,24 +263,26 @@ void Sophia::Flip()
 
 void Sophia::SpawnJason()
 {
-	CharacterController::SetCharacterInControl(Character::Jason);
-	D3DXVECTOR3 location = { transform->position.x, transform->position.y + 10.0f, 0.0f };
+	horizontalMove = 0.0f;
+	pointUp = false;
+	D3DXVECTOR3 location = { transform->position.x, transform->position.y + 12.0f, 0.0f};
 	SceneManager::Instantiate(jason, location);
+	CharacterController::SetCharacterInControl(Character::Jason);
 }
 
 void Sophia::Shoot()
 {
-	D3DXVECTOR3 location = { transform->position.x, transform->position.y + 10.0f, 0.0f };
+	std::shared_ptr<Object2D> bullet;
 	if (pointUp)
 	{
-		bullet = std::make_shared<NormalFireBullet>(location.x, location.y, false, isFacingRight);
+		bullet = std::make_shared<NormalFireBullet>(transform->position.x, transform->position.y + 10.0f, false, isFacingRight);
 	}
 	else
 	{
-		bullet = std::make_shared<NormalFireBullet>(location.x, location.y, true, isFacingRight);
+		bullet = std::make_shared<NormalFireBullet>(transform->position.x, transform->position.y + 10.0f, true, isFacingRight);
 	}
 	bullet->CreateResources();
-	SceneManager::Instantiate(bullet, location);
+	SceneManager::Instantiate(bullet, bullet->transform->position);
 }
 
 void Sophia::Jump(bool& jump)
@@ -441,6 +363,21 @@ void Sophia::ApplyCameraBound()
 
 void Sophia::SetAnimationParameter()
 {
+	if (horizontalMove == 0.0f)
+	{
+		for (auto object : childObjects)
+		{
+			object->animationController->PauseAnimation();
+		}
+	}
+	else
+	{
+		for (auto object : childObjects)
+		{
+			object->animationController->PlayAnimation(isFacingRight);
+		}
+	}
+
 	leftWheel->animationController->SetBool("pointUp", pointUp);
 	rightWheel->animationController->SetBool("pointUp", pointUp);
 	wheelConnector->animationController->SetBool("pointUp", pointUp);
@@ -462,12 +399,54 @@ void Sophia::SetAnimationParameter()
 
 void Sophia::Die()
 {
-	playerDeadExplosion = std::make_shared<PlayerDeadExplosion>(transform->position.x, transform->position.y + 16.0f);
+	std::shared_ptr<Object2D> playerDeadExplosion = std::make_shared<PlayerDeadExplosion>(transform->position.x, transform->position.y + 16.0f);
 	playerDeadExplosion->CreateResources();
 	SceneManager::Instantiate(playerDeadExplosion, playerDeadExplosion->transform->position);
 	for (auto child : childObjects)
 	{
 		child->enable = false;
 	}
+	boxCollider->isEnable = false;
 	state = State::Die;
+}
+
+void Sophia::DoIFrame()
+{
+	if (iFrame)
+	{
+		static float iFrameTime = 0.0f;
+		static int iFrameColorIndex = 0;
+
+		if (iFrameTime > 0.45f)
+		{
+			iFrameTime = 0.0f;
+			iFrame = false;
+			iFrameColorIndex = 0;
+			color = iFrameColors[2];
+		}
+		else
+		{
+			color = iFrameColors[iFrameColorIndex];
+			++iFrameColorIndex;
+			if (iFrameColorIndex > iFrameColors.size() - 1)
+			{
+				iFrameColorIndex = 0;
+			}
+			iFrameTime += Time::GetDeltaTime();
+		}
+	}
+}
+
+void Sophia::TakeDamage(int damage)
+{
+	if (!iFrame)
+	{
+		hitPoint -= damage;
+		iFrame = true;
+
+		if (hitPoint <= 0)
+		{
+			Die();
+		}
+	}
 }

@@ -12,6 +12,7 @@ NormalFireBullet::NormalFireBullet(float x, float y, bool pHorizontal, bool pIsF
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	spriteRenderer = GetComponent<SpriteRenderer>();
+	layer = Layer::Projectile;
 }
 
 void NormalFireBullet::Start()
