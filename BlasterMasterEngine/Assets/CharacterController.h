@@ -9,7 +9,6 @@ class CharacterController
 {
 private:
 	static Character character;
-
 public:
 	CharacterController() = default;
 	CharacterController(const CharacterController& p_CharacterController) = delete;

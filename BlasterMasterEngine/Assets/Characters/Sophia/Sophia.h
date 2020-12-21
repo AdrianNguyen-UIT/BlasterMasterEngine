@@ -11,7 +11,6 @@ private:
 	{
 		Normal,
 		CheckPointMove,
-		Climb,
 		Die
 	};
 
@@ -31,10 +30,8 @@ private:
 	std::shared_ptr<Object2D> wheelConnector;
 	std::shared_ptr<Object2D> cabin;
 	std::shared_ptr<Object2D> barrel;
-
 	std::shared_ptr<Object2D> jason;
-	std::shared_ptr<Object2D> bullet;
-	std::shared_ptr<Object2D> playerDeadExplosion;
+
 	std::shared_ptr<OrthographicCamera> camera;
 
 	State state;
@@ -57,4 +54,8 @@ private:
 	void ApplyCameraBound();
 	void SetAnimationParameter();
 	void Die();
+	void DoIFrame();
+
+public:
+	void TakeDamage(int damage);
 };

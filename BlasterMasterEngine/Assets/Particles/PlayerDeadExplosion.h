@@ -3,6 +3,8 @@
 
 class PlayerDeadExplosion : public Object2D
 {
+private:
+	float timeLapse;
 public:
 	PlayerDeadExplosion(float x = 0, float y = 0);
 

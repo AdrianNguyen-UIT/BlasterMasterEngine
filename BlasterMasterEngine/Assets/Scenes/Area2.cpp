@@ -24,18 +24,11 @@ void Area2::CreateScene()
 	}
 
 	RECT mapBound = {0, 0, (LONG)mapSize.width, (LONG)mapSize.height };
-	//quadTree = std::make_unique<QuadTree>(1, mapBound, mapBound);
 
 	{
 		std::shared_ptr<Object2D> sophia = std::make_shared<Sophia>(55.0f, mapSize.height - 2919.0f);
 		sophia->CreateResources();
 		AddObject(sophia);
-	}
-
-	{
-		std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(100.0f, mapSize.height - 2956.0f, true, false);
-		bullet->CreateResources();
-		AddObject(bullet);
 	}
 
 	{

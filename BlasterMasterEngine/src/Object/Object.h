@@ -28,6 +28,16 @@ enum class Tag
 	Trap
 };
 
+enum class Layer
+{
+	Ladder,
+	Projectile,
+	Sophia,
+	Jason,
+	Particle,
+	Gate
+};
+
 class Object2D : public std::enable_shared_from_this<Object2D>
 {
 public:
@@ -50,13 +60,14 @@ protected:
 	int rightCollision;
 	BoxCollider2D broadphaseBox;
 	std::list<std::pair<std::shared_ptr<Object2D>, Direction>> collidedObjects;
-
 public:
 	std::shared_ptr<Transform> transform;
 	std::string name;
 	Tag tag;
 	bool enable;
 	Color color;
+	Layer layer;
+
 	//Instances define
 	std::unique_ptr<SpriteRenderer> spriteRenderer;
 	std::unique_ptr<AnimationController> animationController;

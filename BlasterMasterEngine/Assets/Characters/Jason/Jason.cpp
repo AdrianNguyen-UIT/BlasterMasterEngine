@@ -2,17 +2,18 @@
 #include "Jason.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Assets/CharacterController.h"
+#include "Assets/CameraBound.h"
 
 Jason::Jason(float x, float y)
 	: Object2D(x, y)
 {
-	name = "Jason";
+	name = "Jason ";
 	tag = Tag::Player;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
 	spriteRenderer = GetComponent<SpriteRenderer>();
-
+	layer = Layer::Jason;
 }
 
 void Jason::CreateResources()
@@ -162,119 +163,300 @@ void Jason::CreateResources()
 
 void Jason::Start()
 {
-	runSpeed = 40.0f;
+	runSpeed = 70.0f;
 	horizontalMove = 0.0f;
 	isFacingRight = true;
 	isJumping = false;
-	fallMultiplier = 1.5f;
+	fallMultiplier = 0.5f;
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
-	rigidbody->gravityScale = 2.0f;
+	rigidbody->gravityScale = 1.0f;
 	rigidbody->bounciness = 0.0f;
 	boxCollider->size = { 8.0f, 17.0f };
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
-	transform->scale = { -3.0f, 3.0f, 3.0f };
+	transform->scale = { -WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 1.0f };
+	state = State::Normal;
+	hitPoint = 8;
+	iFrame = false;
+	camera = SceneManager::GetActiveScene()->GetActiceCamera();
+
+	iFrameColors[0] = { 0, 255, 0, 255 };
+	iFrameColors[1] = { 255, 51, 0, 255 };
+	iFrameColors[2] = { 255, 255, 255, 255 };
+	iFrameColors[3] = { 255, 204, 255, 2255 };
+
+	color = iFrameColors[2];
 }
 
 void Jason::Update()
 {
-	std::shared_ptr<OrthographicCamera> camera = SceneManager::GetActiveScene()->GetActiceCamera();
-	if (CharacterController::GetCharacterInControl() == Character::Jason)
+	if (state == State::Normal)
 	{
-		rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
-		boxCollider->isTrigger = false;
-		static float speedMulti = 0.0f;
-		if (Input::GetKey(KeyCode_D))
+		if (CharacterController::GetCharacterInControl() == Character::Jason)
 		{
-			horizontalMove = 1.0f * runSpeed * speedMulti;
-			speedMulti += 0.2f;
+			rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+			boxCollider->isTrigger = false;
 
-		}
-		else if (Input::GetKey(KeyCode_A))
-		{
-			horizontalMove = -1.0f * runSpeed * speedMulti;
-			speedMulti += 0.2f;
-		}
-		else
-		{
-			horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
-			speedMulti -= 0.2f;
-		}
+			static float speedMulti = 0.0f;
 
-		if (Input::GetKeyDown(KeyCode_SPACE) && downCollision != 0)
-		{
-			isJumping = true;
-			D3DXVECTOR2 force(0.0f, 1000.0f);
-			rigidbody->AddForce(force);
-		}
+			if (downCollision != 0)
+			{
+				if (Input::GetKey(KeyCode_D))
+				{
+					horizontalMove = 1.0f * runSpeed * speedMulti;
+					speedMulti += 0.2f;
 
-		if (Input::GetKeyDown(KeyCode_C))
-		{
-			CharacterController::SetCharacterInControl(Character::Sophia);
-			SceneManager::DestroyObject(shared_from_this());
-		}
+				}
+				else if (Input::GetKey(KeyCode_A))
+				{
+					horizontalMove = -1.0f * runSpeed * speedMulti;
+					speedMulti += 0.2f;
+				}
+				else
+				{
+					horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
+					speedMulti -= 0.2f;
+				}
 
-		if (speedMulti > 1.0f)
-		{
-			speedMulti = 1.0f;
-		}
-		else if (speedMulti < 0.0f)
-		{
-			speedMulti = 0.0f;
-		}
+				if (Input::GetKeyDown(KeyCode_SPACE))
+				{
+					Jump();
+				}
 
-		rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
+				if (speedMulti > 1.0f)
+				{
+					speedMulti = 1.0f;
+				}
+				else if (speedMulti < 0.0f)
+				{
+					speedMulti = 0.0f;
+				}
+			}
+			else
+			{
+				speedMulti = 0.4f;
+				if (Input::GetKey(KeyCode_D) && horizontalMove <= 0)
+				{
+					horizontalMove = 1.0f * runSpeed * speedMulti;
+				}
+				else if (Input::GetKey(KeyCode_A) && horizontalMove >= 0)
+				{
+					horizontalMove = -1.0f * runSpeed * speedMulti;
+				}
+			}
 
-		if (rigidbody->velocity.y < 0.0f)
-		{
-			rigidbody->velocity.y += Physic::gravity.y * (fallMultiplier - 1) * Time::GetFixedDeltaTime();
-		}
+			rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
 
-		animationController->SetBool("isJumping", isJumping);
-		animationController->SetFloat("runSpeed", abs(horizontalMove));
+			if (Input::GetKeyDown(KeyCode_J))
+			{
+				Shoot();
+			}
 
-		if (horizontalMove > 0 && !isFacingRight)
-		{
-			speedMulti = 0.0f;
-			Flip();
-		}
-		else if (horizontalMove < 0 && isFacingRight)
-		{
-			speedMulti = 0.0f;
-			Flip();
-		}
+			if (rigidbody->velocity.y < 0.0f)
+			{
+				rigidbody->velocity.y += Physic::gravity.y * fallMultiplier * Time::GetFixedDeltaTime();
+			}
 
-		/*float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
-		LOG_INFO("camera x {0}", camera->GetPosition().x);
-		if (distanceXBetweenCamPlay <= 200.0f)
-		{
-			camera->SetPosition(transform->position.x - 200.0f, camera->GetPosition().y, 0.0f);
+			if (horizontalMove > 0 && !isFacingRight)
+			{
+				speedMulti = 0.0f;
+				Flip();
+			}
+			else if (horizontalMove < 0 && isFacingRight)
+			{
+				speedMulti = 0.0f;
+				Flip();
+			}
+
+			MoveCameraAccordingly();
+			ApplyCameraBound();
 		}
-		else if (distanceXBetweenCamPlay >= 600.0f && camera->GetPosition().x < 2048 - 100)
+		else if (downCollision != 0)
 		{
-			camera->SetPosition(transform->position.x - 600.0f, camera->GetPosition().y, 0.0f);
-		}*/
+			rigidbody->bodyType = Rigidbody::BodyType::Static;
+			boxCollider->isTrigger = true;
+		}
 	}
-	else if (downCollision != 0)
+	else if (state == State::CheckPointMove)
 	{
+		rigidbody->velocity.x = (isFacingRight ? 1.0f : -1.0f) * runSpeed * Time::GetFixedDeltaTime();
 
-		rigidbody->bodyType = Rigidbody::BodyType::Static;
-		boxCollider->isTrigger = true;
+		camera->MoveCamera(rigidbody->velocity.x * 2.24f, 0.0f, 0.0f);
 	}
+	else if (state == State::Die)
+	{
+		static float timeBeforLoadScreen = 0.0f;
+
+		if (timeBeforLoadScreen >= 1.5f)
+		{
+			SceneManager::LoadScene("Loading Screen");
+		}
+		timeBeforLoadScreen += Time::GetDeltaTime();
+	}
+	SetAnimationParameter();
+	DoIFrame();
+
+	LOG_INFO("{0}", hitPoint);
 }
 
 void Jason::OnCollisionEnter(std::shared_ptr<Object2D> object)
 {
-	if (downCollision != 0)
+	if (object->tag == Tag::Terrain)
+	{
 		isJumping = false;
+	}
+
+	if (object->tag == Tag::CheckPoint)
+	{
+		state = State::CheckPointMove;
+
+	}
+}
+
+void Jason::OnCollisionStay(std::shared_ptr<Object2D> object)
+{
+	if (object->tag == Tag::Player)
+	{
+		if (Input::GetKeyDown(KeyCode_V) && abs(transform->position.x - object->transform->position.x) <= 10.0f)
+		{
+			CharacterController::SetCharacterInControl(Character::Sophia);
+			SceneManager::DestroyObject(shared_from_this());
+		}
+	}
 }
 
 void Jason::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
 }
 
+void Jason::OnCollisionExit(std::shared_ptr<Object2D> object)
+{
+	if (object->tag == Tag::CheckPoint)
+	{
+		state = State::Normal;
+
+		RECT rect;
+		rect.left = boxCollider->topLeft.x;
+		rect.top = SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y;
+		rect.right = rect.left + boxCollider->size.width;
+		rect.bottom = rect.top + boxCollider->size.height;
+
+		CameraBound::SetCurrentBound(rect);
+	}
+}
+
 void Jason::Flip()
 {
 	isFacingRight = !isFacingRight;
-	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
+	transform->Scale(isFacingRight ? -WINDOW_CAMERA_SCALE_X : WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
+}
+
+void Jason::Jump()
+{
+	isJumping = true;
+	D3DXVECTOR2 force(0.0f, 850.0f);
+	rigidbody->AddForce(force);
+}
+
+void Jason::MoveCameraAccordingly()
+{
+	float distanceXBetweenCamPlay = transform->position.x - camera->GetPosition().x;
+
+	if (distanceXBetweenCamPlay > (camera->GetSize().width / 2) + 30.0f)
+	{
+		camera->SetPosition(transform->position.x - (camera->GetSize().width / 2) - 30.0f, camera->GetPosition().y, 0.0f);
+	}
+	else if (distanceXBetweenCamPlay < (camera->GetSize().width / 2) - 30.0f)
+	{
+		camera->SetPosition(transform->position.x - (camera->GetSize().width / 2) + 30.0f, camera->GetPosition().y, 0.0f);
+	}
+
+	RECT currentBound = CameraBound::GetCurrentBound();
+	if (currentBound.bottom - currentBound.top < 300.0f)
+		return;
+
+	float distanceYBetweenCamPlay = camera->GetPosition().y - transform->position.y;
+	if (distanceYBetweenCamPlay < (camera->GetSize().height / 2) - 30.0f)
+	{
+		camera->SetPosition(camera->GetPosition().x, transform->position.y + (camera->GetSize().height / 2) - 30.0f, 0.0f);
+	}
+	else if (distanceYBetweenCamPlay > (camera->GetSize().height / 2) + 30.0f)
+	{
+		camera->SetPosition(camera->GetPosition().x, transform->position.y + (camera->GetSize().height / 2) + 30.0f, 0.0f);
+	}
+}
+
+void Jason::ApplyCameraBound()
+{
+	if (camera->GetPosition().x < CameraBound::GetCurrentBound().left)
+	{
+		camera->SetPosition(CameraBound::GetCurrentBound().left, camera->GetPosition().y, 0.0f);
+	}
+	else if (camera->GetPosition().x > CameraBound::GetCurrentBound().right - camera->GetSize().width)
+	{
+		camera->SetPosition(CameraBound::GetCurrentBound().right - camera->GetSize().width, camera->GetPosition().y, 0.0f);
+	}
+
+	float mapHeight = SceneManager::GetActiveScene()->GetMapSize().height;
+	if (mapHeight - camera->GetPosition().y < CameraBound::GetCurrentBound().top)
+	{
+		camera->SetPosition(camera->GetPosition().x, mapHeight - CameraBound::GetCurrentBound().top, 0.0f);
+	}
+	else if (mapHeight - camera->GetPosition().y > CameraBound::GetCurrentBound().bottom - camera->GetSize().height)
+	{
+		camera->SetPosition(camera->GetPosition().x, mapHeight - (CameraBound::GetCurrentBound().bottom - camera->GetSize().height), 0.0f);
+	}
+}
+
+void Jason::SetAnimationParameter()
+{
+	animationController->SetBool("isJumping", isJumping);
+	animationController->SetFloat("runSpeed", abs(horizontalMove));
+}
+
+void Jason::Die()
+{
+	boxCollider->isEnable = false;
+	state = State::Die;
+}
+
+void Jason::DoIFrame()
+{
+	if (iFrame)
+	{
+		static float iFrameTime = 0.0f;
+		static int iFrameColorIndex = 0;
+
+		if (iFrameTime > 0.45f)
+		{
+			iFrameTime = 0.0f;
+			iFrame = false;
+			iFrameColorIndex = 0;
+			color = iFrameColors[2];
+		}
+		else
+		{
+			color = iFrameColors[iFrameColorIndex];
+			++iFrameColorIndex;
+			if (iFrameColorIndex > iFrameColors.size() - 1)
+			{
+				iFrameColorIndex = 0;
+			}
+			iFrameTime += Time::GetDeltaTime();
+		}
+	}
+}
+
+void Jason::TakeDamage(int damage)
+{
+	if (!iFrame)
+	{
+		hitPoint -= damage;
+		iFrame = true;
+
+		if (hitPoint <= 0)
+		{
+			Die();
+		}
+	}
 }

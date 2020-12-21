@@ -7,6 +7,7 @@ AnimationController::AnimationController()
 	currentAnimationIndex = 0;
 	playCurrentAnimation = true;
 	forward = true;
+	enable = true;
 }
 
 
