@@ -1,7 +1,7 @@
 #pragma once
 #include "Object/OrthographicCamera/OrthographicCamera.h"
 #include "BodyParts/SophiaBodyParts.h"
-#include "Bullets/NormalFireBullet.h"
+#include "Assets/Bullets/Sophia/NormalFireBullet.h"
 
 class Sophia : public Object2D
 {
@@ -15,6 +15,7 @@ private:
 	};
 
 	float runSpeed;
+	float speedMulti;
 	float horizontalMove;
 	bool pointUp;
 	bool isFacingRight;

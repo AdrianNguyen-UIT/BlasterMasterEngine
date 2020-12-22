@@ -17,7 +17,6 @@ void NormalBulletExplosion::CreateResources()
 
 	KeyFrame keyFrame;
 	RECT rect;
-	keyFrame.position = transform->position;
 	keyFrame.scale = { 1.0f, 1.0f, 0.0f };
 
 	std::shared_ptr<Animation> explosion = std::make_shared<Animation>("Normal Bullet Explosion Animation");

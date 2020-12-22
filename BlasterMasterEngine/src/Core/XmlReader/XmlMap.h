@@ -110,7 +110,7 @@ public:
 
     const XmlObjectGroup &GetObjectGroup(int index) const { return object_groups.at(index); }
 
-    int GetNumObjectGroups() const { return object_groups.size(); }
+    int GetNumObjectGroups() const { return (int)object_groups.size(); }
 
     const std::vector<XmlObjectGroup> &GetObjectGroups() const { return object_groups; }
 

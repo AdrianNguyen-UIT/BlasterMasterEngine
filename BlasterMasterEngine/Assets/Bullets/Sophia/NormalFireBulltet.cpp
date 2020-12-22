@@ -24,6 +24,8 @@ void NormalFireBullet::Start()
 	boxCollider->isTrigger = true;
 	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	rigidbody->gravityScale = 0.0f;
+
+	transform->Scale(isFacingRight ? -WINDOW_CAMERA_SCALE_X : WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
 }
 
 void NormalFireBullet::Update()
@@ -40,8 +42,6 @@ void NormalFireBullet::Update()
 		rigidbody->velocity.x = 0.0f;
 		rigidbody->velocity.y = runSpeed * Time::GetFixedDeltaTime();
 	}
-
-	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
 }
 
 void NormalFireBullet::CreateResources()
@@ -49,14 +49,14 @@ void NormalFireBullet::CreateResources()
 	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
 }
 
-void NormalFireBullet::OnCollisionEnter(std::shared_ptr<Object2D> object)
-{
-
-}
-
 void NormalFireBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
-	explosion = std::make_shared<NormalBulletExplosion>(transform->position.x, transform->position.y);
+	Explode();
+}
+
+void NormalFireBullet::Explode()
+{
+	std::shared_ptr<Object2D> explosion = std::make_shared<NormalBulletExplosion>(transform->position.x, transform->position.y);
 	explosion->CreateResources();
 	SceneManager::Instantiate(explosion, transform->position);
 	SceneManager::DestroyObject(shared_from_this());

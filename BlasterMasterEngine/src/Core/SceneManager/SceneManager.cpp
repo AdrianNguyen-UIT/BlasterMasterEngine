@@ -34,7 +34,7 @@ void SceneManager::LoadScene(std::string p_Name)
 {
 	std::thread thread([=]
 		{
-			for (auto scene : scenes)
+			for (std::shared_ptr<Scene> scene : scenes)
 			{
 				if (scene->GetName() == p_Name)
 				{
@@ -56,7 +56,7 @@ void SceneManager::LoadScene(size_t index)
 	std::thread thread([&index]
 		{
 			size_t currentIndex = 0;
-			for (auto scene : scenes)
+			for (std::shared_ptr<Scene> scene : scenes)
 			{
 				if (currentIndex == index)
 				{
@@ -81,7 +81,7 @@ std::shared_ptr<Scene> SceneManager::GetActiveScene()
 
 std::shared_ptr<Scene> SceneManager::GetSceneByName(std::string p_Name)
 {
-	for (auto scene : scenes)
+	for (std::shared_ptr<Scene> scene : scenes)
 	{
 		if (scene->GetName() == p_Name)
 		{
@@ -95,7 +95,7 @@ std::shared_ptr<Scene> SceneManager::GetSceneByName(std::string p_Name)
 std::shared_ptr<Scene> SceneManager::GetSceneByIndex(size_t index)
 {
 	size_t currentIndex = 0;
-	for (auto scene : scenes)
+	for (std::shared_ptr<Scene> scene : scenes)
 	{
 		if (currentIndex == index)
 		{
@@ -109,7 +109,7 @@ std::shared_ptr<Scene> SceneManager::GetSceneByIndex(size_t index)
 
 void SceneManager::DestroyObject(std::shared_ptr<Object2D> &p_Object)
 {
-	for (auto object : activeScene->GetObjectList())
+	for (std::shared_ptr<Object2D> object : activeScene->GetObjectList())
 	{
 		if (object->name == p_Object->name)
 		{
@@ -119,7 +119,7 @@ void SceneManager::DestroyObject(std::shared_ptr<Object2D> &p_Object)
 		}
 	}
 
-	for (auto object : activeScene->GetObjectList())
+	for (std::shared_ptr<Object2D> object : activeScene->GetObjectList())
 	{
 		InnerDestroyObject(object, p_Object);
 	}
@@ -142,7 +142,7 @@ void SceneManager::UpdateScene()
 			}
 		}
 
-		for (auto object : activeScene->GetObjectList())
+		for (std::shared_ptr<Object2D> object : activeScene->GetObjectList())
 		{
 			InnerUpdate(object);
 		}
@@ -150,7 +150,7 @@ void SceneManager::UpdateScene()
 
 	if (updateAfterInstantiate)
 	{
-		for (auto object : waitingObjects)
+		for (std::shared_ptr<Object2D> object : waitingObjects)
 		{
 			object->InnerStart();
 			activeScene->AddObject(object);
@@ -191,7 +191,7 @@ void SceneManager::InnerUpdate(std::shared_ptr<Object2D> &p_Object)
 
 void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> &childIt, std::shared_ptr<Object2D> &p_Object)
 {
-	for (auto object : childIt->childObjects)
+	for (std::shared_ptr<Object2D> object : childIt->childObjects)
 	{
 		if (object->name == p_Object->name)
 		{
@@ -200,7 +200,7 @@ void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> &childIt, std::s
 		}
 	}
 
-	for (auto object : childIt->childObjects)
+	for (std::shared_ptr<Object2D> object : childIt->childObjects)
 	{
 		InnerDestroyObject(object, p_Object);
 	}
@@ -219,7 +219,7 @@ void SceneManager::Instantiate(std::shared_ptr<Object2D> &p_Object, D3DXVECTOR3 
 
 void SceneManager::LoadInitScene(std::string p_Name)
 {
-	for (auto scene : scenes)
+	for (std::shared_ptr<Scene> scene : scenes)
 	{
 		if (scene->GetName() == p_Name)
 		{
@@ -234,7 +234,7 @@ void SceneManager::LoadInitScene(std::string p_Name)
 void SceneManager::LoadInitScene(size_t index)
 {
 	size_t currentIndex = 0;
-	for (auto scene : scenes)
+	for (std::shared_ptr<Scene> scene : scenes)
 	{
 		if (currentIndex == index)
 		{
@@ -249,7 +249,7 @@ void SceneManager::LoadInitScene(size_t index)
 
 bool SceneManager::LoadActiveScene()
 {
-	for (auto scene : scenes)
+	for (std::shared_ptr<Scene> scene : scenes)
 	{
 		if (scene->GetReadyToLoad() == true)
 		{

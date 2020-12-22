@@ -26,6 +26,8 @@ void EnemyBullet::Start()
 	boxCollider->isTrigger = true;
 	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	rigidbody->gravityScale = 0.0f;
+
+	transform->Scale(isFacingRight ? -WINDOW_CAMERA_SCALE_X : WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
 }
 
 void EnemyBullet::Update()
@@ -42,8 +44,6 @@ void EnemyBullet::Update()
 		rigidbody->velocity.x = 0.0f;
 		rigidbody->velocity.y = runSpeed * Time::GetFixedDeltaTime();
 	}
-
-	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
 }
 
 void EnemyBullet::CreateResources()

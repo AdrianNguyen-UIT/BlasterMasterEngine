@@ -25,7 +25,8 @@ enum class Tag
 	EnemyBullet,
 	CheckPoint,
 	Gate,
-	Trap
+	Trap,
+	Ladder
 };
 
 enum class Layer

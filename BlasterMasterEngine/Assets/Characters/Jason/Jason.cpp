@@ -3,7 +3,7 @@
 #include "Core/SceneManager/SceneManager.h"
 #include "Assets/CharacterController.h"
 #include "Assets/CameraBound.h"
-
+#include "Assets/Bullets/Jason/SmallFireBullet.h"
 Jason::Jason(float x, float y)
 	: Object2D(x, y)
 {
@@ -26,7 +26,7 @@ void Jason::CreateResources()
 	int yOffset = 2;
 
 	KeyFrame keyFrame;
-	RECT rect;
+	RECT rect = {0, 0, 0, 0};
 	keyFrame.position = transform->position;
 	keyFrame.scale = { 1.0f, 1.0f, 0.0f };
 	std::shared_ptr<Animation> jasonIdle = std::make_shared<Animation>("Jason Idle");
@@ -73,6 +73,125 @@ void Jason::CreateResources()
 		animationController->AddAnimation(jasonJump);
 	}
 
+	std::shared_ptr<Animation> jasonCrouch = std::make_shared<Animation>("Jason Crouch");
+	{
+		jasonCrouch->SetAnimationFPS(6);
+
+		rect.left = 3;
+		rect.top = 47;
+		rect.right = 19;
+		rect.bottom = 55;
+
+		keyFrame.rect = rect;
+		jasonCrouch->AddKeyFrames(keyFrame);
+		animationController->AddAnimation(jasonCrouch);
+	}
+
+	std::shared_ptr<Animation> jasonCrawl = std::make_shared<Animation>("Jason Crawl");
+	{
+		jasonCrawl->SetAnimationFPS(6);
+
+		rect.left = 3;
+		rect.top = 47;
+		rect.right = 19;
+		rect.bottom = 55;
+		keyFrame.rect = rect;
+		jasonCrawl->AddKeyFrames(keyFrame);
+
+		rect.left = 20;
+		rect.top = 47;
+		rect.right = 36;
+		rect.bottom = 55;
+		keyFrame.rect = rect;
+		jasonCrawl->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(jasonCrawl);
+	}
+
+	std::shared_ptr<Animation> jasonDead = std::make_shared<Animation>("Jason Dead");
+	{
+		jasonDead->SetAnimationFPS(12);
+		jasonDead->SetIsLooping(false);
+		keyFrame.scale = { 1.0f, 1.0f, 1.0f };
+		for (size_t index = 0; index < 3; index++)
+		{
+			rect.left = 3;
+			rect.top = 64;
+			rect.right = 19;
+			rect.bottom = 80;
+			keyFrame.rect = rect;
+			jasonDead->AddKeyFrames(keyFrame);
+
+			rect.left = 54;
+			rect.top = 64;
+			rect.right = 70;
+			rect.bottom = 80;
+			keyFrame.rect = rect;
+			jasonDead->AddKeyFrames(keyFrame);
+
+			rect.left = 37;
+			rect.top = 64;
+			rect.right = 53;
+			rect.bottom = 80;
+			keyFrame.rect = rect;
+			jasonDead->AddKeyFrames(keyFrame);
+
+			rect.left = 20;
+			rect.top = 64;
+			rect.right = 36;
+			rect.bottom = 80;
+			keyFrame.rect = rect;
+			jasonDead->AddKeyFrames(keyFrame);
+		}
+		rect.left = 3;
+		rect.top = 64;
+		rect.right = 19;
+		rect.bottom = 80;
+		keyFrame.rect = rect;
+		keyFrame.position = {-0.1f, -0.1f, 0.0f};
+		jasonDead->AddKeyFrames(keyFrame);
+		jasonDead->AddKeyFrames(keyFrame);
+		jasonDead->AddKeyFrames(keyFrame);
+		jasonDead->AddKeyFrames(keyFrame);
+
+		rect.left = 3;
+		rect.top = 81;
+		rect.right = 19;
+		rect.bottom = 97;
+		keyFrame.rect = rect;
+		keyFrame.position = { 0.0, 0.0, 0.0f };
+		jasonDead->AddKeyFrames(keyFrame);
+
+		rect.left = 20;
+		rect.top = 89;
+		rect.right = 36;
+		rect.bottom = 97;
+		keyFrame.rect = rect;
+		jasonDead->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(jasonDead);
+	}
+
+	std::shared_ptr<Animation> jasonClimb = std::make_shared<Animation>("Jason Climb");
+	{
+		jasonClimb->SetAnimationFPS(6);
+
+		rect.left = 37;
+		rect.top = 47;
+		rect.right = 54;
+		rect.bottom = 63;
+		keyFrame.rect = rect;
+		jasonClimb->AddKeyFrames(keyFrame);
+
+		rect.left = 54;
+		rect.top = 47;
+		rect.right = 69;
+		rect.bottom = 62;
+		keyFrame.rect = rect;
+		jasonClimb->AddKeyFrames(keyFrame);
+
+		animationController->AddAnimation(jasonClimb);
+	}
 	std::shared_ptr<Parameter<float>> runSpeed = std::make_shared<Parameter<float>>("runSpeed");
 	{
 		animationController->AddFloatParameter(runSpeed);
@@ -81,6 +200,21 @@ void Jason::CreateResources()
 	std::shared_ptr<Parameter<bool>> isJumping = std::make_shared<Parameter<bool>>("isJumping");
 	{
 		animationController->AddBoolParameter(isJumping);
+	}
+
+	std::shared_ptr<Parameter<bool>> isCrouching = std::make_shared<Parameter<bool>>("isCrouching");
+	{
+		animationController->AddBoolParameter(isCrouching);
+	}
+
+	std::shared_ptr<Parameter<bool>> isDead = std::make_shared<Parameter<bool>>("isDead");
+	{
+		animationController->AddBoolParameter(isDead);
+	}
+
+	std::shared_ptr<Parameter<float>> climbSpeed = std::make_shared<Parameter<float>>("climbSpeed");
+	{
+		animationController->AddFloatParameter(climbSpeed);
 	}
 
 	std::shared_ptr<TransitionCondition<float>> runSpeedGreaterFloatCond = std::make_shared<TransitionCondition<float>>();
@@ -107,6 +241,38 @@ void Jason::CreateResources()
 	{
 		isJumpingFalseBoolCond->SetParameter(isJumping);
 		isJumpingFalseBoolCond->SetValue(false);
+	}
+
+	std::shared_ptr<TransitionCondition<bool>> isCrouchingTrueBoolCond = std::make_shared<TransitionCondition<bool>>();
+	{
+		isCrouchingTrueBoolCond->SetParameter(isCrouching);
+		isCrouchingTrueBoolCond->SetValue(true);
+	}
+
+	std::shared_ptr<TransitionCondition<bool>> isCrouchingFalseBoolCond = std::make_shared<TransitionCondition<bool>>();
+	{
+		isCrouchingFalseBoolCond->SetParameter(isCrouching);
+		isCrouchingFalseBoolCond->SetValue(false);
+	}
+
+	std::shared_ptr<TransitionCondition<bool>> isDeadTrueBoolCond = std::make_shared<TransitionCondition<bool>>();
+	{
+		isDeadTrueBoolCond->SetParameter(isDead);
+		isDeadTrueBoolCond->SetValue(true);
+	}
+
+	std::shared_ptr<TransitionCondition<float>> climbSpeedGreaterFloatCond = std::make_shared<TransitionCondition<float>>();
+	{
+		climbSpeedGreaterFloatCond->SetParameter(climbSpeed);
+		climbSpeedGreaterFloatCond->SetCondition(Condition::Greater);
+		climbSpeedGreaterFloatCond->SetValue(0.01f);
+	}
+
+	std::shared_ptr<TransitionCondition<float>> climbSpeedLessFloatCond = std::make_shared<TransitionCondition<float>>();
+	{
+		climbSpeedLessFloatCond->SetParameter(climbSpeed);
+		climbSpeedLessFloatCond->SetCondition(Condition::Less);
+		climbSpeedLessFloatCond->SetValue(0.01f);
 	}
 
 	std::shared_ptr<Transition> idleToRunTrans = std::make_shared<Transition>(
@@ -159,19 +325,152 @@ void Jason::CreateResources()
 		jumpToRunTrans->AddFloatTransitionCondition(runSpeedGreaterFloatCond);
 		animationController->AddTransition(jumpToRunTrans);
 	}
+
+	std::shared_ptr<Transition> idleToCrouchTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonIdle),
+		animationController->GetAnimationIndex(jasonCrouch));
+	{
+		idleToCrouchTrans->AddBoolTransitionCondition(isCrouchingTrueBoolCond);
+		animationController->AddTransition(idleToCrouchTrans);
+	}
+
+	std::shared_ptr<Transition> crouchToIdleTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonCrouch),
+		animationController->GetAnimationIndex(jasonIdle));
+	{
+		crouchToIdleTrans->AddBoolTransitionCondition(isCrouchingFalseBoolCond);
+		animationController->AddTransition(crouchToIdleTrans);
+	}
+
+	std::shared_ptr<Transition> crouchToCrawlTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonCrouch),
+		animationController->GetAnimationIndex(jasonCrawl));
+	{
+		crouchToCrawlTrans->AddFloatTransitionCondition(runSpeedGreaterFloatCond);
+		animationController->AddTransition(crouchToCrawlTrans);
+	}
+
+	std::shared_ptr<Transition> crawlToCrouchTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonCrawl),
+		animationController->GetAnimationIndex(jasonCrouch));
+	{
+		crawlToCrouchTrans->AddFloatTransitionCondition(runSpeedLessFloatCond);
+		animationController->AddTransition(crawlToCrouchTrans);
+	}
+
+	std::shared_ptr<Transition> runToCrawlTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonRun),
+		animationController->GetAnimationIndex(jasonCrawl));
+	{
+		runToCrawlTrans->AddFloatTransitionCondition(runSpeedGreaterFloatCond);
+		runToCrawlTrans->AddBoolTransitionCondition(isCrouchingTrueBoolCond);
+		animationController->AddTransition(runToCrawlTrans);
+	}
+
+	std::shared_ptr<Transition> crawlToRunTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonCrawl),
+		animationController->GetAnimationIndex(jasonRun));
+	{
+		crawlToRunTrans->AddFloatTransitionCondition(runSpeedGreaterFloatCond);
+		crawlToRunTrans->AddBoolTransitionCondition(isCrouchingFalseBoolCond);
+		animationController->AddTransition(crawlToRunTrans);
+	}
+
+
+
+	std::shared_ptr<Transition> idleToDeadTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonIdle),
+		animationController->GetAnimationIndex(jasonDead));
+	{
+		idleToDeadTrans->AddBoolTransitionCondition(isDeadTrueBoolCond);
+		animationController->AddTransition(idleToDeadTrans);
+	}
+
+	std::shared_ptr<Transition> runToDeadTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonRun),
+		animationController->GetAnimationIndex(jasonDead));
+	{
+		runToDeadTrans->AddBoolTransitionCondition(isDeadTrueBoolCond);
+		animationController->AddTransition(runToDeadTrans);
+	}
+
+	std::shared_ptr<Transition> jumpToDeadTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonJump),
+		animationController->GetAnimationIndex(jasonDead));
+	{
+		jumpToDeadTrans->AddBoolTransitionCondition(isDeadTrueBoolCond);
+		animationController->AddTransition(jumpToDeadTrans);
+	}
+
+	std::shared_ptr<Transition> crouchToDeadTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonCrouch),
+		animationController->GetAnimationIndex(jasonDead));
+	{
+		crouchToDeadTrans->AddBoolTransitionCondition(isDeadTrueBoolCond);
+		animationController->AddTransition(crouchToDeadTrans);
+	}
+
+	std::shared_ptr<Transition> crawlToDeadTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonCrawl),
+		animationController->GetAnimationIndex(jasonDead));
+	{
+		crawlToDeadTrans->AddBoolTransitionCondition(isDeadTrueBoolCond);
+		animationController->AddTransition(crawlToDeadTrans);
+	}
+
+	std::shared_ptr<Transition> idleToClimbTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonIdle),
+		animationController->GetAnimationIndex(jasonClimb));
+	{
+		idleToClimbTrans->AddFloatTransitionCondition(climbSpeedGreaterFloatCond);
+		animationController->AddTransition(idleToClimbTrans);
+	}
+
+	std::shared_ptr<Transition> climbToIdleTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonClimb),
+		animationController->GetAnimationIndex(jasonIdle));
+	{
+		climbToIdleTrans->AddFloatTransitionCondition(climbSpeedLessFloatCond);
+		animationController->AddTransition(climbToIdleTrans);
+	}
+
+	std::shared_ptr<Transition> runToClimbTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonRun),
+		animationController->GetAnimationIndex(jasonClimb));
+	{
+		runToClimbTrans->AddFloatTransitionCondition(climbSpeedGreaterFloatCond);
+		runToClimbTrans->AddFloatTransitionCondition(runSpeedGreaterFloatCond);
+		animationController->AddTransition(runToClimbTrans);
+	}
+
+	std::shared_ptr<Transition> climbToRunTrans = std::make_shared<Transition>(
+		animationController->GetAnimationIndex(jasonClimb),
+		animationController->GetAnimationIndex(jasonRun));
+	{
+		climbToRunTrans->AddFloatTransitionCondition(runSpeedGreaterFloatCond);
+		climbToRunTrans->AddFloatTransitionCondition(climbSpeedLessFloatCond);
+		animationController->AddTransition(climbToRunTrans);
+	}
 }
 
 void Jason::Start()
 {
-	runSpeed = 70.0f;
+	runSpeed = 80.0f;
+	speedMulti = 0.0f;
 	horizontalMove = 0.0f;
 	isFacingRight = true;
 	isJumping = false;
-	fallMultiplier = 0.5f;
+	isCrouching = false;
+	fallMultiplier = 0.3f;
+	readyToClimb = false;
+	climbSpeed = 40.0f;
+	isClimbing = false;
+	verticalMove = 0.0f;
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
 	rigidbody->gravityScale = 1.0f;
 	rigidbody->bounciness = 0.0f;
-	boxCollider->size = { 8.0f, 17.0f };
+	rigidbody->mass = 1.0f;
+	boxCollider->size = { 8.0f, 16.0f };
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { -WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 1.0f };
@@ -190,66 +489,48 @@ void Jason::Start()
 
 void Jason::Update()
 {
-	if (state == State::Normal)
+	if (CharacterController::GetCharacterInControl() == Character::Jason)
 	{
-		if (CharacterController::GetCharacterInControl() == Character::Jason)
+		if (state == State::Normal)
 		{
 			rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 			boxCollider->isTrigger = false;
 
-			static float speedMulti = 0.0f;
-
 			if (downCollision != 0)
 			{
-				if (Input::GetKey(KeyCode_D))
-				{
-					horizontalMove = 1.0f * runSpeed * speedMulti;
-					speedMulti += 0.2f;
-
-				}
-				else if (Input::GetKey(KeyCode_A))
-				{
-					horizontalMove = -1.0f * runSpeed * speedMulti;
-					speedMulti += 0.2f;
-				}
-				else
-				{
-					horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
-					speedMulti -= 0.2f;
-				}
-
-				if (Input::GetKeyDown(KeyCode_SPACE))
+				if (Input::GetKeyDown(KeyCode_SPACE) && !isCrouching)
 				{
 					Jump();
 				}
 
-				if (speedMulti > 1.0f)
+				if (Input::GetKeyDown(KeyCode_S) && !isCrouching)
 				{
-					speedMulti = 1.0f;
+					Crouch(true);
 				}
-				else if (speedMulti < 0.0f)
+
+				if (Input::GetKeyDown(KeyCode_W) && isCrouching)
 				{
-					speedMulti = 0.0f;
+					Crouch(false);
 				}
+
+				ControlHorizontalMove(true);
+
 			}
 			else
 			{
-				speedMulti = 0.4f;
-				if (Input::GetKey(KeyCode_D) && horizontalMove <= 0)
-				{
-					horizontalMove = 1.0f * runSpeed * speedMulti;
-				}
-				else if (Input::GetKey(KeyCode_A) && horizontalMove >= 0)
-				{
-					horizontalMove = -1.0f * runSpeed * speedMulti;
-				}
+				ControlHorizontalMove(false);
 			}
 
 			rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
 
-			if (Input::GetKeyDown(KeyCode_J))
+			if (readyToClimb)
 			{
-				Shoot();
+				if (Input::GetKeyDown(KeyCode_W) && !isCrouching)
+				{
+					state = State::Climbing;
+					rigidbody->gravityScale = 0.0f;
+					transform->Translate(transform->position.x, transform->position.y + 2.0f, 0.0f);
+				}
 			}
 
 			if (rigidbody->velocity.y < 0.0f)
@@ -257,59 +538,88 @@ void Jason::Update()
 				rigidbody->velocity.y += Physic::gravity.y * fallMultiplier * Time::GetFixedDeltaTime();
 			}
 
-			if (horizontalMove > 0 && !isFacingRight)
+			if (Input::GetKeyDown(KeyCode_J))
 			{
-				speedMulti = 0.0f;
-				Flip();
-			}
-			else if (horizontalMove < 0 && isFacingRight)
-			{
-				speedMulti = 0.0f;
-				Flip();
+				Shoot();
 			}
 
 			MoveCameraAccordingly();
 			ApplyCameraBound();
 		}
-		else if (downCollision != 0)
-		{
-			rigidbody->bodyType = Rigidbody::BodyType::Static;
-			boxCollider->isTrigger = true;
-		}
-	}
-	else if (state == State::CheckPointMove)
+		else if (state == State::CheckPointMove)
 	{
 		rigidbody->velocity.x = (isFacingRight ? 1.0f : -1.0f) * runSpeed * Time::GetFixedDeltaTime();
 
 		camera->MoveCamera(rigidbody->velocity.x * 2.24f, 0.0f, 0.0f);
 	}
-	else if (state == State::Die)
+		else if (state == State::Die)
 	{
 		static float timeBeforLoadScreen = 0.0f;
 
-		if (timeBeforLoadScreen >= 1.5f)
+		if (timeBeforLoadScreen >= 2.5f)
 		{
 			SceneManager::LoadScene("Loading Screen");
 		}
 		timeBeforLoadScreen += Time::GetDeltaTime();
 	}
+		else if (state == State::Climbing)
+		{
+			if (!ControlVerticalMove())
+			{
+				ControlHorizontalMove(true);
+				rigidbody->velocity.y = 0.0f;
+				rigidbody->velocity.x = horizontalMove * Time::GetFixedDeltaTime();
+			}
+			else
+			{
+				rigidbody->velocity.x = 0.0f;
+				rigidbody->velocity.y = verticalMove * Time::GetFixedDeltaTime();
+			}
+
+			if (Input::GetKeyDown(KeyCode_J))
+			{
+				Shoot();
+			}
+			MoveCameraAccordingly();
+			ApplyCameraBound();
+		}
+
+		if (horizontalMove > 0 && !isFacingRight)
+		{
+			speedMulti = 0.0f;
+			Flip();
+		}
+		else if (horizontalMove < 0 && isFacingRight)
+		{
+			speedMulti = 0.0f;
+			Flip();
+		}
+	}
+	else
+	{
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		boxCollider->isTrigger = true;
+	}
+
 	SetAnimationParameter();
 	DoIFrame();
 
-	LOG_INFO("{0}", hitPoint);
+	LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
 }
 
 void Jason::OnCollisionEnter(std::shared_ptr<Object2D> object)
 {
-	if (object->tag == Tag::Terrain)
+	if (object->tag == Tag::Terrain && downCollision != 0)
 	{
 		isJumping = false;
+		readyToClimb = false;
+		state = State::Normal;
+		rigidbody->gravityScale = 1.0f;
 	}
 
 	if (object->tag == Tag::CheckPoint)
 	{
 		state = State::CheckPointMove;
-
 	}
 }
 
@@ -323,6 +633,11 @@ void Jason::OnCollisionStay(std::shared_ptr<Object2D> object)
 			SceneManager::DestroyObject(shared_from_this());
 		}
 	}
+
+	if (object->tag == Tag::Ladder)
+	{
+		readyToClimb = true;
+	}
 }
 
 void Jason::OnTriggerEnter(std::shared_ptr<Object2D> object)
@@ -335,13 +650,20 @@ void Jason::OnCollisionExit(std::shared_ptr<Object2D> object)
 	{
 		state = State::Normal;
 
-		RECT rect;
-		rect.left = boxCollider->topLeft.x;
-		rect.top = SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y;
-		rect.right = rect.left + boxCollider->size.width;
-		rect.bottom = rect.top + boxCollider->size.height;
+		RECT rect = {0, 0, 0, 0};
+		rect.left = (LONG)boxCollider->topLeft.x;
+		rect.top = (LONG)(SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y);
+		rect.right = (LONG)(rect.left + boxCollider->size.width);
+		rect.bottom = (LONG)(rect.top + boxCollider->size.height);
 
 		CameraBound::SetCurrentBound(rect);
+	}
+
+	if (object->tag == Tag::Ladder)
+	{
+		readyToClimb = false;
+		state = State::Normal;
+		rigidbody->gravityScale = 1.0f;
 	}
 }
 
@@ -351,11 +673,35 @@ void Jason::Flip()
 	transform->Scale(isFacingRight ? -WINDOW_CAMERA_SCALE_X : WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
 }
 
+void Jason::Shoot()
+{
+	std::shared_ptr<Object2D> bullet = std::make_shared<SmallFireBullet>(transform->position.x, transform->position.y, isFacingRight);
+	bullet->CreateResources();
+	SceneManager::Instantiate(bullet, bullet->transform->position);
+}
+
 void Jason::Jump()
 {
 	isJumping = true;
-	D3DXVECTOR2 force(0.0f, 850.0f);
+	D3DXVECTOR2 force(0.0f, 200.0f);
 	rigidbody->AddForce(force);
+}
+
+void Jason::Crouch(bool enable, float speedScalar)
+{
+	isCrouching = enable;
+	if (enable)
+	{
+		boxCollider->size = { 16.0f, 8.0f };
+		runSpeed *= speedScalar;
+		transform->Translate(transform->position.x, transform->position.y - 4.0f, 0.0f);
+	}
+	else
+	{
+		boxCollider->size = { 8.0f, 16.0f };
+		runSpeed *= 1.0f / speedScalar;
+		transform->Translate(transform->position.x, transform->position.y + 4.0f, 0.0f);
+	}
 }
 
 void Jason::MoveCameraAccordingly()
@@ -390,7 +736,7 @@ void Jason::ApplyCameraBound()
 {
 	if (camera->GetPosition().x < CameraBound::GetCurrentBound().left)
 	{
-		camera->SetPosition(CameraBound::GetCurrentBound().left, camera->GetPosition().y, 0.0f);
+		camera->SetPosition((float)CameraBound::GetCurrentBound().left, camera->GetPosition().y, 0.0f);
 	}
 	else if (camera->GetPosition().x > CameraBound::GetCurrentBound().right - camera->GetSize().width)
 	{
@@ -412,12 +758,17 @@ void Jason::SetAnimationParameter()
 {
 	animationController->SetBool("isJumping", isJumping);
 	animationController->SetFloat("runSpeed", abs(horizontalMove));
+	animationController->SetFloat("climbSpeed", abs(verticalMove));
+	animationController->SetBool("isCrouching", isCrouching);
 }
 
 void Jason::Die()
 {
 	boxCollider->isEnable = false;
+	rigidbody->bodyType = Rigidbody::BodyType::Static;
+	transform->Scale(WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
 	state = State::Die;
+	animationController->SetBool("isDead", true);
 }
 
 void Jason::DoIFrame()
@@ -447,6 +798,77 @@ void Jason::DoIFrame()
 	}
 }
 
+bool Jason::ControlHorizontalMove(bool onGround)
+{
+	if (onGround)
+	{
+		if (Input::GetKey(KeyCode_D))
+		{
+			horizontalMove = 1.0f * runSpeed * speedMulti;
+			speedMulti += 0.2f;
+		}
+		else if (Input::GetKey(KeyCode_A))
+		{
+			horizontalMove = -1.0f * runSpeed * speedMulti;
+			speedMulti += 0.2f;
+		}
+		else
+		{
+			horizontalMove = (isFacingRight ? 1.0f : -1.0f) * runSpeed * speedMulti;
+			speedMulti -= 0.2f;
+		}
+
+		if (speedMulti > 1.0f)
+		{
+			speedMulti = 1.0f;
+		}
+		else if (speedMulti < 0.0f)
+		{
+			speedMulti = 0.0f;
+		}
+	}
+	else
+	{
+		speedMulti = 0.4f;
+		if (Input::GetKey(KeyCode_D) && horizontalMove <= 0)
+		{
+			horizontalMove = 1.0f * runSpeed * speedMulti;
+		}
+		else if (Input::GetKey(KeyCode_A) && horizontalMove >= 0)
+		{
+			horizontalMove = -1.0f * runSpeed * speedMulti;
+		}
+	}
+
+	if (horizontalMove != 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Jason::ControlVerticalMove()
+{
+	if (Input::GetKey(KeyCode_W))
+	{
+		verticalMove = 1.0f * climbSpeed;
+	}
+	else if (Input::GetKey(KeyCode_S))
+	{
+		verticalMove = -1.0f * climbSpeed;
+	}
+	else
+	{
+		verticalMove = 0.0f;
+	}
+
+	if (verticalMove != 0)
+	{
+		return true;
+	}
+	return false;
+}
+
 void Jason::TakeDamage(int damage)
 {
 	if (!iFrame)
@@ -456,6 +878,7 @@ void Jason::TakeDamage(int damage)
 
 		if (hitPoint <= 0)
 		{
+			hitPoint = 0;
 			Die();
 		}
 	}

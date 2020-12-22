@@ -58,7 +58,7 @@ bool operator<(const std::shared_ptr<Object2D>& object1, const std::shared_ptr<O
 void  Scene::UpdateRenderableObjects()
 {
 	renderableObjects.clear();
-	for (auto object : objects)
+	for (std::shared_ptr<Object2D> object : objects)
 	{
 		if (object->boxCollider == NULL || !object->boxCollider->isEnable)
 		{

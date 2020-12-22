@@ -11,7 +11,7 @@ public:
 
     const XmlObject& GetObject(int index) const { return objects.at(index); }
 
-    int GetNumObjects() const { return objects.size(); }
+    int GetNumObjects() const { return (int)objects.size(); }
 
     const std::string& GetColor() const { return color; }
 

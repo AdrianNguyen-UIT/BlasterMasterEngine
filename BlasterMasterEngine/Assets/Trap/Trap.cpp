@@ -13,7 +13,7 @@ Trap::Trap(float x, float y)
 
 void Trap::Start()
 {
-	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+	rigidbody->bodyType = Rigidbody::BodyType::Kinematic;
 	rigidbody->gravityScale = 0.0f;
 	boxCollider->isTrigger = true;
 	damage = 2;

@@ -39,7 +39,7 @@ void Object2D::Draw(DWORD flags)
 		}
 	}
 
-	for (auto object : childObjects)
+	for (std::shared_ptr<Object2D> object : childObjects)
 	{
 		object->Draw(flags);
 	}
@@ -49,6 +49,8 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 {
 	if (enable)
 	{
+		Update();
+
 		if (rigidbody != NULL)
 		{
 			if (rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
@@ -137,14 +139,22 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 			transform->scale.z = parentObject->transform->scale.z * subScale.z;
 			color = parentObject->color;
 		}
+		else
+		{
+			transform->position += subPosition;
+			transform->rotation += subRotation;
+			transform->scale.x *= subScale.x;
+			transform->scale.y *= subScale.y;
+			transform->scale.z *= subScale.z;
+		}
 
 		transform->TranslateWorldToViewport(worldToViewportMat);
 		transform->Update();
 
-		Update();
+
 	}
 
-	for (auto object : childObjects)
+	for (std::shared_ptr<Object2D> object : childObjects)
 	{
 		object->InnerUpdate(worldToViewportMat);
 	}
@@ -164,7 +174,7 @@ void Object2D::InnerStart()
 
 	Start();
 
-	for (auto object : childObjects)
+	for (std::shared_ptr<Object2D> object : childObjects)
 	{
 		object->InnerStart();
 	}
@@ -181,23 +191,29 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 	if (!boxCollider->isEnable || !object->boxCollider->isEnable)
 		return;
 
+	if (tag == Tag::Ladder)
+		return;
+
 	if ((tag == Tag::PlayerBullet && object->tag == Tag::PlayerBullet) || 
 		(tag == Tag::PlayerBullet && object->tag == Tag::Trap) ||
 		(tag == Tag::PlayerBullet && object->tag == Tag::Item) ||
-		(tag == Tag::PlayerBullet && object->tag == Tag::Player))
+		(tag == Tag::PlayerBullet && object->tag == Tag::Player) || 
+		(tag == Tag::PlayerBullet && object->tag == Tag::Ladder))
 		return;
 
 	if ((tag == Tag::EnemyBullet && object->tag == Tag::EnemyBullet) ||
 		(tag == Tag::EnemyBullet && object->tag == Tag::Trap) ||
 		(tag == Tag::EnemyBullet && object->tag == Tag::Item) ||
-		(tag == Tag::EnemyBullet && object->tag == Tag::Enemy))
+		(tag == Tag::EnemyBullet && object->tag == Tag::Enemy) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Ladder))
 		return;
 
 	if (tag == Tag::Player && object->tag == Tag::PlayerBullet)
 		return;
 
 	if ((tag == Tag::Enemy && object->tag == Tag::Enemy) || 
-		(tag == Tag::Enemy && object->tag == Tag::EnemyBullet))
+		(tag == Tag::Enemy && object->tag == Tag::EnemyBullet) ||
+		(tag == Tag::Enemy && object->tag == Tag::Ladder))
 		return;
 
 	if ((tag == Tag::Trap && object->tag == Tag::PlayerBullet) ||
@@ -222,7 +238,7 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 	broadphaseBox = GetSweptBroadphaseBox();
 	if (CheckCollision(std::make_unique<BoxCollider2D>(broadphaseBox), object->boxCollider))
 	{
-		for (auto collidedObject : collidedObjects)
+		for (std::pair<std::shared_ptr<Object2D>, Direction> collidedObject : collidedObjects)
 		{
 			if (collidedObject.first == object)
 			{

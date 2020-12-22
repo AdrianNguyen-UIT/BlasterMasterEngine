@@ -6,7 +6,8 @@
 #include "Assets/CameraBound.h"
 #include "Assets/Checkpoint/CheckPoint.h"
 #include "Assets/Trap/Trap.h"
-#include "Assets/Characters/Sophia/Bullets/EnemyBullet.h"
+#include "Assets/Bullets/Enemy/EnemyBullet.h"
+#include "Assets/Ladder/Ladder.h"
 
 void Area2::CreateScene()
 {
@@ -45,7 +46,7 @@ void Area2::CreateScene()
 		AddObject(bullet);
 	}
 
-	for (auto objectGroup : xmlMap->GetObjectGroups())
+	for (XmlObjectGroup objectGroup : xmlMap->GetObjectGroups())
 	{
 		if (objectGroup.GetName() == "object")
 		{
@@ -104,6 +105,19 @@ void Area2::CreateScene()
 				XmlObject object = objectGroup.GetObjects().at(jIndex);
 				RECT region = { object.GetX(), object.GetY(), object.GetX() + object.GetWidth(), object.GetY() + object.GetHeight() };
 				CameraBound::AddBound(region);
+			}
+		}
+
+		if ((objectGroup.GetName() == "ladder"))
+		{
+			for (size_t jIndex = 0; jIndex < objectGroup.GetNumObjects(); ++jIndex)
+			{
+				XmlObject object = objectGroup.GetObjects().at(jIndex);
+				float xPos = (float)object.GetX() + (float)object.GetWidth() / 2;
+				float yPos = (float)mapSize.height - (float)(object.GetY() + object.GetHeight() / 2.0f);
+				std::shared_ptr<Object2D> ladder = std::make_shared<Ladder>(xPos, yPos);
+				ladder->boxCollider->size = { (float)object.GetWidth(), (float)object.GetHeight() };
+				AddObject(ladder);
 			}
 		}
 	}
