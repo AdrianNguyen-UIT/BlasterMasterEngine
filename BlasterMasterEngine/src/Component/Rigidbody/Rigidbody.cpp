@@ -10,7 +10,7 @@ Rigidbody::Rigidbody(const BodyType &p_BodyType, const D3DXVECTOR2 &p_Velocity )
 	gravityForce = { 0.0f, 0.0f };
 	externalForce = { 0.0f, 0.0f };
 	totalForce = { 0.0f, 0.0f };
-	mass = 3.0f;
+	mass = 1.0f;
 	bodyType = BodyType::Dynamic;
 	bounciness = 0.03f;
 	gravityScale = 1.0f;

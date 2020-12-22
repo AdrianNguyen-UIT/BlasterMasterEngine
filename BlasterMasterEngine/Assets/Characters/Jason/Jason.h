@@ -8,16 +8,22 @@ private:
 	{
 		Normal,
 		CheckPointMove,
-		Die
+		Die,
+		Climbing
 	};
 
 private:
 	float runSpeed;
 	float horizontalMove;
+	float verticalMove;
 	bool isFacingRight;
 	bool isJumping;
+	bool readyToClimb;
+	bool isClimbing;
+	float climbSpeed;
+	bool isCrouching;
 	float fallMultiplier;
-
+	float speedMulti;
 	int hitPoint;
 	bool iFrame;
 	std::array<Color, 4> iFrameColors;
@@ -37,14 +43,18 @@ public:
 
 private:
 	void Flip();
-	void Shoot() {}
+	void Shoot();
 	void Jump();
+	void Crouch(bool enable, float speedScalar = 0.2f);
 	void MoveCameraAccordingly();
 	void ApplyCameraBound();
 	void SetAnimationParameter();
 	void Die();
 	void DoIFrame();
 
+
+	bool ControlHorizontalMove(bool onGround = true);
+	bool ControlVerticalMove();
 public:
 	void TakeDamage(int damage);
 };

@@ -15,15 +15,14 @@ void Renderer::Update()
 
 	std::list<std::shared_ptr<Object2D>> objects = SceneManager::GetActiveScene()->GetAllRenderableObjects();
 
-	for (auto object : objects)
+	for (std::shared_ptr<Object2D> object : objects)
 	{
 		object->InnerUpdate(SceneManager::GetActiveScene()->GetActiceCamera()->GetWorldToViewportMat());
 	}
-	//LOG_INFO("{0}", objects.size());
 
-	for (auto object : objects)
+	for (std::shared_ptr<Object2D> object : objects)
 	{
-		for (auto innerObject : objects)
+		for (std::shared_ptr<Object2D> innerObject : objects)
 		{
 			if (object != innerObject)
 			{
@@ -37,7 +36,7 @@ HRESULT Renderer::CreateRendererResources()
 {
 	HRESULT hr = S_OK;
 
-	for (auto object : SceneManager::GetActiveScene()->GetObjectList())
+	for (std::shared_ptr<Object2D> object : SceneManager::GetActiveScene()->GetObjectList())
 	{
 		object->InnerStart();
 	}
@@ -52,7 +51,7 @@ void Renderer::Render()
 	{
 		RenderBackground();
 
-		for (auto object : SceneManager::GetActiveScene()->GetAllRenderableObjects())
+		for (std::shared_ptr<Object2D> object : SceneManager::GetActiveScene()->GetAllRenderableObjects())
 		{
 			object->Draw(D3DXSPRITE_ALPHABLEND);
 			//object->RenderDebugRectangle(worldToVPMatrix);

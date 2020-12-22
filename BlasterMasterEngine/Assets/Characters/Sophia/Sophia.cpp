@@ -61,6 +61,7 @@ void Sophia::CreateResources()
 void Sophia::Start()
 {
 	runSpeed = 80.0f;
+	speedMulti = 0.0f;
 	horizontalMove = 0.0f;
 	isFacingRight = true;
 	pointUp = false;
@@ -69,6 +70,7 @@ void Sophia::Start()
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
 	rigidbody->gravityScale = 1.0f;
 	rigidbody->bounciness = 0.0f;
+	rigidbody->mass = 3.0f;
 	boxCollider->size = { 20.0f, 20.0f };
 	boxCollider->offset = { 0.0f, 5.0f };
 	boxCollider->isTrigger = false;
@@ -77,11 +79,11 @@ void Sophia::Start()
 	hitPoint = 8;
 	iFrame = false;
 
-	RECT rect;
-	rect.left = boxCollider->topLeft.x;
-	rect.top = SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y;
-	rect.right = rect.left + boxCollider->size.width;
-	rect.bottom = rect.top + boxCollider->size.height;
+	RECT rect = { 0, 0, 0, 0 };
+	rect.left = (LONG)boxCollider->topLeft.x;
+	rect.top = (LONG)(SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y);
+	rect.right = (LONG)(rect.left + boxCollider->size.width);
+	rect.bottom = (LONG)(rect.top + boxCollider->size.height);
 
 	CameraBound::SetCurrentBound(rect);
 	iFrameColors[0] = {0, 255, 0, 255};
@@ -100,8 +102,6 @@ void Sophia::Update()
 		{
 			rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 			boxCollider->isTrigger = false;
-
-			static float speedMulti = 0.0f;
 			static bool jump = false;
 
 			if (Input::GetKey(KeyCode_W))
@@ -246,11 +246,11 @@ void Sophia::OnCollisionExit(std::shared_ptr<Object2D> object)
 	{
 		state = State::Normal;
 
-		RECT rect;
-		rect.left = boxCollider->topLeft.x;
-		rect.top = SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y;
-		rect.right = rect.left + boxCollider->size.width;
-		rect.bottom = rect.top + boxCollider->size.height;
+		RECT rect = { 0, 0, 0, 0 };
+		rect.left = (LONG)boxCollider->topLeft.x;
+		rect.top = (LONG)(SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y);
+		rect.right = (LONG)(rect.left + boxCollider->size.width);
+		rect.bottom = (LONG)(rect.top + boxCollider->size.height);
 
 		CameraBound::SetCurrentBound(rect);
 	}
@@ -343,7 +343,7 @@ void Sophia::ApplyCameraBound()
 {
 	if (camera->GetPosition().x < CameraBound::GetCurrentBound().left)
 	{
-		camera->SetPosition(CameraBound::GetCurrentBound().left, camera->GetPosition().y, 0.0f);
+		camera->SetPosition((float)CameraBound::GetCurrentBound().left, camera->GetPosition().y, 0.0f);
 	}
 	else if (camera->GetPosition().x > CameraBound::GetCurrentBound().right - camera->GetSize().width)
 	{
@@ -365,14 +365,14 @@ void Sophia::SetAnimationParameter()
 {
 	if (horizontalMove == 0.0f)
 	{
-		for (auto object : childObjects)
+		for (std::shared_ptr<Object2D> object : childObjects)
 		{
 			object->animationController->PauseAnimation();
 		}
 	}
 	else
 	{
-		for (auto object : childObjects)
+		for (std::shared_ptr<Object2D> object : childObjects)
 		{
 			object->animationController->PlayAnimation(isFacingRight);
 		}
@@ -402,7 +402,7 @@ void Sophia::Die()
 	std::shared_ptr<Object2D> playerDeadExplosion = std::make_shared<PlayerDeadExplosion>(transform->position.x, transform->position.y + 16.0f);
 	playerDeadExplosion->CreateResources();
 	SceneManager::Instantiate(playerDeadExplosion, playerDeadExplosion->transform->position);
-	for (auto child : childObjects)
+	for (std::shared_ptr<Object2D> child : childObjects)
 	{
 		child->enable = false;
 	}
@@ -446,6 +446,7 @@ void Sophia::TakeDamage(int damage)
 
 		if (hitPoint <= 0)
 		{
+			hitPoint = 0;
 			Die();
 		}
 	}

@@ -9,7 +9,6 @@ private:
 	bool horizontal;
 	bool isFacingRight;
 	float runSpeed;
-	std::shared_ptr<Object2D> explosion;
 
 public:
 	NormalFireBullet(float x = 0, float y = 0, bool pHorizontal = true, bool pIsFacingRight = true);
@@ -17,6 +16,8 @@ public:
 	virtual void Start() override;
 	virtual void Update() override;
 	virtual void CreateResources() override;
-	virtual void OnCollisionEnter(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
+
+private:
+	void Explode();
 };
