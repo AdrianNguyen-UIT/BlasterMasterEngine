@@ -96,12 +96,12 @@ void Sophia::Start()
 
 void Sophia::Update()
 {
-	if (state == State::Normal)
+	if (CharacterController::GetCharacterInControl() == Character::Sophia)
 	{
-		if (CharacterController::GetCharacterInControl() == Character::Sophia)
+		rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+		boxCollider->isTrigger = false;
+		if (state == State::Normal)
 		{
-			rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
-			boxCollider->isTrigger = false;
 			static bool jump = false;
 
 			if (Input::GetKey(KeyCode_W))
@@ -193,30 +193,30 @@ void Sophia::Update()
 			MoveCameraAccordingly();
 			ApplyCameraBound();
 		}
-		else if (downCollision != 0)
+		else if (state == State::CheckPointMove)
+		{
+			rigidbody->velocity.x = (isFacingRight ? 1.0f : -1.0f) * runSpeed * Time::GetFixedDeltaTime();
+			//transform->Translate(transform->position.x + 0.4f, transform->position.y, 0.0f);
+
+			camera->MoveCamera(rigidbody->velocity.x * 2.24f, 0.0f, 0.0f);
+
+		}
+		else if (state == State::Die)
 		{
 			rigidbody->bodyType = Rigidbody::BodyType::Static;
-			boxCollider->isTrigger = true;
+			static float timeBeforLoadScreen = 0.0f;
+
+			if (timeBeforLoadScreen >= 1.5f)
+			{
+				SceneManager::LoadScene("Loading Screen");
+			}
+			timeBeforLoadScreen += Time::GetDeltaTime();
 		}
 	}
-	else if (state == State::CheckPointMove)
-	{
-		rigidbody->velocity.x = (isFacingRight ? 1.0f : -1.0f) * runSpeed * Time::GetFixedDeltaTime();
-		//transform->Translate(transform->position.x + 0.4f, transform->position.y, 0.0f);
-
-		camera->MoveCamera(rigidbody->velocity.x * 2.24f, 0.0f, 0.0f);
-
-	}
-	else if (state == State::Die)
+	else
 	{
 		rigidbody->bodyType = Rigidbody::BodyType::Static;
-		static float timeBeforLoadScreen = 0.0f;
-
-		if (timeBeforLoadScreen >= 1.5f)
-		{
-			SceneManager::LoadScene("Loading Screen");
-		}
-		timeBeforLoadScreen += Time::GetDeltaTime();
+		boxCollider->isTrigger = true;
 	}
 	SetAnimationParameter();
 	DoIFrame();
@@ -417,7 +417,7 @@ void Sophia::DoIFrame()
 		static float iFrameTime = 0.0f;
 		static int iFrameColorIndex = 0;
 
-		if (iFrameTime > 0.45f)
+		if (iFrameTime >= 0.45f)
 		{
 			iFrameTime = 0.0f;
 			iFrame = false;

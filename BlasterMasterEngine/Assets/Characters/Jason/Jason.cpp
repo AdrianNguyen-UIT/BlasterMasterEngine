@@ -27,7 +27,7 @@ void Jason::CreateResources()
 
 	KeyFrame keyFrame;
 	RECT rect = {0, 0, 0, 0};
-	keyFrame.position = transform->position;
+	//keyFrame.position = transform->position;
 	keyFrame.scale = { 1.0f, 1.0f, 0.0f };
 	std::shared_ptr<Animation> jasonIdle = std::make_shared<Animation>("Jason Idle");
 	{
@@ -775,7 +775,7 @@ void Jason::DoIFrame()
 		static float iFrameTime = 0.0f;
 		static int iFrameColorIndex = 0;
 
-		if (iFrameTime > 0.45f)
+		if (iFrameTime >= 0.45f)
 		{
 			iFrameTime = 0.0f;
 			iFrame = false;

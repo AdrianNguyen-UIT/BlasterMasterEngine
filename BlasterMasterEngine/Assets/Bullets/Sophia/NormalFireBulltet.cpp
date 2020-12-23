@@ -1,7 +1,8 @@
 #include "d3dpch.h"
 #include "NormalFireBullet.h"
 #include "Core/SceneManager/SceneManager.h"
-#include "Assets/Particles/NormalBulletExplosion.h"
+#include "Assets/Particles/NormalExplosion.h"
+#include "Assets/Characters/Enemy/EnemyList.h"
 NormalFireBullet::NormalFireBullet(float x, float y, bool pHorizontal, bool pIsFacingRight)
 	: Object2D(x, y)
 {
@@ -24,7 +25,7 @@ void NormalFireBullet::Start()
 	boxCollider->isTrigger = true;
 	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	rigidbody->gravityScale = 0.0f;
-
+	damage = 3;
 	transform->Scale(isFacingRight ? -WINDOW_CAMERA_SCALE_X : WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
 }
 
@@ -51,12 +52,20 @@ void NormalFireBullet::CreateResources()
 
 void NormalFireBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
+	if (object->tag == Tag::Enemy)
+	{
+		std::shared_ptr<Crab> sophia = std::dynamic_pointer_cast<Crab>(object);
+		if (sophia != NULL)
+		{
+			sophia->TakeDamage(damage);
+		}
+	}
 	Explode();
 }
 
 void NormalFireBullet::Explode()
 {
-	std::shared_ptr<Object2D> explosion = std::make_shared<NormalBulletExplosion>(transform->position.x, transform->position.y);
+	std::shared_ptr<Object2D> explosion = std::make_shared<NormalExplosion>(transform->position.x, transform->position.y);
 	explosion->CreateResources();
 	SceneManager::Instantiate(explosion, transform->position);
 	SceneManager::DestroyObject(shared_from_this());

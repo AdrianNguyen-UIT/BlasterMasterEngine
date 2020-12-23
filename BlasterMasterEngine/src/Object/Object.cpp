@@ -59,7 +59,10 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 				{
 					D3DXVECTOR2 groundReactionForce = -1.0f * rigidbody->mass * Physic::gravity * rigidbody->gravityScale;
 					rigidbody->AddForce(groundReactionForce);
-					rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
+					if (rigidbody->bounciness != 0.0f)
+					{
+						rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
+					}
 					if (rigidbody->velocity.y < 0.05f)
 					{
 						rigidbody->velocity.y = 0.0f;
@@ -68,7 +71,10 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 
 				if (upCollision != 0)
 				{
-					rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
+					if (rigidbody->bounciness != 0.0f)
+					{
+						rigidbody->velocity.y *= -1.0f * rigidbody->bounciness;
+					}
 					if (rigidbody->velocity.y > -0.05f)
 					{
 						rigidbody->velocity.y = 0.0f;
@@ -77,7 +83,10 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 
 				if (rightCollision != 0)
 				{
-					rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
+					if (rigidbody->bounciness != 0.0f)
+					{
+						rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
+					}
 
 					if (rigidbody->velocity.x > -0.05f)
 					{
@@ -87,7 +96,10 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 
 				if (leftCollision != 0)
 				{
-					rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
+					if (rigidbody->bounciness != 0.0f)
+					{
+						rigidbody->velocity.x *= -1.0f * rigidbody->bounciness;
+					}
 
 					if (rigidbody->velocity.x < 0.05f)
 					{
@@ -150,8 +162,6 @@ void Object2D::InnerUpdate(const D3DXMATRIX& worldToViewportMat)
 
 		transform->TranslateWorldToViewport(worldToViewportMat);
 		transform->Update();
-
-
 	}
 
 	for (std::shared_ptr<Object2D> object : childObjects)
@@ -254,10 +264,19 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 			}
 		}
 
+
+		if ((tag == Tag::Player && object->tag == Tag::Enemy) ||
+			((tag == Tag::Enemy && object->tag == Tag::Player)))
+		{
+			collidedObjects.emplace_back(std::make_pair(object, Direction::NONE));
+			OnCollisionEnter(object);
+			return;
+		}
+
+
 		if (boxCollider->isTrigger)
 		{
 			collidedObjects.emplace_back(std::make_pair(object, Direction::NONE));
-
 			OnTriggerEnter(object);
 		}
 		else

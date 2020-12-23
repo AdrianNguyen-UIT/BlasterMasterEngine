@@ -1,17 +1,17 @@
 #include "d3dpch.h"
-#include "NormalBulletExplosion.h"
+#include "NormalExplosion.h"
 #include "Core/SceneManager/SceneManager.h"
-NormalBulletExplosion::NormalBulletExplosion(float x, float y)
+NormalExplosion::NormalExplosion(float x, float y)
 	: Object2D(x, y)
 {
-	name = "Normal Bullet Explosion Particle";
+	name = "Normal Explosion Particle";
 	tag = Tag::Default;
 	animationController = GetComponent<AnimationController>();
 	spriteRenderer = GetComponent<SpriteRenderer>();
 	layer = Layer::Particle;
 }
 
-void NormalBulletExplosion::CreateResources()
+void NormalExplosion::CreateResources()
 {
 	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
 
@@ -68,13 +68,13 @@ void NormalBulletExplosion::CreateResources()
 	}
 }
 
-void NormalBulletExplosion::Start()
+void NormalExplosion::Start()
 {
 	transform->scale = { WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f };
 	timeLapse = 0.0f;
 }
 
-void NormalBulletExplosion::Update()
+void NormalExplosion::Update()
 {
 	if (timeLapse >= 1.5f)
 	{

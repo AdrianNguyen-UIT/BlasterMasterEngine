@@ -1,7 +1,7 @@
 #include "d3dpch.h"
 #include "SmallFireBullet.h"
 #include "Core/SceneManager/SceneManager.h"
-#include "Assets/Particles/NormalBulletExplosion.h"
+#include "Assets/Particles/NormalExplosion.h"
 
 SmallFireBullet::SmallFireBullet(float x, float y, bool pIsFacingRight)
 	: Object2D(x, y)
@@ -22,6 +22,7 @@ void SmallFireBullet::Start()
 	boxCollider->isTrigger = true;
 	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	rigidbody->gravityScale = 0.0f;
+	damage = 1;
 	transform->Scale(isFacingRight ? -WINDOW_CAMERA_SCALE_X : WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
 }
 
@@ -43,7 +44,7 @@ void SmallFireBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
 
 void SmallFireBullet::Explode()
 {
-	std::shared_ptr<Object2D> explosion = std::make_shared<NormalBulletExplosion>(transform->position.x, transform->position.y);
+	std::shared_ptr<Object2D> explosion = std::make_shared<NormalExplosion>(transform->position.x, transform->position.y);
 	explosion->CreateResources();
 	SceneManager::Instantiate(explosion, transform->position);
 	SceneManager::DestroyObject(shared_from_this());

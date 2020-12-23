@@ -9,6 +9,8 @@
 #include "Assets/Bullets/Enemy/EnemyBullet.h"
 #include "Assets/Ladder/Ladder.h"
 
+#include "Assets/Characters/Enemy/Crab.h"
+
 void Area2::CreateScene()
 {
 	mapSize = { (float)AREA2_MAP_WIDTH, (float)AREA2_MAP_HEIGHT };
@@ -27,24 +29,31 @@ void Area2::CreateScene()
 	RECT mapBound = {0, 0, (LONG)mapSize.width, (LONG)mapSize.height };
 
 	{
-		std::shared_ptr<Object2D> sophia = std::make_shared<Sophia>(55.0f, mapSize.height - 2919.0f);
+		std::shared_ptr<Object2D> crab = std::make_shared<Crab>(55.0f, mapSize.height - 2919.0f);
+		crab->CreateResources();
+		AddObject(crab);
+	}
+
+
+	{
+		std::shared_ptr<Object2D> sophia = std::make_shared<Sophia>(55.0f, mapSize.height - 2956.0f);
 		sophia->CreateResources();
 		AddObject(sophia);
 	}
 
-	{
-		std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(120.0f, mapSize.height - 2956.0f, true, false);
-		bullet->name = "1";
-		bullet->CreateResources();
-		AddObject(bullet);
-	}
+	//{
+	//	std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(120.0f, mapSize.height - 2956.0f, true, false);
+	//	bullet->name = "1";
+	//	bullet->CreateResources();
+	//	AddObject(bullet);
+	//}
 
-	{
-		std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(220.0f, mapSize.height - 2956.0f, true, false);
-		bullet->CreateResources();
-		bullet->name = "2";
-		AddObject(bullet);
-	}
+	//{
+	//	std::shared_ptr<Object2D> bullet = std::make_shared<EnemyBullet>(220.0f, mapSize.height - 2956.0f, true, false);
+	//	bullet->CreateResources();
+	//	bullet->name = "2";
+	//	AddObject(bullet);
+	//}
 
 	for (XmlObjectGroup objectGroup : xmlMap->GetObjectGroups())
 	{
