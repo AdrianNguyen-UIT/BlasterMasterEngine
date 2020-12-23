@@ -35,6 +35,7 @@ enum class Layer
 	Projectile,
 	Sophia,
 	Jason,
+	Enemy,
 	Particle,
 	Gate
 };

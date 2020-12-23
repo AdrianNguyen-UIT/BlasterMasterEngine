@@ -19,7 +19,6 @@ void PlayerDeadExplosion::CreateResources()
 	RECT smallRect = { 159, 3, 207, 43};
 	RECT bigRect = {143, 44, 207, 92};
 
-	keyFrame.position = transform->position;
 	keyFrame.scale = { 1.0f, 1.0f, 0.0f };
 
 	std::shared_ptr<Animation> explosion = std::make_shared<Animation>("Normal Bullet Explosion Animation");

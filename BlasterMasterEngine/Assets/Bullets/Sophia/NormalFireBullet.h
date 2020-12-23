@@ -10,6 +10,8 @@ private:
 	bool isFacingRight;
 	float runSpeed;
 
+	int damage;
+
 public:
 	NormalFireBullet(float x = 0, float y = 0, bool pHorizontal = true, bool pIsFacingRight = true);
 

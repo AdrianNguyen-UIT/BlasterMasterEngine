@@ -26,7 +26,7 @@
 #define MAX_OBJECTS_QUADTREE 10
 #define MAX_LEVELS_QUADTREE 5
 
-#define ENEMY_TEXTURE_PATH L"Assets/Images/enemy.png"
+#define ENEMY_TEXTURE_PATH L"Assets/Images/Enemy.png"
 #define ENEMY_BULLET_TEXTURE_PATH L"Assets/Images/other.png"
 ////////////////////////////////
 ////////////////////////////////

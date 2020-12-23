@@ -1,7 +1,7 @@
 #include "d3dpch.h"
 #include "EnemyBullet.h"
 #include "Core/SceneManager/SceneManager.h"
-#include "Assets/Particles/NormalBulletExplosion.h"
+#include "Assets/Particles/NormalExplosion.h"
 #include "Assets/Characters/Sophia/Sophia.h"
 #include "Assets/Characters/Jason/Jason.h"
 EnemyBullet::EnemyBullet(float x, float y, bool pHorizontal, bool pIsFacingRight)
@@ -51,10 +51,6 @@ void EnemyBullet::CreateResources()
 	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
 }
 
-void EnemyBullet::OnCollisionEnter(std::shared_ptr<Object2D> object)
-{
-}
-
 void EnemyBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
 	if (object->tag == Tag::Player && object->rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
@@ -72,7 +68,7 @@ void EnemyBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
 		}
 	}
 
-	std::shared_ptr<Object2D> explosion = std::make_shared<NormalBulletExplosion>(transform->position.x, transform->position.y);
+	std::shared_ptr<Object2D> explosion = std::make_shared<NormalExplosion>(transform->position.x, transform->position.y);
 	explosion->CreateResources();
 	SceneManager::Instantiate(explosion, transform->position);
 	SceneManager::DestroyObject(shared_from_this());

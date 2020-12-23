@@ -17,10 +17,5 @@ public:
 	virtual void Start() override;
 	virtual void Update() override;
 	virtual void CreateResources() override;
-	virtual void OnCollisionEnter(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
-
-	int GetDamage() { return damage; }
-
-	
 };
