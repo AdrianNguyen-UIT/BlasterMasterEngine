@@ -37,7 +37,7 @@ public:
 	void ClearScene();
 	void SetReadyToLoad(bool ready) { readyToLoad = ready; }
 	bool GetReadyToLoad() { return readyToLoad; }
-
+	std::shared_ptr<Object2D> FinObjectByName(std::string name);
 private:
 	void UpdateRenderableObjects();
 

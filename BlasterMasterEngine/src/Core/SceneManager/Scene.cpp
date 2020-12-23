@@ -55,6 +55,18 @@ bool operator<(const std::shared_ptr<Object2D>& object1, const std::shared_ptr<O
 	return object1->layer < object2->layer;
 }
 
+std::shared_ptr<Object2D> Scene::FinObjectByName(std::string name)
+{
+	for (std::shared_ptr<Object2D> object : renderableObjects)
+	{
+		if (object->name == name)
+		{
+			return object;
+		}
+	}
+	return NULL;
+}
+
 void  Scene::UpdateRenderableObjects()
 {
 	renderableObjects.clear();

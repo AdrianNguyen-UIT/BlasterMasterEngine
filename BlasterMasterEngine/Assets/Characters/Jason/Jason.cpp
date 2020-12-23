@@ -600,11 +600,8 @@ void Jason::Update()
 		rigidbody->bodyType = Rigidbody::BodyType::Static;
 		boxCollider->isTrigger = true;
 	}
-
 	SetAnimationParameter();
 	DoIFrame();
-
-	LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
 }
 
 void Jason::OnCollisionEnter(std::shared_ptr<Object2D> object)
