@@ -25,6 +25,7 @@
 #include <map>
 #include <math.h>
 #include <thread>
+#include <mutex>
 
 #include "Core/Log/Log.h"
 #include "Core/Time/Time.h"

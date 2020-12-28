@@ -1,11 +1,15 @@
 #include "d3dpch.h"
 #include "DeviceResources.h"
 
-LPDIRECT3DDEVICE9 DeviceResources::d3ddev = NULL;
-LPDIRECT3DSURFACE9 DeviceResources::backBuffer = NULL;
+LPDIRECT3D9 DeviceResources::d3d;
+LPDIRECT3DDEVICE9 DeviceResources::d3ddev;
+LPDIRECT3DSURFACE9 DeviceResources::backBuffer;
+
 DeviceResources::DeviceResources()
 {
 	d3d = NULL;
+    d3ddev = NULL;
+    backBuffer = NULL;
 }
 
 DeviceResources::~DeviceResources()
@@ -69,7 +73,6 @@ LPDIRECT3DSURFACE9 DeviceResources::LoadSurface(std::wstring filename, D3DCOLOR 
     LPDIRECT3DSURFACE9 image = NULL;
     D3DXIMAGE_INFO info;
     HRESULT hr;
-
     hr = D3DXGetImageInfoFromFile(filename.c_str(), &info);
     if (FAILED(hr))
     {

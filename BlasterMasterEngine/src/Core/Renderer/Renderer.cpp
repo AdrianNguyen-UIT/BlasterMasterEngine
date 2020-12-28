@@ -30,6 +30,8 @@ void Renderer::Update()
 			}
 		}
 	}
+
+	SceneManager::GetActiveScene()->UpdateCanvas();
 }
 
 HRESULT Renderer::CreateRendererResources()
@@ -40,6 +42,8 @@ HRESULT Renderer::CreateRendererResources()
 	{
 		object->InnerStart();
 	}
+
+	SceneManager::GetActiveScene()->StartCanvas();
 	return hr;
 }
 
@@ -56,6 +60,8 @@ void Renderer::Render()
 			object->Draw(D3DXSPRITE_ALPHABLEND);
 			//object->RenderDebugRectangle(worldToVPMatrix);
 		}
+
+		SceneManager::GetActiveScene()->RenderCanvas(D3DXSPRITE_ALPHABLEND);
 
 		DeviceResources::GetDevice()->EndScene();
 	}

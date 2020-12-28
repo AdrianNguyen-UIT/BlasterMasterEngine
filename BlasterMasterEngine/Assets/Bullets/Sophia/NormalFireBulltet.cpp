@@ -47,17 +47,59 @@ void NormalFireBullet::Update()
 
 void NormalFireBullet::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 }
 
 void NormalFireBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
 {
 	if (object->tag == Tag::Enemy)
 	{
-		std::shared_ptr<Crab> sophia = std::dynamic_pointer_cast<Crab>(object);
-		if (sophia != NULL)
+		std::shared_ptr<EnemyCrab> crab = std::dynamic_pointer_cast<EnemyCrab>(object);
+		if (crab != NULL)
 		{
-			sophia->TakeDamage(damage);
+			crab->Die();
+		}
+
+		std::shared_ptr<EnemyBee> bee = std::dynamic_pointer_cast<EnemyBee>(object);
+		if (bee != NULL)
+		{
+			bee->Die();
+		}
+
+		std::shared_ptr<EnemyBulletHead> bhead = std::dynamic_pointer_cast<EnemyBulletHead>(object);
+		if (bhead != NULL)
+		{
+			bhead->Die();
+		}
+
+		std::shared_ptr<EnemyCrazyLadybug> clb = std::dynamic_pointer_cast<EnemyCrazyLadybug>(object);
+		if (clb != NULL)
+		{
+			clb->Die();
+		}
+
+		std::shared_ptr<EnemyLadybug> lb = std::dynamic_pointer_cast<EnemyLadybug>(object);
+		if (lb != NULL)
+		{
+			lb->Die();
+		}
+
+		std::shared_ptr<EnemyLegRobot> lr = std::dynamic_pointer_cast<EnemyLegRobot>(object);
+		if (lr != NULL)
+		{
+			lr->Die();
+		}
+
+		std::shared_ptr<EnemySkull> s = std::dynamic_pointer_cast<EnemySkull>(object);
+		if (s != NULL)
+		{
+			s->Die();
+		}
+
+		std::shared_ptr<EnemyWorm> w = std::dynamic_pointer_cast<EnemyWorm>(object);
+		if (w != NULL)
+		{
+			w->Die();
 		}
 	}
 	Explode();

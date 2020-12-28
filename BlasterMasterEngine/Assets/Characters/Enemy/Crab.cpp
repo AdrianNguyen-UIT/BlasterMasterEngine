@@ -49,7 +49,7 @@ void Crab::Update()
 {
 	if (start)
 	{
-		D3DXVECTOR2 force(-20.0f, 20.0f);
+		D3DXVECTOR2 force(20.0f, 0.0f);
 		rigidbody->AddForce(force);
 		start = false;
 	}
@@ -86,11 +86,12 @@ void Crab::Update()
 	transform->Scale(scalar * WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
 
 	DoIFrame();
+	LOG_INFO("{0} {1}", transform->position.x, transform->position.y);
 }
 
 void Crab::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(ENEMY_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Enemy_Texture");
 	KeyFrame keyFrame;
 	RECT rect = { 0, 0, 0, 0 };
 	keyFrame.scale = { 1.0f, 1.0f, 0.0f };

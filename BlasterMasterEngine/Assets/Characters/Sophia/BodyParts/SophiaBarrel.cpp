@@ -1,6 +1,5 @@
 #include "d3dpch.h"
 #include "SophiaBarrel.h"
-
 SophiaBarrel::SophiaBarrel(float x, float y)
 	: Object2D(x, y)
 {
@@ -12,7 +11,7 @@ SophiaBarrel::SophiaBarrel(float x, float y)
 
 void SophiaBarrel::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 
 	int spriteWidth = 7;
 	int spriteHeight = 7;

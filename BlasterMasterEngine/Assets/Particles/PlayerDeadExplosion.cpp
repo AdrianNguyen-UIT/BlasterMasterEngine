@@ -13,7 +13,7 @@ PlayerDeadExplosion::PlayerDeadExplosion(float x, float y)
 
 void PlayerDeadExplosion::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 
 	KeyFrame keyFrame;
 	RECT smallRect = { 159, 3, 207, 43};

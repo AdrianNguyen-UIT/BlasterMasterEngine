@@ -1,2 +1,9 @@
 #pragma once
-#include "Crab.h"
+#include "Assets/Characters/Enemy/EnemyBee/EnemyBee.h"
+#include "Assets/Characters/Enemy/EnemyBulletHead/EnemyBulletHead.h"
+#include "Assets/Characters/Enemy/EnemyCrab/EnemyCrab.h"
+#include "Assets/Characters/Enemy/EnemyCrazyLadybug/EnemyCrazyLadybug.h"
+#include "Assets/Characters/Enemy/EnemyLadybug/EnemyLadybug.h"
+#include "Assets/Characters/Enemy/EnemyLegRobot/EnemyLegRobot.h"
+#include "Assets/Characters/Enemy/EnemySkull/EnemySkull.h"
+#include "Assets/Characters/Enemy/EnemyWorm/EnemyWorm.h"

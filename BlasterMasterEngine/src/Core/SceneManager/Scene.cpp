@@ -8,6 +8,7 @@ Scene::Scene()
 	mapSize = {0.0f, 0.0f};
 	backGround = NULL;
 	xmlMap = NULL;
+	canvas = NULL;
 }
 
 Scene::~Scene()
@@ -22,7 +23,7 @@ void Scene::UpdateScene()
 	mapRender.right = mapRender.left + (LONG)(camera->GetSize().width);
 	mapRender.bottom = mapRender.top + (LONG)(camera->GetSize().height);
 
-	UpdateRenderableObjects();
+	CollectRenderableObjects();
 }
 
 void Scene::SetMapRectPosition(float left, float top)
@@ -67,25 +68,58 @@ std::shared_ptr<Object2D> Scene::FinObjectByName(std::string name)
 	return NULL;
 }
 
-void  Scene::UpdateRenderableObjects()
+void Scene::StartCanvas()
+{
+	if (canvas != NULL)
+	{
+		if (canvas->GetEnable())
+		{
+			canvas->Start();
+		}
+	}
+}
+
+void Scene::UpdateCanvas()
+{
+	if (canvas != NULL)
+	{
+		if (canvas->GetEnable())
+		{
+			canvas->Update();
+		}
+	}
+}
+
+void Scene::RenderCanvas(DWORD flags)
+{
+	if (canvas != NULL)
+	{
+		if (canvas->GetEnable())
+		{
+			canvas->Render(flags);
+		}
+	}
+}
+
+void  Scene::CollectRenderableObjects()
 {
 	renderableObjects.clear();
 	for (std::shared_ptr<Object2D> object : objects)
 	{
 		if (object->boxCollider == NULL || !object->boxCollider->isEnable)
 		{
-			if ((object->transform->position.x >= camera->GetPosition().x - 100.0f &&
-				object->transform->position.x <= (camera->GetPosition().x - 100.0f) + (camera->GetSize().width + 100.0f * 2) &&
-				object->transform->position.y <= camera->GetPosition().y + 100.0f &&
-				object->transform->position.y >= (camera->GetPosition().y + 100.0f) - (camera->GetSize().height + 100.0f * 2)))
+			if ((object->transform->position.x >= camera->GetPosition().x - 30.0f &&
+				object->transform->position.x <= (camera->GetPosition().x) + (camera->GetSize().width + 30.0f) &&
+				object->transform->position.y <= camera->GetPosition().y + 30.0f &&
+				object->transform->position.y >= (camera->GetPosition().y) - (camera->GetSize().height) - 30.0f))
 			{
 				renderableObjects.emplace_back(object);
 			}
 		}
-		else if (object->boxCollider->topLeft.x + object->boxCollider->size.width >= camera->GetPosition().x - 100.0f && 
-			object->boxCollider->topLeft.x <= (camera->GetPosition().x - 100.0f) + (camera->GetSize().width + 100.0f * 2) &&
-			object->boxCollider->topLeft.y - object->boxCollider->size.height <= camera->GetPosition().y + 100.0f &&
-			object->boxCollider->topLeft.y >= (camera->GetPosition().y + 100.0f) - (camera->GetSize().height + 100.0f * 2))
+		else if (object->boxCollider->topLeft.x + object->boxCollider->size.width >= camera->GetPosition().x - 30.0f && 
+			object->boxCollider->topLeft.x <= (camera->GetPosition().x) + (camera->GetSize().width + 30.0f) &&
+			object->boxCollider->topLeft.y - object->boxCollider->size.height <= camera->GetPosition().y + 30.0f&&
+			object->boxCollider->topLeft.y >= (camera->GetPosition().y) - (camera->GetSize().height) - 30.0f)
 		{
 			renderableObjects.emplace_back(object);
 		}
@@ -99,7 +133,8 @@ void Scene::ClearScene()
 	readyToLoad = false;
 	objects.clear();
 	renderableObjects.clear();
-
+	if (canvas != NULL)
+		canvas = NULL;
 	if (camera != NULL)
 		camera = NULL;
 }

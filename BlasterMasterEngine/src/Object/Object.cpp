@@ -264,15 +264,23 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 			}
 		}
 
-
 		if ((tag == Tag::Player && object->tag == Tag::Enemy) ||
-			((tag == Tag::Enemy && object->tag == Tag::Player)))
+			(tag == Tag::Enemy && object->tag == Tag::Player) ||
+			(tag == Tag::Player && object->tag == Tag::CheckPoint))
 		{
 			collidedObjects.emplace_back(std::make_pair(object, Direction::NONE));
 			OnCollisionEnter(object);
 			return;
 		}
 
+		
+		if ((tag == Tag::Player && object->tag == Tag::EnemyBullet) ||
+			((tag == Tag::EnemyBullet && object->tag == Tag::Player)))
+		{
+			collidedObjects.emplace_back(std::make_pair(object, Direction::NONE));
+			OnCollisionEnter(object);
+			return;
+		}
 
 		if (boxCollider->isTrigger)
 		{

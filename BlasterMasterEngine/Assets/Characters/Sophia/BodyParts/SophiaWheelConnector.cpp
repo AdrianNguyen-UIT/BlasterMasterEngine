@@ -11,7 +11,7 @@ SophiaWheelConnector::SophiaWheelConnector(float x, float y)
 
 void SophiaWheelConnector::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 	int spriteWidth = 7;
 	int spriteHeight = 7;
 	int xOffset = 2;

@@ -5,6 +5,7 @@
 #include "Assets/CameraBound.h"
 #include "Assets/Particles/PlayerDeadExplosion.h"
 #include "Assets/Characters/Jason/Jason.h"
+#include "Assets/Characters/PlayerHealth.h"
 
 Sophia::Sophia(float x, float y)
 	: Object2D(x, y)
@@ -76,9 +77,9 @@ void Sophia::Start()
 	boxCollider->isTrigger = false;
 	camera = SceneManager::GetActiveScene()->GetActiceCamera();
 	state = State::Normal;
-	hitPoint = 8;
 	iFrame = false;
-
+	timeBeforLoadScreen = 0.0f;
+	allowToLoad = true;
 	RECT rect = { 0, 0, 0, 0 };
 	rect.left = (LONG)boxCollider->topLeft.x;
 	rect.top = (LONG)(SceneManager::GetActiveScene()->GetMapSize().height - boxCollider->topLeft.y);
@@ -204,11 +205,20 @@ void Sophia::Update()
 		else if (state == State::Die)
 		{
 			rigidbody->bodyType = Rigidbody::BodyType::Static;
-			static float timeBeforLoadScreen = 0.0f;
 
-			if (timeBeforLoadScreen >= 1.5f)
+			if (timeBeforLoadScreen >= 1.5f && allowToLoad)
 			{
-				SceneManager::LoadScene("Loading Screen");
+				PlayerHealth::SetPlayerLife(PlayerHealth::GetPlayerLife() - 1);
+				if (PlayerHealth::GetPlayerLife() < 0)
+				{
+					SceneManager::ReloadScene("Game Over Screen");
+				}
+				else
+				{
+					SceneManager::ReloadScene("Loading Screen");
+				}
+				timeBeforLoadScreen = 0.0f;
+				allowToLoad = false;
 			}
 			timeBeforLoadScreen += Time::GetDeltaTime();
 		}
@@ -441,12 +451,14 @@ void Sophia::TakeDamage(int damage)
 {
 	if (!iFrame)
 	{
-		hitPoint -= damage;
+		int health = PlayerHealth::GetSophiaHealth();
+		health -= damage;
+		PlayerHealth::SetSophiaHealth(health);
 		iFrame = true;
 
-		if (hitPoint <= 0)
+		if (health <= 0)
 		{
-			hitPoint = 0;
+			PlayerHealth::SetSophiaHealth(0);
 			Die();
 		}
 	}

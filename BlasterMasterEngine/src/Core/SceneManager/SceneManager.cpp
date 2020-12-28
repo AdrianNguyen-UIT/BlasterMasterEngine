@@ -3,6 +3,10 @@
 #include "Samples/MainScene.h"
 #include "Assets/Scenes/Area2.h"
 #include "Assets/Scenes/LoadingScreen.h"
+#include "Assets/Scenes/OpeningCutscene.h"
+#include "Assets/Scenes/OpeningScreen.h"
+#include "Assets/Scenes/RollOutCutscene.h"
+#include "Assets/Scenes/GameOverScreen.h"
 std::list<std::shared_ptr<Scene>> SceneManager::scenes;
 std::shared_ptr<Scene> SceneManager::activeScene;
 std::list<std::shared_ptr<Object2D>> SceneManager::waitingObjects;
@@ -20,14 +24,87 @@ SceneManager::~SceneManager()
 HRESULT SceneManager::CreateScenesResources()
 {
 	std::shared_ptr<Scene> area2 = std::make_shared<Area2>();
-	std::shared_ptr<Scene> loadingScreen = std::make_shared<LoadingScreen>();
-
+	area2->CreateScene();
+	activeScene = area2;
 	scenes.emplace_back(area2);
+
+	std::shared_ptr<Scene> loadingScreen = std::make_shared<LoadingScreen>();
+	//loadingScreen->CreateScene();
+	//activeScene = loadingScreen;
 	scenes.emplace_back(loadingScreen);
 
-	LoadInitScene(0);
+	std::shared_ptr<Scene> openingCutscene = std::make_shared<OpeningCutscene>();
+	//openingCutscene->CreateScene();
+	scenes.emplace_back(openingCutscene);
+	//activeScene = openingCutscene;
 
+	std::shared_ptr<Scene> openingScreen = std::make_shared<OpeningScreen>();
+	//openingScreen->CreateScene();
+	scenes.emplace_back(openingScreen);
+	//activeScene = openingScreen;
+
+	std::shared_ptr<Scene> rolloutCutscene = std::make_shared<RollOutCutscene>();
+	//rolloutCutscene->CreateScene();
+	scenes.emplace_back(rolloutCutscene);
+	//activeScene = rolloutCutscene;
+
+	std::shared_ptr<Scene> gameOverScreen = std::make_shared<GameOverScreen>();
+	//gameOverScreen->CreateScene();
+	scenes.emplace_back(gameOverScreen);
+	//activeScene = gameOverScreen;
 	return S_OK;
+}
+
+
+
+void SceneManager::ReloadScene(std::string p_Name)
+{
+
+	std::thread thread([=]
+		{
+			std::mutex m;
+			for (std::shared_ptr<Scene> scene : scenes)
+			{
+				if (scene->GetName() == p_Name)
+				{
+					LOG_TRACE("Reloading Scene [{0}]", p_Name);
+					scene->ClearScene();
+					scene->CreateScene();
+					scene->SetReadyToLoad(true);
+				}
+			}
+			LOG_INFO("FINISHED!");
+		});
+
+	if (thread.joinable())
+	{
+		thread.detach();
+	}
+}
+
+void SceneManager::ReloadScene(size_t index)
+{
+	std::thread thread([&index]
+		{
+			size_t currentIndex = 0;
+			for (std::shared_ptr<Scene> scene : scenes)
+			{
+				if (currentIndex == index)
+				{
+					LOG_TRACE("Reloading Scene [{0}]", scene->GetName());
+					scene->ClearScene();
+					scene->CreateScene();
+					scene->SetReadyToLoad(true);
+				}
+				++currentIndex;
+			}
+			LOG_INFO("FINISHED!");
+		});
+
+	if (thread.joinable())
+	{
+		thread.detach();
+	}
 }
 
 void SceneManager::LoadScene(std::string p_Name)
@@ -38,11 +115,11 @@ void SceneManager::LoadScene(std::string p_Name)
 			{
 				if (scene->GetName() == p_Name)
 				{
-					scene->ClearScene();
-					scene->CreateScene();
+					LOG_TRACE("Reloading Scene [{0}]", p_Name);
 					scene->SetReadyToLoad(true);
 				}
 			}
+			LOG_INFO("FINISHED!");
 		});
 
 	if (thread.joinable())
@@ -60,12 +137,12 @@ void SceneManager::LoadScene(size_t index)
 			{
 				if (currentIndex == index)
 				{
-					scene->ClearScene();
-					scene->CreateScene();
+					LOG_TRACE("Reloading Scene [{0}]", scene->GetName());
 					scene->SetReadyToLoad(true);
 				}
 				++currentIndex;
 			}
+			LOG_INFO("FINISHED!");
 		});
 
 	if (thread.joinable())
@@ -103,7 +180,6 @@ std::shared_ptr<Scene> SceneManager::GetSceneByIndex(size_t index)
 		}
 		++currentIndex;
 	}
-
 	return NULL;
 }
 
@@ -215,36 +291,6 @@ void SceneManager::Instantiate(std::shared_ptr<Object2D> &p_Object, D3DXVECTOR3 
 
 	waitingObjects.emplace_back(p_Object);
 	updateAfterInstantiate = true;
-}
-
-void SceneManager::LoadInitScene(std::string p_Name)
-{
-	for (std::shared_ptr<Scene> scene : scenes)
-	{
-		if (scene->GetName() == p_Name)
-		{
-			scene->ClearScene();
-			scene->CreateScene();
-			activeScene = scene;
-			break;
-		}
-	}
-}
-
-void SceneManager::LoadInitScene(size_t index)
-{
-	size_t currentIndex = 0;
-	for (std::shared_ptr<Scene> scene : scenes)
-	{
-		if (currentIndex == index)
-		{
-			scene->ClearScene();
-			scene->CreateScene();
-			activeScene = scene;
-			break;
-		}
-		++currentIndex;
-	}
 }
 
 bool SceneManager::LoadActiveScene()

@@ -20,14 +20,29 @@
 #define AREA2_MAP_WIDTH 3072
 #define AREA2_MAP_HEIGHT 3072
 
+#define HEALTH_BLOCK_PATH L"Assets/Images/HealthBlock.png"
+#define HEALTHBAR_FONT_PATH L"Assets/Images/HealthBarFont.png"
+
 #define BLACK_BACKGROUND_PATH L"Assets/Images/BlackImage.png"
 #define BLACK_BACKGROUND_WIDTH 800
 #define BLACK_BACKGROUND_HEIGHT 600
+
+#define WHITE_BACKGROUND_PATH L"Assets/Images/WhiteImage.png"
+#define WHITE_BACKGROUND_WIDTH 800
+#define WHITE_BACKGROUND_HEIGHT 600
+
+#define OPENING_SCREEN_PATH L"Assets/Images/OpeningScreen.png"
+#define OPENING_SCREEN_WIDTH 256
+#define OPENING_SCREEN_HEIGHT 240
+
 #define MAX_OBJECTS_QUADTREE 10
 #define MAX_LEVELS_QUADTREE 5
 
 #define ENEMY_TEXTURE_PATH L"Assets/Images/Enemy.png"
 #define ENEMY_BULLET_TEXTURE_PATH L"Assets/Images/other.png"
+
+#define OPENING_CUTSCENE_PATH L"Assets/Images/OpeningCutscene.png"
+#define ROLLOUT_CUTSCENE_PATH L"Assets/Images/RollOutCutscene.png"
 ////////////////////////////////
 ////////////////////////////////
 
@@ -74,4 +89,29 @@ struct Color
 		: red(r), green(g), blue(b), alpha(a)
 	{
 	}
+};
+
+struct Sprite
+{
+	LPDIRECT3DTEXTURE9 spriteImage;
+	std::string name;
+	Sprite()
+	{
+		spriteImage = NULL;
+	}
+
+	~Sprite()
+	{
+		spriteImage = NULL;
+	}
+	Sprite(const LPDIRECT3DTEXTURE9& p_SpriteImage = NULL, const std::string& n = "")
+		: spriteImage(p_SpriteImage), name(n)
+	{}
+};
+
+enum class CutsceneType
+{
+	None,
+	Opening,
+	RollOut
 };

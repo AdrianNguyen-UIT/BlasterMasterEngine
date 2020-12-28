@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/DeviceResources/DeviceResources.h"
+#include "Core/SpriteResources/SpriteResources.h"
 #include "Core/Time/Time.h"
 #include "Component/Component.h"
 #include "Core/Input/Input.h"

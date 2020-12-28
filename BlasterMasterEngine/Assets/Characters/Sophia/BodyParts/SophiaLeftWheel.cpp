@@ -12,8 +12,7 @@ SophiaLeftWheel::SophiaLeftWheel(float x, float y)
 
 void SophiaLeftWheel::CreateResources()
 {
-
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 	float scaleX = WINDOW_CAMERA_SCALE_X;
 	float scaleY = WINDOW_CAMERA_SCALE_Y;
 	int spriteWidth = 7;
