@@ -33,7 +33,7 @@ void SmallFireBullet::Update()
 
 void SmallFireBullet::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 	spriteRenderer->rect = {73, 38, 81, 46};
 }
 

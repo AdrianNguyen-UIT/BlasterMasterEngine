@@ -1,22 +1,5 @@
 #pragma once
-
-struct Sprite
-{
-	LPDIRECT3DTEXTURE9 spriteImage;
-
-	Sprite()
-	{
-		spriteImage = NULL;
-	}
-
-	~Sprite()
-	{
-		spriteImage = NULL;
-	}
-	Sprite(LPDIRECT3DTEXTURE9 p_SpriteImage)
-		: spriteImage(p_SpriteImage)
-	{}
-};
+#include "d3dpch.h"
 
 struct SpriteRenderer
 {

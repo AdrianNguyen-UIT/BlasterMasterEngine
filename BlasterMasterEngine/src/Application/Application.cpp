@@ -9,6 +9,8 @@ Application::Application()
     sceneManager = std::make_unique<SceneManager>();
     input = std::make_unique<Input>();
     audioMixer = std::make_unique<AudioMixer>();
+    fontResources = std::make_unique<FontResources>();
+    spriteResources = std::make_unique<SpriteResources>();
 }
 
 Application::~Application()
@@ -52,6 +54,18 @@ HRESULT Application::Run(int nCmdShow)
 
         LOG_TRACE("Creating audio mixer resources....");
         hr = audioMixer->CreateAudioMixerResources(window->GetWindowHandle());
+        if (FAILED(hr))
+            __ASSERT(false, "FAIL!");
+        LOG_INFO("SUCCESS!");
+
+        LOG_TRACE("Creating font resources....");
+        hr = fontResources->CreateFontResources();
+        if (FAILED(hr))
+            __ASSERT(false, "FAIL!");
+        LOG_INFO("SUCCESS!");
+
+        LOG_TRACE("Creating sprite resources....");
+        hr = spriteResources->CreateSpriteResources();
         if (FAILED(hr))
             __ASSERT(false, "FAIL!");
         LOG_INFO("SUCCESS!");

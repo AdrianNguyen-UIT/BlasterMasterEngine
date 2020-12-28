@@ -34,7 +34,7 @@ void CrabBullet::Update()
 
 void CrabBullet::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(ENEMY_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Enemy_Texture");
 	KeyFrame keyFrame;
 	RECT rect = { 0, 0, 0, 0 };
 	keyFrame.scale = { 1.0f, 1.0f, 0.0f };

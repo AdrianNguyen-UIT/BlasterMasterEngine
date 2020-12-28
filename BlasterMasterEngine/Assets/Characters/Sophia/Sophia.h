@@ -22,9 +22,11 @@ private:
 	bool isJumping;
 	float fallMultiplier;
 
-	int hitPoint;
 	bool iFrame;
 	std::array<Color, 4> iFrameColors;
+
+	float timeBeforLoadScreen;
+	bool allowToLoad;
 
 	std::shared_ptr<Object2D> leftWheel;
 	std::shared_ptr<Object2D> rightWheel;

@@ -15,12 +15,12 @@ CheckPoint::CheckPoint(float x, float y)
 
 void CheckPoint::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(AREA2_MAP_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Area2_Texture");
 }
 
 void CheckPoint::Start()
 {
 	rigidbody->bodyType = Rigidbody::BodyType::Static;
-	boxCollider->isTrigger = true;
+	boxCollider->isTrigger = false;
 	transform->scale = { WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f};
 }

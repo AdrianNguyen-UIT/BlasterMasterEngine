@@ -16,7 +16,7 @@ void Trap::Start()
 	rigidbody->bodyType = Rigidbody::BodyType::Kinematic;
 	rigidbody->gravityScale = 0.0f;
 	boxCollider->isTrigger = true;
-	damage = 2;
+	damage = 0;
 }
 
 void Trap::OnTriggerEnter(std::shared_ptr<Object2D> object)

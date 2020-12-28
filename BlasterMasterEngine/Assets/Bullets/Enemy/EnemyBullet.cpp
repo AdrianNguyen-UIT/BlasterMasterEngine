@@ -48,7 +48,7 @@ void EnemyBullet::Update()
 
 void EnemyBullet::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 }
 
 void EnemyBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)

@@ -4,6 +4,7 @@
 #include "Assets/CharacterController.h"
 #include "Assets/CameraBound.h"
 #include "Assets/Bullets/Jason/SmallFireBullet.h"
+#include "Assets/Characters/PlayerHealth.h"
 Jason::Jason(float x, float y)
 	: Object2D(x, y)
 {
@@ -18,7 +19,7 @@ Jason::Jason(float x, float y)
 
 void Jason::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 
 	int spriteWidth = 7;
 	int spriteHeight = 7;
@@ -475,9 +476,12 @@ void Jason::Start()
 	boxCollider->isTrigger = false;
 	transform->scale = { -WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 1.0f };
 	state = State::Normal;
-	hitPoint = 8;
+
 	iFrame = false;
 	camera = SceneManager::GetActiveScene()->GetActiceCamera();
+
+	timeBeforLoadScreen = 0.0f;
+	allowToLoad = true;
 
 	iFrameColors[0] = { 0, 255, 0, 255 };
 	iFrameColors[1] = { 255, 51, 0, 255 };
@@ -554,11 +558,19 @@ void Jason::Update()
 	}
 		else if (state == State::Die)
 	{
-		static float timeBeforLoadScreen = 0.0f;
-
-		if (timeBeforLoadScreen >= 2.5f)
+		if (timeBeforLoadScreen >= 2.5f && allowToLoad);
 		{
-			SceneManager::LoadScene("Loading Screen");
+			PlayerHealth::SetPlayerLife(PlayerHealth::GetPlayerLife() - 1);
+			if (PlayerHealth::GetPlayerLife() < 0)
+			{
+				SceneManager::ReloadScene("Game Over Screen");
+			}
+			else
+			{
+				SceneManager::ReloadScene("Loading Screen");
+			}
+			timeBeforLoadScreen = 0.0f;
+			allowToLoad = false;
 		}
 		timeBeforLoadScreen += Time::GetDeltaTime();
 	}
@@ -870,12 +882,14 @@ void Jason::TakeDamage(int damage)
 {
 	if (!iFrame)
 	{
-		hitPoint -= damage;
+		int health = PlayerHealth::GetJasonHealth();
+		health -= damage;
+		PlayerHealth::SetJasonHealth(health);
 		iFrame = true;
 
-		if (hitPoint <= 0)
+		if (health <= 0)
 		{
-			hitPoint = 0;
+			PlayerHealth::SetJasonHealth(0);
 			Die();
 		}
 	}

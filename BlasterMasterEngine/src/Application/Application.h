@@ -6,6 +6,8 @@
 #include "Core/Input/Input.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Core/AudioMixer/AudioMixer.h"
+#include "Core/FontResources/FontResources.h"
+#include "Core/SpriteResources/SpriteResources.h"
 class Application
 {
 public:
@@ -19,4 +21,6 @@ private:
 	std::unique_ptr<Input> input;
 	std::unique_ptr<AudioMixer> audioMixer;
 	std::unique_ptr<SceneManager> sceneManager;
+	std::unique_ptr<FontResources> fontResources;
+	std::unique_ptr<SpriteResources> spriteResources;
 };

@@ -24,9 +24,13 @@ private:
 	bool isCrouching;
 	float fallMultiplier;
 	float speedMulti;
-	int hitPoint;
+
 	bool iFrame;
 	std::array<Color, 4> iFrameColors;
+
+	float timeBeforLoadScreen;
+	bool allowToLoad;
+
 	State state;
 	std::shared_ptr<OrthographicCamera> camera;
 

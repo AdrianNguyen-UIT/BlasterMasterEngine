@@ -2,7 +2,8 @@
 #include "Object/Object.h"
 #include "Object/OrthographicCamera/OrthographicCamera.h"
 #include "Core/XmlReader/XmlMap.h"
-#include "Core/QuadTree/QuadTree.h"
+#include "Core/Canvas/Canvas.h"
+
 class Scene
 {
 private:
@@ -13,6 +14,7 @@ protected:
 	std::shared_ptr<OrthographicCamera> camera;
 	std::list<std::shared_ptr<Object2D>> objects;
 	std::list<std::shared_ptr<Object2D>> renderableObjects;
+	std::unique_ptr<Canvas> canvas;
 	LPDIRECT3DSURFACE9 backGround;
 	RECT mapRender;
 	Size mapSize;
@@ -38,7 +40,11 @@ public:
 	void SetReadyToLoad(bool ready) { readyToLoad = ready; }
 	bool GetReadyToLoad() { return readyToLoad; }
 	std::shared_ptr<Object2D> FinObjectByName(std::string name);
+
+	void StartCanvas();
+	void UpdateCanvas();
+	void RenderCanvas(DWORD flags);
 private:
-	void UpdateRenderableObjects();
+	void CollectRenderableObjects();
 
 };

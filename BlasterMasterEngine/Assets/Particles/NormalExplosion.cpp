@@ -13,7 +13,7 @@ NormalExplosion::NormalExplosion(float x, float y)
 
 void NormalExplosion::CreateResources()
 {
-	spriteRenderer->sprite = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
+	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
 
 	KeyFrame keyFrame;
 	RECT rect;
