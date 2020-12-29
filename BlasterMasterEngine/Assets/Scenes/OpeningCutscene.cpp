@@ -13,6 +13,7 @@ void OpeningCutscene::CreateScene()
 	}
 
 	RECT mapBound = { 0, 0, (LONG)mapSize.width, (LONG)mapSize.height };
+	quadtree = std::make_unique<QuadTree>(0, mapBound);
 
 	std::shared_ptr<Object2D> cutsceneBackground = std::make_shared<CutsceneBackground>(camera->GetSize().width / 2.0f, camera->GetSize().height / 2.0f, CutsceneType::Opening);
 	cutsceneBackground->CreateResources();

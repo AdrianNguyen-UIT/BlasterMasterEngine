@@ -1,59 +1,76 @@
 #include "d3dpch.h"
 #include "QuadTree.h"
-
+#include "Core/SceneManager/SceneManager.h"
 QuadTree::~QuadTree()
 {
 }
 
-QuadTree::QuadTree(int level, RECT bound, RECT originalBound)
+QuadTree::QuadTree(int pLevel, RECT pBound)
 {
-    mBound = bound;
-    mLevel = level;
-    mOriginalBound = originalBound;
+    bound = pBound;
+    level = pLevel;
 }
 
 void QuadTree::Clear()
 {
+    objects.clear();
+
+    for (size_t index = 0; index < nodes.size(); index++)
+    {
+        if (nodes[index] != NULL)
+        {
+            nodes[index]->Clear();
+            nodes[index] = NULL;
+        }
+    }
 }
 
-void QuadTree::InsertObject(std::shared_ptr<Object2D>& object)
+void QuadTree::Insert(std::shared_ptr<Object2D>& object)
 {
-    RECT objectBound = { object->transform->position.x - object->boxCollider->size.width / 2,
-        mOriginalBound.bottom - object->transform->position.y - object->boxCollider->size.height / 2,
-        objectBound.left + object->boxCollider->size.width,
-        objectBound.top + object->boxCollider->size.height};
+    if (object->boxCollider == NULL)
+        return;
 
-    if (mNodes[0])
+    float mapHeight = SceneManager::GetActiveScene()->GetMapSize().height;
+
+    RECT objectBound = {0, 0, 0, 0};
+    objectBound.left = object->boxCollider->topLeft.x;
+    objectBound.top = mapHeight - object->boxCollider->topLeft.y;
+    objectBound.right = objectBound.left + object->boxCollider->size.width;
+    objectBound.bottom = objectBound.top + object->boxCollider->size.height;
+
+    if (nodes[0] != NULL)
     {
         int index = GetIndex(objectBound);
 
         if (index != -1)
         {
-            mNodes[index]->InsertObject(object);
+            nodes[index]->Insert(object);
             return;
         }
     }
 
-    mObjects.emplace_back(object);
-    if (mObjects.size() > MAX_OBJECTS_QUADTREE && mLevel < MAX_LEVELS_QUADTREE) 
+    objects.emplace_back(object);
+    if (objects.size() > MAX_OBJECTS_QUADTREE && level < MAX_LEVELS_QUADTREE) 
     {
-        if (!mNodes[0])
+        if (nodes[0] == NULL)
         {
             Split();
         }
 
-        for (auto it = mObjects.begin(); it != mObjects.end();)
+        for (auto it = objects.begin(); it != objects.end();)
         {
-            RECT bound = { (*it)->transform->position.x - (*it)->boxCollider->size.width / 2,
-                mOriginalBound.bottom - (*it)->transform->position.y - (*it)->boxCollider->size.height / 2,
-                bound.left + (*it)->boxCollider->size.width,
-                bound.top + (*it)->boxCollider->size.height };
+            RECT objectBound = { 0, 0, 0, 0 };
+            objectBound.left = (*it)->boxCollider->topLeft.x;
+            objectBound.top = mapHeight - (*it)->boxCollider->topLeft.y;
+            objectBound.right = objectBound.left + (*it)->boxCollider->size.width;
+            objectBound.bottom = objectBound.top + (*it)->boxCollider->size.height;
 
             int index = GetIndex(bound);
+
             if (index != -1)
             {
-                mNodes[index]->InsertObject(*it);
-                it = mObjects.erase(it);
+                nodes[index]->Insert(*it);
+                it = objects.erase(it);
             }
             else
             {
@@ -65,84 +82,103 @@ void QuadTree::InsertObject(std::shared_ptr<Object2D>& object)
 
 void QuadTree::Split()
 {
-    RECT bound;
+       //     ||
+       //  1  ||  0
+       //_____||_____
+       //  2  ||  3
+       //     ||
 
-    int width = (mBound.right - mBound.left) / 2;
-    int height = (mBound.bottom - mBound.top) / 2;
+    RECT subBound = {0, 0, 0, 0};
 
-    bound.left = mBound.left;
-    bound.right = bound.left + width;
-    bound.top = mBound.top;
-    bound.bottom = bound.top + height;
-    mNodes[0] = std::make_unique<QuadTree>(mLevel + 1, bound, mOriginalBound);
+    int width = (bound.right - bound.left) / 2;
+    int height = (bound.bottom - bound.top) / 2;
 
-    bound.left = mBound.left + width;
-    bound.right = bound.left + width;
-    bound.top = mBound.top;
-    bound.bottom = bound.top + height;
-    mNodes[1] = std::make_unique<QuadTree>(mLevel + 1, bound, mOriginalBound);
+    //top right
 
-    bound.left = mBound.left;
-    bound.right = bound.left + width;
-    bound.top = mBound.top + height;
-    bound.bottom = bound.top + height;
-    mNodes[2] = std::make_unique<QuadTree>(mLevel + 1, bound, mOriginalBound);
+    subBound.left = bound.left + width;
+    subBound.right = subBound.left + width;
+    subBound.top = bound.top;
+    subBound.bottom = subBound.top + height;
+    nodes[0] = std::make_unique<QuadTree>(level + 1, subBound);
 
-    bound.left = mBound.left + width;
-    bound.right = bound.left + width;
-    bound.top = mBound.top + height;
-    bound.bottom = bound.top + height;
-    mNodes[3] = std::make_unique<QuadTree>(mLevel + 1, bound, mOriginalBound);
+    //top left
+    subBound.left = bound.left;
+    subBound.right = subBound.left + width;
+    subBound.top = bound.top;
+    subBound.bottom = subBound.top + height;
+    nodes[1] = std::make_unique<QuadTree>(level + 1, subBound);
+
+    //bottom left
+    subBound.left = bound.left;
+    subBound.right = subBound.left + width;
+    subBound.top = bound.top + height;
+    subBound.bottom = subBound.top + height;
+    nodes[2] = std::make_unique<QuadTree>(level + 1, subBound);
+
+    //bottom right
+    subBound.left = bound.left + width;
+    subBound.right = subBound.left + width;
+    subBound.top = bound.top + height;
+    subBound.bottom = subBound.top + height;
+    nodes[3] = std::make_unique<QuadTree>(level + 1, subBound);
 }
-
 
 int QuadTree::GetIndex(RECT body)
 {
-    float middleVerticle = mBound.left + (mBound.right - mBound.left) / 2.0f;
-    float middleHorizontal = mBound.top + (mBound.bottom - mBound.top) / 2.0f;
+    int index = -1;
 
-    if (body.top > mBound.top && body.bottom < middleHorizontal)
+    float verticalMidpoint = bound.left + (bound.right - bound.left) / 2.0f;
+    float horizontalMidpoint = bound.top + (bound.bottom - bound.top) / 2.0f;
+
+    bool topQuadrant = (body.bottom < horizontalMidpoint);
+
+    bool bottomQuadrant = (body.top > horizontalMidpoint);
+
+    if (body.right < verticalMidpoint)
     {
-        if (body.left > mBound.left && body.right < middleVerticle)
+        if (topQuadrant)
         {
-            return 0;
+            index = 1;
         }
-        else if (body.left > middleVerticle && body.right < mBound.right)
+        else if (bottomQuadrant)
         {
-            return 1;
+            index = 2;
         }
     }
-    else if (body.top > middleHorizontal && body.bottom < mBound.bottom)
+    else if (body.left > verticalMidpoint)
     {
-        if (body.left > mBound.left && body.right < middleVerticle)
+        if (topQuadrant)
         {
-            return 2;
+            index = 0;
         }
-        else if (body.left > middleVerticle && body.right < mBound.right)
+        else if (bottomQuadrant)
         {
-            return 3;
+            index = 3;
         }
     }
 
-    return -1;
+    return index;
 }
 
-void QuadTree::GetObjectsCollideAble(std::list<std::shared_ptr<Object2D>>& objectsOut, std::shared_ptr<Object2D>& object)
+void QuadTree::Retrieve(std::list<std::shared_ptr<Object2D>>& objectsOut, std::shared_ptr<Object2D>& object)
 {
-    RECT objectBound = { object->transform->position.x - object->boxCollider->size.width / 2,
-        mOriginalBound.bottom - object->transform->position.y - object->boxCollider->size.height / 2,
-        objectBound.left + object->boxCollider->size.width,
-        objectBound.top + object->boxCollider->size.height};
+    float mapHeight = SceneManager::GetActiveScene()->GetMapSize().height;
+
+    RECT objectBound = { 0, 0, 0, 0 };
+    objectBound.left = object->boxCollider->topLeft.x;
+    objectBound.top = mapHeight - object->boxCollider->topLeft.y;
+    objectBound.right = objectBound.left + object->boxCollider->size.width;
+    objectBound.bottom = objectBound.top + object->boxCollider->size.height;
 
     int index = GetIndex(objectBound);
 
-    if (index != -1 && mNodes[0]) 
+    if (index != -1 && nodes[0] != NULL) 
     {
-        mNodes[index]->GetObjectsCollideAble(objectsOut, object);
+        nodes[index]->Retrieve(objectsOut, object);
     }
 
-    for (auto child : mObjects)
+    for (auto innerObject : objects)
     {
-        objectsOut.emplace_back(child);
+        objectsOut.emplace_back(innerObject);
     }
 }

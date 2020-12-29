@@ -4,19 +4,18 @@ class QuadTree
 {
 public:
 
-    QuadTree(int level, RECT bound, RECT orignalBound);
+    QuadTree(int pLevel, RECT pBound);
     ~QuadTree();
     void Clear();
-    void InsertObject(std::shared_ptr<Object2D>& object);
-    void GetObjectsCollideAble(std::list<std::shared_ptr<Object2D>> &objectsOut, std::shared_ptr<Object2D>& object);
+    void Insert(std::shared_ptr<Object2D>& object);
+    void Retrieve(std::list<std::shared_ptr<Object2D>> &objectsOut, std::shared_ptr<Object2D>& object);
 
 
 private:
-    std::array<std::unique_ptr<QuadTree>, 4> mNodes;
-    std::list<std::shared_ptr<Object2D>> mObjects;
-    int mLevel;
-    RECT mOriginalBound;
-    RECT mBound;
+    std::array<std::unique_ptr<QuadTree>, 4> nodes;
+    std::list<std::shared_ptr<Object2D>> objects;
+    int level;
+    RECT bound;
 
 private:
     int GetIndex(RECT body);

@@ -23,7 +23,7 @@ void Scene::UpdateScene()
 	mapRender.right = mapRender.left + (LONG)(camera->GetSize().width);
 	mapRender.bottom = mapRender.top + (LONG)(camera->GetSize().height);
 
-	CollectRenderableObjects();
+	InsertAllObjectInQuadtree();
 }
 
 void Scene::SetMapRectPosition(float left, float top)
@@ -58,7 +58,7 @@ bool operator<(const std::shared_ptr<Object2D>& object1, const std::shared_ptr<O
 
 std::shared_ptr<Object2D> Scene::FinObjectByName(std::string name)
 {
-	for (std::shared_ptr<Object2D> object : renderableObjects)
+	for (std::shared_ptr<Object2D> object : objects)
 	{
 		if (object->name == name)
 		{
@@ -101,40 +101,62 @@ void Scene::RenderCanvas(DWORD flags)
 	}
 }
 
-void  Scene::CollectRenderableObjects()
+void  Scene::RetrieveCollidableObjects(std::list<std::shared_ptr<Object2D>> &list, std::shared_ptr<Object2D> &object)
 {
-	renderableObjects.clear();
+	if (quadtree == NULL)
+		return;
+
+	list.clear();
+	quadtree->Retrieve(list, object);
+}
+
+void Scene::RetrieveRenderableObjects(std::list<std::shared_ptr<Object2D>>& list)
+{
+	list.clear();
 	for (std::shared_ptr<Object2D> object : objects)
 	{
 		if (object->boxCollider == NULL || !object->boxCollider->isEnable)
 		{
-			if ((object->transform->position.x >= camera->GetPosition().x - 30.0f &&
-				object->transform->position.x <= (camera->GetPosition().x) + (camera->GetSize().width + 30.0f) &&
-				object->transform->position.y <= camera->GetPosition().y + 30.0f &&
-				object->transform->position.y >= (camera->GetPosition().y) - (camera->GetSize().height) - 30.0f))
+			if ((object->transform->position.x >= camera->GetPosition().x &&
+				object->transform->position.x <= (camera->GetPosition().x) + (camera->GetSize().width) &&
+				object->transform->position.y <= camera->GetPosition().y &&
+				object->transform->position.y >= (camera->GetPosition().y) - (camera->GetSize().height)))
 			{
-				renderableObjects.emplace_back(object);
+				list.emplace_back(object);
 			}
 		}
-		else if (object->boxCollider->topLeft.x + object->boxCollider->size.width >= camera->GetPosition().x - 30.0f && 
-			object->boxCollider->topLeft.x <= (camera->GetPosition().x) + (camera->GetSize().width + 30.0f) &&
-			object->boxCollider->topLeft.y - object->boxCollider->size.height <= camera->GetPosition().y + 30.0f&&
-			object->boxCollider->topLeft.y >= (camera->GetPosition().y) - (camera->GetSize().height) - 30.0f)
+		else if (object->boxCollider->topLeft.x + object->boxCollider->size.width >= camera->GetPosition().x &&
+			object->boxCollider->topLeft.x <= (camera->GetPosition().x) + (camera->GetSize().width) &&
+			object->boxCollider->topLeft.y - object->boxCollider->size.height <= camera->GetPosition().y &&
+			object->boxCollider->topLeft.y >= (camera->GetPosition().y) - (camera->GetSize().height))
 		{
-			renderableObjects.emplace_back(object);
+			list.emplace_back(object);
 		}
 	}
+	std::stable_sort(list.begin(), list.end());
+}
 
-	std::stable_sort(renderableObjects.begin(), renderableObjects.end());
+void Scene::InsertAllObjectInQuadtree()
+{
+	if (quadtree == NULL)
+		return;
+
+	quadtree->Clear();
+	for (std::shared_ptr<Object2D> object : objects)
+	{
+		quadtree->Insert(object);
+	}
 }
 
 void Scene::ClearScene()
 {
 	readyToLoad = false;
 	objects.clear();
-	renderableObjects.clear();
+	collidableObjects.clear();
 	if (canvas != NULL)
 		canvas = NULL;
 	if (camera != NULL)
 		camera = NULL;
+	if (quadtree != NULL)
+		quadtree = NULL;
 }
