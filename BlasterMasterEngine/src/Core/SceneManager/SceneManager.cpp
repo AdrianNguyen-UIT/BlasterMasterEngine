@@ -185,7 +185,7 @@ std::shared_ptr<Scene> SceneManager::GetSceneByIndex(size_t index)
 
 void SceneManager::DestroyObject(std::shared_ptr<Object2D> &p_Object)
 {
-	for (std::shared_ptr<Object2D> object : activeScene->GetObjectList())
+	for (std::shared_ptr<Object2D> object : activeScene->GetAllObjects())
 	{
 		if (object->name == p_Object->name)
 		{
@@ -195,7 +195,7 @@ void SceneManager::DestroyObject(std::shared_ptr<Object2D> &p_Object)
 		}
 	}
 
-	for (std::shared_ptr<Object2D> object : activeScene->GetObjectList())
+	for (std::shared_ptr<Object2D> object : activeScene->GetAllObjects())
 	{
 		InnerDestroyObject(object, p_Object);
 	}
@@ -205,11 +205,11 @@ void SceneManager::UpdateScene()
 {
 	if (updateAfterDestroy)
 	{
-		for (auto it = activeScene->GetObjectList().begin(); it != activeScene->GetObjectList().end();)
+		for (auto it = activeScene->GetAllObjects().begin(); it != activeScene->GetAllObjects().end();)
 		{
 			if (CheckReadyToBeDestroy(*it))
 			{
-				it = activeScene->GetObjectList().erase(it);
+				it = activeScene->GetAllObjects().erase(it);
 				updateAfterDestroy = false;
 			}
 			else
@@ -218,7 +218,7 @@ void SceneManager::UpdateScene()
 			}
 		}
 
-		for (std::shared_ptr<Object2D> object : activeScene->GetObjectList())
+		for (std::shared_ptr<Object2D> object : activeScene->GetAllObjects())
 		{
 			InnerUpdate(object);
 		}

@@ -13,6 +13,7 @@ void GameOverScreen::CreateScene()
 	}
 
 	RECT mapBound = { 0, 0, (LONG)mapSize.width, (LONG)mapSize.height };
+	quadtree = std::make_unique<QuadTree>(0, mapBound);
 
 	canvas = std::make_unique<Canvas>();
 	{

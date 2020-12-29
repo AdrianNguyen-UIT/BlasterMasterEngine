@@ -11,20 +11,22 @@ Renderer::~Renderer()
 
 void Renderer::Update()
 {
-	SceneManager::UpdateScene();
-
-	std::list<std::shared_ptr<Object2D>> objects = SceneManager::GetActiveScene()->GetAllRenderableObjects();
+	std::list<std::shared_ptr<Object2D>> objects = SceneManager::GetActiveScene()->GetAllObjects();
 
 	for (std::shared_ptr<Object2D> object : objects)
 	{
 		object->InnerUpdate(SceneManager::GetActiveScene()->GetActiceCamera()->GetWorldToViewportMat());
 	}
 
+	SceneManager::UpdateScene();
+
+	std::list<std::shared_ptr<Object2D>> returnObjects;
 	for (std::shared_ptr<Object2D> object : objects)
 	{
-		for (std::shared_ptr<Object2D> innerObject : objects)
+		if (!object->NoCollision())
 		{
-			if (object != innerObject)
+			SceneManager::GetActiveScene()->RetrieveCollidableObjects(returnObjects, object);
+			for (std::shared_ptr<Object2D> innerObject : returnObjects)
 			{
 				object->DoCollision(innerObject);
 			}
@@ -38,7 +40,7 @@ HRESULT Renderer::CreateRendererResources()
 {
 	HRESULT hr = S_OK;
 
-	for (std::shared_ptr<Object2D> object : SceneManager::GetActiveScene()->GetObjectList())
+	for (std::shared_ptr<Object2D> object : SceneManager::GetActiveScene()->GetAllObjects())
 	{
 		object->InnerStart();
 	}
@@ -54,8 +56,9 @@ void Renderer::Render()
 	if (SUCCEEDED(hr))
 	{
 		RenderBackground();
-
-		for (std::shared_ptr<Object2D> object : SceneManager::GetActiveScene()->GetAllRenderableObjects())
+		std::list<std::shared_ptr<Object2D>> returnObjects;
+		SceneManager::GetActiveScene()->RetrieveRenderableObjects(returnObjects);
+		for (std::shared_ptr<Object2D> object : returnObjects)
 		{
 			object->Draw(D3DXSPRITE_ALPHABLEND);
 			//object->RenderDebugRectangle(worldToVPMatrix);

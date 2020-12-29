@@ -192,57 +192,7 @@ void Object2D::InnerStart()
 
 void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 {
-	if (rigidbody == NULL || object->rigidbody == NULL)
-		return;
-
-	if (boxCollider == NULL || object->boxCollider == NULL)
-		return;
-
-	if (!boxCollider->isEnable || !object->boxCollider->isEnable)
-		return;
-
-	if (tag == Tag::Ladder)
-		return;
-
-	if ((tag == Tag::PlayerBullet && object->tag == Tag::PlayerBullet) || 
-		(tag == Tag::PlayerBullet && object->tag == Tag::Trap) ||
-		(tag == Tag::PlayerBullet && object->tag == Tag::Item) ||
-		(tag == Tag::PlayerBullet && object->tag == Tag::Player) || 
-		(tag == Tag::PlayerBullet && object->tag == Tag::Ladder))
-		return;
-
-	if ((tag == Tag::EnemyBullet && object->tag == Tag::EnemyBullet) ||
-		(tag == Tag::EnemyBullet && object->tag == Tag::Trap) ||
-		(tag == Tag::EnemyBullet && object->tag == Tag::Item) ||
-		(tag == Tag::EnemyBullet && object->tag == Tag::Enemy) ||
-		(tag == Tag::EnemyBullet && object->tag == Tag::Ladder))
-		return;
-
-	if (tag == Tag::Player && object->tag == Tag::PlayerBullet)
-		return;
-
-	if ((tag == Tag::Enemy && object->tag == Tag::Enemy) || 
-		(tag == Tag::Enemy && object->tag == Tag::EnemyBullet) ||
-		(tag == Tag::Enemy && object->tag == Tag::Ladder))
-		return;
-
-	if ((tag == Tag::Trap && object->tag == Tag::PlayerBullet) ||
-		(tag == Tag::Trap && object->tag == Tag::EnemyBullet))
-		return;
-
-	if ((tag == Tag::Item && object->tag == Tag::PlayerBullet) ||
-		(tag == Tag::Trap && object->tag == Tag::EnemyBullet))
-		return;
-
-	if (rigidbody->bodyType == Rigidbody::BodyType::Static)
-		return;
-
-	if (rigidbody->bodyType == Rigidbody::BodyType::Kinematic &&
-		object->rigidbody->bodyType == Rigidbody::BodyType::Kinematic)
-		return;
-
-	if (rigidbody->bodyType == Rigidbody::BodyType::Kinematic &&
-		object->rigidbody->bodyType == Rigidbody::BodyType::Static)
+	if (!IsCollidable(object))
 		return;
 
 	broadphaseBox = GetSweptBroadphaseBox();
@@ -273,7 +223,6 @@ void Object2D::DoCollision(std::shared_ptr<Object2D> object)
 			return;
 		}
 
-		
 		if ((tag == Tag::Player && object->tag == Tag::EnemyBullet) ||
 			((tag == Tag::EnemyBullet && object->tag == Tag::Player)))
 		{
@@ -520,4 +469,71 @@ void Object2D::RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat)
 void Object2D::AddChildObject(const std::shared_ptr<Object2D> child)
 {
 	childObjects.emplace_back(child);
+}
+
+bool Object2D::IsCollidable(std::shared_ptr<Object2D>& object)
+{
+	if (shared_from_this() == object)
+		return false;
+
+	if (object->rigidbody == NULL)
+		return false;
+
+	if (object->boxCollider == NULL)
+		return false;
+
+	if (!object->boxCollider->isEnable)
+		return false;
+
+	if ((tag == Tag::PlayerBullet && object->tag == Tag::PlayerBullet) ||
+		(tag == Tag::PlayerBullet && object->tag == Tag::Trap) ||
+		(tag == Tag::PlayerBullet && object->tag == Tag::Item) ||
+		(tag == Tag::PlayerBullet && object->tag == Tag::Player) ||
+		(tag == Tag::PlayerBullet && object->tag == Tag::Ladder))
+		return false;
+
+	if ((tag == Tag::EnemyBullet && object->tag == Tag::EnemyBullet) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Trap) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Item) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Enemy) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Ladder))
+		return false;
+
+	if (tag == Tag::Player && object->tag == Tag::PlayerBullet)
+		return false;
+
+	if ((tag == Tag::Enemy && object->tag == Tag::Enemy) ||
+		(tag == Tag::Enemy && object->tag == Tag::EnemyBullet) ||
+		(tag == Tag::Enemy && object->tag == Tag::Ladder))
+		return false;
+
+	if ((tag == Tag::Trap && object->tag == Tag::PlayerBullet) ||
+		(tag == Tag::Trap && object->tag == Tag::EnemyBullet))
+		return false;
+
+	if ((tag == Tag::Item && object->tag == Tag::PlayerBullet) ||
+		(tag == Tag::Trap && object->tag == Tag::EnemyBullet))
+		return false;
+
+	if (rigidbody->bodyType == Rigidbody::BodyType::Kinematic &&
+		object->rigidbody->bodyType == Rigidbody::BodyType::Kinematic)
+		return false;
+
+	if (rigidbody->bodyType == Rigidbody::BodyType::Kinematic &&
+		object->rigidbody->bodyType == Rigidbody::BodyType::Static)
+		return false;
+
+	return true;
+}
+
+bool Object2D::NoCollision()
+{
+	if (rigidbody == NULL || 
+		boxCollider == NULL || 
+		!boxCollider->isEnable || 
+		rigidbody->bodyType == Rigidbody::BodyType::Static||
+		tag == Tag::Ladder)
+		return true;
+
+	return false;
 }

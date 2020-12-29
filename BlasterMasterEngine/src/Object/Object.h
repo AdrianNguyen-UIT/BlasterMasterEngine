@@ -101,6 +101,8 @@ public:
 
 	void RenderDebugRectangle(const D3DXMATRIX& worldToViewportMat);
 	void AddChildObject(const std::shared_ptr<Object2D> child);
+	bool NoCollision();
+
 private:
 	void Draw(DWORD flags);
 	void InnerUpdate(const D3DXMATRIX& worldToViewportMat);
@@ -109,4 +111,5 @@ private:
 	bool CheckCollision(std::unique_ptr<BoxCollider2D>& col1, std::unique_ptr<BoxCollider2D>& col2);
 	float SweptAABB(std::unique_ptr<BoxCollider2D>& col, Direction& result);
 	BoxCollider2D GetSweptBroadphaseBox();
+	bool IsCollidable(std::shared_ptr<Object2D>& object);
 };
