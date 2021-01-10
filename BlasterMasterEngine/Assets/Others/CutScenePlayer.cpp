@@ -2,7 +2,6 @@
 #include "CutScenePlayer.h"
 #include "Core/SpriteResources/SpriteResources.h"
 #include "Core/SceneManager/SceneManager.h"
-
 CutScenePlayer::CutScenePlayer(float x, float y, CutsceneType cst)
 	: Object2D(x, y), cutsceneType(cst)
 {
@@ -16,6 +15,7 @@ void CutScenePlayer::Start()
 {
 	transform->scale = { WINDOW_CAMERA_SCALE_X , WINDOW_CAMERA_SCALE_Y, 0.0f};
 	allowLoadScene = true;
+	camera = SceneManager::GetActiveScene()->GetActiceCamera();
 }
 
 void CutScenePlayer::Update()
@@ -31,7 +31,7 @@ void CutScenePlayer::Update()
 			}
 		}
 	}
-	else if(cutsceneType == CutsceneType::RollOut)
+	else if (cutsceneType == CutsceneType::RollOut)
 	{
 		if (allowLoadScene)
 		{
@@ -42,6 +42,60 @@ void CutScenePlayer::Update()
 			}
 		}
 	}
+	else if (cutsceneType == CutsceneType::Ending)
+	{
+		switch (endingPhase)
+		{
+		case CutScenePlayer::EndingPhase::phase1:
+		{
+			if (endingPhaseTime >= 2.0f && endingPhaseTime < 6.0f)
+			{
+				D3DXVECTOR3 newPos = ShakeCamera();	
+				camera->SetPosition(newPos);
+			}
+			else if (endingPhaseTime >= 6.0f)
+			{
+				D3DXVECTOR3 newPos = { 2.0f, SceneManager::GetActiveScene()->GetMapSize().height - 2.0f, 0.0f};
+				camera->SetPosition(newPos);
+				endingPhase = EndingPhase::phase2;
+				endingPhaseTime = 0.0f;
+			}
+		}
+		break;
+		case CutScenePlayer::EndingPhase::phase2:
+		{
+			if (endingPhaseTime >= 4.0f)
+			{
+				if (camera->GetPosition().x < 258.0f)
+				{
+					camera->MoveCamera(20.0f * Time::GetFixedDeltaTime(), 0.0f, 0.0f);
+				}
+				else
+				{
+					endingPhase = EndingPhase::phase3;
+					endingPhaseTime = 0.0f;
+				}
+			}
+		}
+		break;
+		case CutScenePlayer::EndingPhase::phase3:
+		{
+			if (endingPhaseTime >= 30.0f)
+			{
+				if (allowLoadScene)
+				{
+					allowLoadScene = false;
+					SceneManager::ReloadScene("Credit");
+				}
+			}
+		}
+		break;
+		default:
+			break;
+		}
+		
+		endingPhaseTime += Time::GetDeltaTime();
+	}
 }
 
 void CutScenePlayer::CreateResources()
@@ -49,7 +103,7 @@ void CutScenePlayer::CreateResources()
 	if (cutsceneType == CutsceneType::Opening)
 	{
 		spriteRenderer->sprite = SpriteResources::GetSprite("Opening_Cutscene");
-		int pauseFrames = 30;
+		size_t pauseFrames = 30;
 		int fps = 16;
 		KeyFrame keyFrame;
 		RECT rect;
@@ -332,8 +386,8 @@ void CutScenePlayer::CreateResources()
 	else if (cutsceneType == CutsceneType::RollOut)
 	{
 		spriteRenderer->sprite = SpriteResources::GetSprite("RollOut_Cutscene");
-		int departFrames = 15;
-		int normalFrames = 1;
+		size_t departFrames = 15;
+		size_t normalFrames = 1;
 		int fps = 16;
 		KeyFrame keyFrame;
 		RECT rect;
@@ -408,7 +462,7 @@ void CutScenePlayer::CreateResources()
 				scene->AddKeyFrames(keyFrame);
 			}
 
-			for (size_t index = 0; index < normalFrames + 5; index++)
+			for (size_t index = 0; index < normalFrames + 5l; index++)
 			{
 				rect = { 0, 454, 256, 678 };
 				keyFrame.rect = rect;
@@ -419,4 +473,23 @@ void CutScenePlayer::CreateResources()
 		}
 
 	}
+	else if (cutsceneType == CutsceneType::Ending)
+	{
+		animationController->enable = false;
+		endingPhase = EndingPhase::phase1;
+		endingPhaseTime = 0.0f;
+	}
+}
+
+D3DXVECTOR3 CutScenePlayer::ShakeCamera()
+{
+	float initHeight = SceneManager::GetActiveScene()->GetMapSize().height;
+	std::random_device rdev{};
+	std::default_random_engine e{ rdev() };
+	std::uniform_int_distribution<> xdis(2, 3);
+	std::uniform_int_distribution<> ydis((int)(initHeight - 3), (int)(initHeight - 2));
+	float newXPos = xdis(e);
+	float newYPos = ydis(e);
+	D3DXVECTOR3 newPos = { newXPos, newYPos, 0.0f};
+	return newPos;
 }

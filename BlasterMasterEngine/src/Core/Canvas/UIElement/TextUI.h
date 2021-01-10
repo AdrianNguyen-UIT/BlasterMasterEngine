@@ -6,7 +6,6 @@ class TextUI : public UIElement
 protected:
 	std::string text;
 	std::string font;
-	std::vector<std::shared_ptr<UIElement>> images;
 	bool horizontal;
 	D3DXVECTOR2 offset;
 
@@ -29,4 +28,6 @@ public:
 	D3DXVECTOR2 GetOffset() { return offset; }
 
 	virtual void SetColor(Color c) override;
+	virtual void SetPosition(float x = 0.0f, float y = 0.0f, float z = 0.0f) override;
+	virtual void SetEnable(bool p_Enable) override;
 };

@@ -7,7 +7,9 @@
 #include "Assets/Scenes/OpeningScreen.h"
 #include "Assets/Scenes/RollOutCutscene.h"
 #include "Assets/Scenes/GameOverScreen.h"
-std::list<std::shared_ptr<Scene>> SceneManager::scenes;
+#include "Assets/Scenes/EndingCutscene.h"
+#include "Assets/Scenes/Credit.h"
+std::vector<std::shared_ptr<Scene>> SceneManager::scenes;
 std::shared_ptr<Scene> SceneManager::activeScene;
 std::list<std::shared_ptr<Object2D>> SceneManager::waitingObjects;
 bool SceneManager::updateAfterDestroy = false;
@@ -23,9 +25,11 @@ SceneManager::~SceneManager()
 
 HRESULT SceneManager::CreateScenesResources()
 {
+	scenes.reserve(8);
+
 	std::shared_ptr<Scene> area2 = std::make_shared<Area2>();
-	area2->CreateScene();
-	activeScene = area2;
+	//area2->CreateScene();
+	//activeScene = area2;
 	scenes.emplace_back(area2);
 
 	std::shared_ptr<Scene> loadingScreen = std::make_shared<LoadingScreen>();
@@ -52,6 +56,17 @@ HRESULT SceneManager::CreateScenesResources()
 	//gameOverScreen->CreateScene();
 	scenes.emplace_back(gameOverScreen);
 	//activeScene = gameOverScreen;
+
+	std::shared_ptr<Scene> endingCutScene = std::make_shared<EndingCutscene>();
+	endingCutScene->CreateScene();
+	scenes.emplace_back(endingCutScene);
+	activeScene = endingCutScene;
+
+	std::shared_ptr<Scene> credit = std::make_shared<Credit>();
+	//credit->CreateScene();
+	scenes.emplace_back(credit);
+	//activeScene = credit;
+
 	return S_OK;
 }
 

@@ -4,7 +4,7 @@
 class SceneManager
 {
 private:
-	static std::list<std::shared_ptr<Scene>> scenes;
+	static std::vector<std::shared_ptr<Scene>> scenes;
 	static std::shared_ptr<Scene> activeScene;
 	static std::list<std::shared_ptr<Object2D>> waitingObjects;
 	static bool updateAfterDestroy;

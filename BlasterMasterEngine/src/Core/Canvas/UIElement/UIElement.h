@@ -24,11 +24,11 @@ public:
 	template <class T>
 	std::shared_ptr<UIElement> GetPtr() { return shared_from_this(); }
 
-	void SetEnable(bool p_Enable) { enable = p_Enable; }
+	virtual void SetEnable(bool p_Enable) { enable = p_Enable; }
 	bool GetEnable() { return enable; }
 
-	void SetPosition(D3DXVECTOR3 pos = {0.0f, 0.0f, 0.0f});
-	void SetPosition(float x = 0.0f, float y = 0.0f, float z = 0.0f);
+	virtual void SetPosition(D3DXVECTOR3 pos = {0.0f, 0.0f, 0.0f});
+	virtual void SetPosition(float x = 0.0f, float y = 0.0f, float z = 0.0f);
 	D3DXVECTOR3 GetPosition() { return position; }
 
 	void SetName(std::string p_Name);
