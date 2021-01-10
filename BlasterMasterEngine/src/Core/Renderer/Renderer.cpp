@@ -61,7 +61,7 @@ void Renderer::Render()
 		for (std::shared_ptr<Object2D> object : returnObjects)
 		{
 			object->Draw(D3DXSPRITE_ALPHABLEND);
-			//object->RenderDebugRectangle(worldToVPMatrix);
+			object->RenderDebugRectangle(worldToVPMatrix);
 		}
 
 		SceneManager::GetActiveScene()->RenderCanvas(D3DXSPRITE_ALPHABLEND);

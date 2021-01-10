@@ -172,9 +172,19 @@ void QuadTree::Retrieve(std::list<std::shared_ptr<Object2D>>& objectsOut, std::s
 
     int index = GetIndex(objectBound);
 
-    if (index != -1 && nodes[0] != NULL) 
+    if (nodes[0] != NULL)
     {
-        nodes[index]->Retrieve(objectsOut, object);
+        if (index != -1)
+        {
+            nodes[index]->Retrieve(objectsOut, object);
+        }
+        else
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                nodes[i]->Retrieve(objectsOut, object);
+            }
+        }
     }
 
     for (auto innerObject : objects)

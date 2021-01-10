@@ -20,8 +20,14 @@
 #define AREA2_MAP_WIDTH 3072
 #define AREA2_MAP_HEIGHT 3072
 
+#define ENDING_MAP_PATH L"Assets/Images/EndingCutscene.png"
+#define ENDING_MAP_LESSCOLOR_PATH L"Assets/Images/EndingCutscene_LessColor.png"
+#define ENDING_MAP_WIDTH 517
+#define ENDING_MAP_HEIGHT 485
+
 #define HEALTH_BLOCK_PATH L"Assets/Images/HealthBlock.png"
 #define HEALTHBAR_FONT_PATH L"Assets/Images/HealthBarFont.png"
+#define ENDING_FONT_PATH L"Assets/Images/EndingFont.png"
 
 #define BLACK_BACKGROUND_PATH L"Assets/Images/BlackImage.png"
 #define BLACK_BACKGROUND_WIDTH 800
@@ -40,6 +46,8 @@
 
 #define ENEMY_TEXTURE_PATH L"Assets/Images/Enemy.png"
 #define ENEMY_BULLET_TEXTURE_PATH L"Assets/Images/other.png"
+
+#define BADGE_PATH L"Assets/Images/Badge.png"
 
 #define OPENING_CUTSCENE_PATH L"Assets/Images/OpeningCutscene.png"
 #define ROLLOUT_CUTSCENE_PATH L"Assets/Images/RollOutCutscene.png"
@@ -113,5 +121,6 @@ enum class CutsceneType
 {
 	None,
 	Opening,
-	RollOut
+	RollOut,
+	Ending
 };
