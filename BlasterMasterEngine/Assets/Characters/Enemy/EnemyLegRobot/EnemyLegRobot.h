@@ -1,8 +1,7 @@
 #pragma once
-#include "Object/Object.h"
+#include "Assets/Characters/Enemy/Enemy.h"
 
-
-class EnemyLegRobot : public Object2D
+class EnemyLegRobot : public Enemy
 {
 private:
 	float horizontalMove;
@@ -22,7 +21,6 @@ private:
 	float jumpForceY = 800.0f;
 	float jumpingDelay = 250.0f;
 	std::shared_ptr<Object2D> player;
-	int damage = 0;
 
 public:
 	EnemyLegRobot(float x = 0, float y = 0, bool bGoRightFirst = true, float fHorizontalMoveRange = 100.0f, float fDetectingPlayerZoneX = 120.0f, float fDetectingPlayerZoneY = 30.0f);
@@ -32,9 +30,6 @@ public:
 	virtual void CreateResources() override;
 	virtual void OnCollisionStay(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
-
-	int GetDamage() { return damage; }
-	void Die();
 
 private:
 	void Flip();

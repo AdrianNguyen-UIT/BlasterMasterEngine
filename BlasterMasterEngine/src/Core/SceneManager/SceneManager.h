@@ -22,7 +22,7 @@ public:
 	static std::shared_ptr<Scene> GetSceneByName(std::string p_Name);
 	static std::shared_ptr<Scene> GetSceneByIndex(size_t index);
 	static void DestroyObject(std::shared_ptr<Object2D> &p_Object);
-	static void Instantiate(std::shared_ptr<Object2D> &p_Object, D3DXVECTOR3 location = {0.0f, 0.0f, 0.0f});
+	static void Instantiate(std::shared_ptr<Object2D> &p_Object, D3DXVECTOR3 location = {0.0f, 0.0f, 0.0f}, bool increName = true);
 	static void UpdateScene();
 	static bool LoadActiveScene();
 private:

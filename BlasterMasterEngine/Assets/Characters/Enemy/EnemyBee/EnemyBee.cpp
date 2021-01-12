@@ -1,14 +1,12 @@
 #include "d3dpch.h"
 #include "EnemyBee.h"
-#include "Core/SceneManager/SceneManager.h"
 #include "Assets/Characters/Sophia/Sophia.h"
 #include "Assets/Characters/Jason/Jason.h"
 #include "Core/SpriteResources/SpriteResources.h"
 EnemyBee::EnemyBee(float x, float y, float fHorizontalMoveRange)
-	: Object2D(x, y)
+	: Enemy(x, y)
 {
 	name = "Bee";
-	tag = Tag::Enemy;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
@@ -57,10 +55,20 @@ void EnemyBee::Start()
 	transform->scale = { 3.0f, 3.0f, 3.0f };
 	beginningY = 0.0f;
 	beginningX = 0.0f;
+	detectRange = 150.0f;
+	damage = 0;
 }
 
 void EnemyBee::Update()
 {
+	if (!DetectPlayer())
+	{
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		spriteRenderer->enable = false;
+		return;
+	}
+	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+	spriteRenderer->enable = true;
 	//LOG_INFO("{0}", verticalMove);
 
 	//BENGINNING POSITION SAVING
@@ -146,9 +154,4 @@ void EnemyBee::Flip()
 {
 	isFacingRight = !isFacingRight;
 	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
-}
-
-void EnemyBee::Die()
-{
-	SceneManager::DestroyObject(shared_from_this());
 }

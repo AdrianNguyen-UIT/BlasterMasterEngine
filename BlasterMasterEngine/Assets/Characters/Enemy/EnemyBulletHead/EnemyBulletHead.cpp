@@ -5,10 +5,9 @@
 #include "Assets/Characters/Jason/Jason.h"
 
 EnemyBulletHead::EnemyBulletHead(float x, float y)
-	: Object2D(x, y)
+	: Enemy(x, y)
 {
 	name = "BulletHead";
-	tag = Tag::Enemy;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
@@ -166,14 +165,22 @@ void EnemyBulletHead::Start()
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { 3.0f, 3.0f, 3.0f };
+	damage = 0;
+	detectRange = 150.0f;
 }
 
 void EnemyBulletHead::Update()
 {
+	if (!DetectPlayer())
+	{
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		spriteRenderer->enable = false;
+		return;
+	}
+	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+	spriteRenderer->enable = true;
 
 	player = SceneManager::GetActiveScene()->FinObjectByName("Sophia");
-	
-
 	//MOVEMENT AND ATTACK
 	if (isFalling == false)
 	{

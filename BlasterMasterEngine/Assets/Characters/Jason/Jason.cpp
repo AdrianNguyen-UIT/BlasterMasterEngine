@@ -8,7 +8,7 @@
 Jason::Jason(float x, float y)
 	: Object2D(x, y)
 {
-	name = "Jason ";
+	name = "Jason";
 	tag = Tag::Player;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();

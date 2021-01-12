@@ -5,10 +5,9 @@
 #include "Assets/Characters/Jason/Jason.h"
 
 EnemyLegRobot::EnemyLegRobot(float x, float y, bool bGoRightFirst, float fHorizontalMoveRange, float fDetectingPlayerZoneX, float fDetectingPlayerZoneY)
-	: Object2D(x, y)
+	: Enemy(x, y)
 {
 	name = "LegRobot";
-	tag = Tag::Enemy;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
@@ -197,11 +196,20 @@ void EnemyLegRobot::Start()
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { 3.0f, 3.0f, 3.0f };
+	damage = 0;
+	detectRange = 150.0f;
 }
 
 void EnemyLegRobot::Update()
 {
-	//LOG_INFO("{0}", isFacingRight);
+	if (!DetectPlayer())
+	{
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		spriteRenderer->enable = false;
+		return;
+	}
+	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+	spriteRenderer->enable = true;
 
 	//DETECTING SOPHIA(PLAYER) THE TANK 
 	player = SceneManager::GetActiveScene()->FinObjectByName("Sophia");
@@ -347,9 +355,4 @@ void EnemyLegRobot::Flip()
 {
 	isFacingRight = !isFacingRight;
 	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
-}
-
-void EnemyLegRobot::Die()
-{
-	SceneManager::DestroyObject(shared_from_this());
 }

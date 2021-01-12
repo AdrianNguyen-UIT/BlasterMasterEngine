@@ -5,10 +5,9 @@
 #include "Assets/Characters/Jason/Jason.h"
 
 EnemyWorm::EnemyWorm(float x, float y)
-	: Object2D(x, y)
+	: Enemy(x, y)
 {
 	name = "Worm";
-	tag = Tag::Enemy;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
@@ -105,12 +104,20 @@ void EnemyWorm::Start()
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { 3.0f, 3.0f, 3.0f };
+	detectRange = 150.0f;
+	damage = 0;
 }
 
 void EnemyWorm::Update()
 {
-	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
-
+	if(!DetectPlayer())
+	{
+		spriteRenderer->enable = false;
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		return;
+	}
+	spriteRenderer->enable = true;
+	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	//DETECTING SOPHIA(PLAYER) THE TANK 
 	player = SceneManager::GetActiveScene()->FinObjectByName("Sophia");
 	if (abs((transform->position.x) - player->transform->position.x) <= detectingPlayerZoneX && abs((transform->position.y) - player->transform->position.y) <= detectingPlayerZoneY)
@@ -205,9 +212,4 @@ void EnemyWorm::Flip()
 {
 	isFacingRight = !isFacingRight;
 	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
-}
-
-void EnemyWorm::Die()
-{
-	SceneManager::DestroyObject(shared_from_this());
 }

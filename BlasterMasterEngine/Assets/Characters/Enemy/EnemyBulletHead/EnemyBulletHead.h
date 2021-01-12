@@ -1,8 +1,7 @@
 #pragma once
-#include "Object/Object.h"
+#include "Assets/Characters/Enemy/Enemy.h"
 
-
-class EnemyBulletHead : public Object2D
+class EnemyBulletHead : public Enemy
 {
 private:
 	float horizontalMove;
@@ -16,7 +15,6 @@ private:
 	float defaultHorizontalMove = 40.0f;
 	float defaultVerticalMove = -15.0f;
 	std::shared_ptr<Object2D> player;
-	int damage = 0;
 
 public:
 	EnemyBulletHead(float x = 0, float y = 0);

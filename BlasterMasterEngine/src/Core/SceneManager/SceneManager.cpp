@@ -28,9 +28,9 @@ HRESULT SceneManager::CreateScenesResources()
 	scenes.reserve(8);
 
 	std::shared_ptr<Scene> area2 = std::make_shared<Area2>();
-	//area2->CreateScene();
-	//activeScene = area2;
+	area2->CreateScene();
 	scenes.emplace_back(area2);
+	activeScene = area2;
 
 	std::shared_ptr<Scene> loadingScreen = std::make_shared<LoadingScreen>();
 	//loadingScreen->CreateScene();
@@ -58,9 +58,9 @@ HRESULT SceneManager::CreateScenesResources()
 	//activeScene = gameOverScreen;
 
 	std::shared_ptr<Scene> endingCutScene = std::make_shared<EndingCutscene>();
-	endingCutScene->CreateScene();
+	//endingCutScene->CreateScene();
 	scenes.emplace_back(endingCutScene);
-	activeScene = endingCutScene;
+	//activeScene = endingCutScene;
 
 	std::shared_ptr<Scene> credit = std::make_shared<Credit>();
 	//credit->CreateScene();
@@ -297,11 +297,15 @@ void SceneManager::InnerDestroyObject(std::shared_ptr<Object2D> &childIt, std::s
 	}
 }
 
-void SceneManager::Instantiate(std::shared_ptr<Object2D> &p_Object, D3DXVECTOR3 location)
+void SceneManager::Instantiate(std::shared_ptr<Object2D>& p_Object, D3DXVECTOR3 location, bool increName)
 {
 	static int index = 0;
-	p_Object->name += std::to_string(index);
-	++index;
+	if (increName)
+	{
+		p_Object->name += std::to_string(index);
+		++index;
+	}
+
 	p_Object->transform->position = location;
 
 	waitingObjects.emplace_back(p_Object);
