@@ -1,7 +1,7 @@
 #pragma once
-#include "Object/Object.h"
+#include "Assets/Characters/Enemy/Enemy.h"
 
-class EnemyLadybug : public Object2D
+class EnemyLadybug : public Enemy
 {
 private:
 	float horizontalMove;
@@ -10,7 +10,6 @@ private:
 	bool isRightCollision;
 	bool starting;
 	int defaultFPS = 18;
-	int damage = 0;
 
 public:
 	EnemyLadybug(float x = 0, float y = 0, float xMove = 45.0f);
@@ -20,9 +19,6 @@ public:
 	virtual void CreateResources() override;
 	virtual void OnCollisionStay(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
-
-	int GetDamage() { return damage; }
-	void Die();
 
 private:
 	void Flip();

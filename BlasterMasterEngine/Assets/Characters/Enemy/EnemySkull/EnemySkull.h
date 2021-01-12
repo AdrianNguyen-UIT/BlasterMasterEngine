@@ -1,8 +1,7 @@
 #pragma once
-#include "Object/Object.h"
+#include "Assets/Characters/Enemy/Enemy.h"
 
-
-class EnemySkull : public Object2D
+class EnemySkull : public Enemy
 {
 private:
 	bool isFacingRight;
@@ -22,7 +21,6 @@ private:
 	float detectingPlayerZoneY = 200.0f;
 	std::shared_ptr<Object2D> skullBullet;
 	std::shared_ptr<Object2D> player;
-	int damage = 0;
 
 public:
 	EnemySkull(float x = 0, float y = 0);
@@ -33,11 +31,6 @@ public:
 	virtual void OnCollisionEnter(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
 
-	int GetDamage() { return damage; }
-	void Die();
-
 private:
 	void Flip();
 };
-
-

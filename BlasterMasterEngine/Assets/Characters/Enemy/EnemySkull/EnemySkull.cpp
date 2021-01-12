@@ -6,10 +6,9 @@
 #include "Assets/Characters/Jason/Jason.h"
 
 EnemySkull::EnemySkull(float x, float y)
-	: Object2D(x, y)
+	: Enemy(x, y)
 {
 	name = "Skull";
-	tag = Tag::Enemy;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
@@ -107,10 +106,21 @@ void EnemySkull::Start()
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { 3.0f, 3.0f, 3.0f };
+	damage = 0;
+	detectRange = 150.0f;
 }
 
 void EnemySkull::Update()
 {
+	if (!DetectPlayer())
+	{
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		spriteRenderer->enable = false;
+		return;
+	}
+	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+	spriteRenderer->enable = true;
+
 	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
 
 	//DETECTING SOPHIA(PLAYER) THE TANK 
@@ -123,7 +133,6 @@ void EnemySkull::Update()
 	{
 		isNearPlayer = false;
 	}
-
 
 	//MOVEMENT AND ATTACK
 	if (horizontalMove == 2.0f)
@@ -232,9 +241,4 @@ void EnemySkull::Flip()
 {
 	isFacingRight = !isFacingRight;
 	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
-}
-
-void EnemySkull::Die()
-{
-	SceneManager::DestroyObject(shared_from_this());
 }

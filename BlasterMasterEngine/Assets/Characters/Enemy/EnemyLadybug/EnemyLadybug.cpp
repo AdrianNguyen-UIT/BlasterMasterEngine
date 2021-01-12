@@ -6,10 +6,9 @@
 
 
 EnemyLadybug::EnemyLadybug(float x, float y, float xMove)
-	: Object2D(x, y)
+	: Enemy(x, y)
 {
 	name = "Ladybug";
-	tag = Tag::Enemy;
 	rigidbody = GetComponent<Rigidbody>();
 	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
@@ -129,11 +128,20 @@ void EnemyLadybug::Start()
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { 3.0f, 3.0f, 3.0f };
+	damage = 0;
+	detectRange = 150.0f;
 }
 
 void EnemyLadybug::Update()
 {
-	//LOG_INFO("{0}", animationController->GetCurrentAnimation()->GetName());
+	if (!DetectPlayer())
+	{
+		rigidbody->bodyType = Rigidbody::BodyType::Static;
+		spriteRenderer->enable = false;
+		return;
+	}
+	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
+	spriteRenderer->enable = true;
 
 	//MOVEMENT
 	if (starting == true)
@@ -203,9 +211,4 @@ void EnemyLadybug::Flip()
 {
 	isFacingRight = !isFacingRight;
 	transform->Scale(isFacingRight ? -3.0f : 3.0f, 3.0f, 0.0f);
-}
-
-void EnemyLadybug::Die()
-{
-	SceneManager::DestroyObject(shared_from_this());
 }

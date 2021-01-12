@@ -1,11 +1,8 @@
 #pragma once
-#include "Object/Object.h"
-
-
-class EnemyBee : public Object2D
+#include "Assets/Characters/Enemy/Enemy.h"
+class EnemyBee : public Enemy
 {
 private:
-
 	float horizontalMove;
 	float verticalMove;
 	bool isFacingRight;
@@ -13,7 +10,6 @@ private:
 	float horizontalMoveRange= 40.0f;
 	float beginningY;
 	float beginningX;
-	int damage = 0;
 
 public:
 	EnemyBee(float x = 0, float y = 0, float fHorizontalMoveRange = 40.0f);
@@ -24,10 +20,6 @@ public:
 	virtual void OnCollisionEnter(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
 
-	int GetDamage() { return damage; }
-	void Die();
-
 private:
 	void Flip();
 };
-

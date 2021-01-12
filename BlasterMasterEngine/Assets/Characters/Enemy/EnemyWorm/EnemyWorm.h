@@ -1,8 +1,6 @@
 #pragma once
-#include "Object/Object.h"
-
-
-class EnemyWorm : public Object2D
+#include "Assets/Characters/Enemy/Enemy.h"
+class EnemyWorm : public Enemy
 {
 private:
 	float horizontalMove;
@@ -16,7 +14,6 @@ private:
 	float detectingPlayerZoneY = 80.0f;
 	float jumpForceY = 230.0f;
 	std::shared_ptr<Object2D> player;
-	int damage = 0;
 
 public:
 	EnemyWorm(float x = 0, float y = 0);
@@ -26,11 +23,6 @@ public:
 	virtual void CreateResources() override;
 	virtual void OnCollisionStay(std::shared_ptr<Object2D> object) override;
 	virtual void OnTriggerEnter(std::shared_ptr<Object2D> object) override;
-
-	int GetDamage() { return damage; }
-	void Die();
-
 private:
 	void Flip();
 };
-

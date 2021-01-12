@@ -276,7 +276,7 @@ void Sophia::SpawnJason()
 	horizontalMove = 0.0f;
 	pointUp = false;
 	D3DXVECTOR3 location = { transform->position.x, transform->position.y + 12.0f, 0.0f};
-	SceneManager::Instantiate(jason, location);
+	SceneManager::Instantiate(jason, location, false);
 	CharacterController::SetCharacterInControl(Character::Jason);
 }
 
