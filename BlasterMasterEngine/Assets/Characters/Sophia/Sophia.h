@@ -33,7 +33,6 @@ private:
 	std::shared_ptr<Object2D> wheelConnector;
 	std::shared_ptr<Object2D> cabin;
 	std::shared_ptr<Object2D> barrel;
-	std::shared_ptr<Object2D> jason;
 
 	std::shared_ptr<OrthographicCamera> camera;
 
