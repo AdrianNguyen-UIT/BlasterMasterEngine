@@ -54,9 +54,6 @@ void Sophia::CreateResources()
 		barrel->parentObject = shared_from_this();
 		childObjects.emplace_back(barrel);
 	}
-
-	jason = std::make_shared<Jason>();
-	jason->CreateResources();
 }	
 
 void Sophia::Start()
@@ -197,7 +194,6 @@ void Sophia::Update()
 		else if (state == State::CheckPointMove)
 		{
 			rigidbody->velocity.x = (isFacingRight ? 1.0f : -1.0f) * runSpeed * Time::GetFixedDeltaTime();
-			//transform->Translate(transform->position.x + 0.4f, transform->position.y, 0.0f);
 
 			camera->MoveCamera(rigidbody->velocity.x * 2.24f, 0.0f, 0.0f);
 
@@ -223,11 +219,7 @@ void Sophia::Update()
 			timeBeforLoadScreen += Time::GetDeltaTime();
 		}
 	}
-	else
-	{
-		rigidbody->bodyType = Rigidbody::BodyType::Static;
-		boxCollider->isTrigger = true;
-	}
+
 	SetAnimationParameter();
 	DoIFrame();
 }
@@ -276,8 +268,12 @@ void Sophia::SpawnJason()
 	horizontalMove = 0.0f;
 	pointUp = false;
 	D3DXVECTOR3 location = { transform->position.x, transform->position.y + 12.0f, 0.0f};
+	std::shared_ptr<Object2D> jason = std::make_shared<Jason>(location.x, location.y);
+	jason->CreateResources();
 	SceneManager::Instantiate(jason, location, false);
 	CharacterController::SetCharacterInControl(Character::Jason);
+	rigidbody->bodyType = Rigidbody::BodyType::Static;
+	boxCollider->isTrigger = true;
 }
 
 void Sophia::Shoot()

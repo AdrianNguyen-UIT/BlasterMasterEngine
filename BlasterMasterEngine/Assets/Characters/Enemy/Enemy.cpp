@@ -24,22 +24,33 @@ bool Enemy::DetectPlayer()
 		if (!sophiaRetrieve)
 		{
 			sophia = SceneManager::GetActiveScene()->FinObjectByName("Sophia");
-			sophiaRetrieve = true;
+			if (sophia != NULL)
+				sophiaRetrieve = true;
 		}
-		float distance = Distance(transform->position, sophia->transform->position);
-		if (distance <= detectRange)
-			return true;
+
+		if (sophia != NULL)
+		{
+			if (Distance(transform->position, sophia->transform->position) <= detectRange)
+				return true;
+		}
+		return false;
+		
 	}
 	else
 	{
 		if (!jasonRetrieve)
 		{
 			jason = SceneManager::GetActiveScene()->FinObjectByName("Jason");
-			jasonRetrieve = true;
+			if (jason != NULL)
+				jasonRetrieve = true;
 		}
-		
-		if (Distance(transform->position, jason->transform->position) <= detectRange)
-			return true;
+
+		if (jason != NULL)
+		{
+			if (Distance(transform->position, jason->transform->position) <= detectRange)
+				return true;
+		}
+		return false;
 	}
 	return false;
 }
