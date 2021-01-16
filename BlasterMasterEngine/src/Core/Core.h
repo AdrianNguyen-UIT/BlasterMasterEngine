@@ -11,9 +11,6 @@
 
 #define OBJECTS_TMX "Assets/Terrains/Resources/Area2ObjectsTMX.tmx"
 
-#define BGM_AUDIO "Samples/Sounds/Ensoniq-ZR-76-01-Dope-77.wav"
-#define BIP_SOUND "Samples/Sounds/Blaster Master SFX (1).wav"
-
 #define SOPHIA_JASON_TEXTURE_PATH L"Assets/Images/Jason-Sohpia-III-nobackground.png"
 
 #define AREA2_MAP_PATH L"Assets/Images/Area2Map.png"
@@ -51,6 +48,10 @@
 
 #define OPENING_CUTSCENE_PATH L"Assets/Images/OpeningCutscene.png"
 #define ROLLOUT_CUTSCENE_PATH L"Assets/Images/RollOutCutscene.png"
+
+#define OPENING_SOUNDTRACK "Assets/SoundTracks/01 Opening.wav"
+#define AREA2_SOUNDTRACK "Assets/SoundTracks/08 Area 2_ Castle.wav"
+
 ////////////////////////////////
 ////////////////////////////////
 
