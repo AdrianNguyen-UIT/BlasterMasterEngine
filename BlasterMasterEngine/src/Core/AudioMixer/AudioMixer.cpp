@@ -345,20 +345,24 @@ bool AudioMixer::PlayWaveFile(std::string name, bool looping)
 
 void AudioMixer::SetVolume(std::string name, LONG volume)
 {
-	HRESULT hr = S_OK;
 	for (size_t index = 0; index < audios.size(); ++index)
 	{
 		if (audios[index]->name == name)
 		{
-			hr = audios[index]->buffer->SetVolume(volume);
-			if (FAILED(hr))
-			{
-				__ASSERT(false, "Unable to set volume!");
-			}
-			return;
+			audios[index]->buffer->SetVolume(volume);
 		}
 	}
-	return;
+}
+
+void AudioMixer::Stop(std::string name)
+{
+	for (size_t index = 0; index < audios.size(); ++index)
+	{
+		if (audios[index]->name == name)
+		{
+			audios[index]->buffer->Stop();
+		}
+	}
 }
 
 HRESULT AudioMixer::CreateAudios()
@@ -366,14 +370,16 @@ HRESULT AudioMixer::CreateAudios()
 	HRESULT hr = S_OK;
 	
 	audios.reserve(2);
-	std::shared_ptr<Audio> bgm = std::make_shared<Audio>();
-	bgm->name = "BGM";
-	LoadWaveFile(BGM_AUDIO, &bgm->buffer);
-	audios.emplace_back(bgm);
 
-	std::shared_ptr<Audio> bip = std::make_shared<Audio>();
-	bip->name = "BIP";
-	LoadWaveFile(BIP_SOUND, &bip->buffer);
-	audios.emplace_back(bip);
+	std::shared_ptr<Audio> opening = std::make_shared<Audio>();
+	opening->name = "OpeningSoundTrack";
+	LoadWaveFile(OPENING_SOUNDTRACK, &opening->buffer);
+	audios.emplace_back(opening);
+
+	std::shared_ptr<Audio> area2 = std::make_shared<Audio>();
+	area2->name = "Area2SoundTrack";
+	LoadWaveFile(AREA2_SOUNDTRACK, &area2->buffer);
+	audios.emplace_back(area2);
+
 	return hr;
 }

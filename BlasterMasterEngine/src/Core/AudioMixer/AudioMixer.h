@@ -39,6 +39,7 @@ public:
 
 	static bool PlayWaveFile(std::string name, bool looping = false);
 	static void SetVolume(std::string, LONG volume = DSBVOLUME_MAX);
+	static void Stop(std::string name);
 private:
 	void ShutdownDirectSound();
 	bool LoadWaveFile(const char*, LPDIRECTSOUNDBUFFER8*);
