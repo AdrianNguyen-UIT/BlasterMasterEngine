@@ -17,6 +17,9 @@ private:
 	bool allowLoadScene;
 	std::shared_ptr<OrthographicCamera> camera;
 	float endingPhaseTime;
+	float rollingTime;
+	bool rolling;
+	bool isPlayingSounds;
 public:
 	CutScenePlayer(float x = 0, float y = 0, CutsceneType cst = CutsceneType::None);
 

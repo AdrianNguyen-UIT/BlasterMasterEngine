@@ -52,6 +52,7 @@ private:
 private:
 	static LPDIRECTSOUND8 m_DirectSound;
 	static LPDIRECTSOUNDBUFFER m_PrimaryBuffer;
+public:
 
 	static std::vector<std::shared_ptr<Audio>> audios;
 };

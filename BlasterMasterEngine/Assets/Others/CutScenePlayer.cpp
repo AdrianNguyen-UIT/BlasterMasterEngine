@@ -2,6 +2,7 @@
 #include "CutScenePlayer.h"
 #include "Core/SpriteResources/SpriteResources.h"
 #include "Core/SceneManager/SceneManager.h"
+#include "Core/AudioMixer/AudioMixer.h"
 CutScenePlayer::CutScenePlayer(float x, float y, CutsceneType cst)
 	: Object2D(x, y), cutsceneType(cst)
 {
@@ -16,28 +17,51 @@ void CutScenePlayer::Start()
 	transform->scale = { WINDOW_CAMERA_SCALE_X , WINDOW_CAMERA_SCALE_Y, 0.0f};
 	allowLoadScene = true;
 	camera = SceneManager::GetActiveScene()->GetActiceCamera();
+	isPlayingSounds = false;
 }
 
 void CutScenePlayer::Update()
 {
 	if (cutsceneType == CutsceneType::Opening)
 	{
+		if (!isPlayingSounds) {
+			AudioMixer::PlayWaveFile("OPENING");
+			isPlayingSounds = true;
+		}
 		if (allowLoadScene)
 		{
 			if (animationController->GetCurrentAnimation()->IsFinished())
 			{
 				allowLoadScene = false;
+				AudioMixer::Stop("OPENING");
+				isPlayingSounds = false;
 				SceneManager::ReloadScene("Roll Out Cutscene");
 			}
 		}
 	}
 	else if (cutsceneType == CutsceneType::RollOut)
 	{
+		if (!isPlayingSounds) {
+			AudioMixer::PlayWaveFile("FOREST");
+			isPlayingSounds = true;
+		}
+
+		if (!rolling) 
+		{
+			if (rollingTime >= 1.8f)
+			{
+				AudioMixer::PlayWaveFile("ROLLING");
+				rolling = true;
+			}
+			rollingTime += Time::GetDeltaTime();
+		}
 		if (allowLoadScene)
 		{
 			if (animationController->GetCurrentAnimation()->IsFinished())
 			{
 				allowLoadScene = false;
+				isPlayingSounds = false;
+				AudioMixer::Stop("FOREST");
 				SceneManager::ReloadScene("Loading Screen");
 			}
 		}
@@ -66,6 +90,11 @@ void CutScenePlayer::Update()
 		{
 			if (endingPhaseTime >= 4.0f)
 			{
+				if (!isPlayingSounds) {
+					AudioMixer::PlayWaveFile("ENDING_STAFF_ROLL");
+					isPlayingSounds = true;
+				}
+
 				if (camera->GetPosition().x < 258.0f)
 				{
 					camera->MoveCamera(20.0f * Time::GetFixedDeltaTime(), 0.0f, 0.0f);
@@ -80,7 +109,7 @@ void CutScenePlayer::Update()
 		break;
 		case CutScenePlayer::EndingPhase::phase3:
 		{
-			if (endingPhaseTime >= 30.0f)
+			if (endingPhaseTime >= 19.0f)
 			{
 				if (allowLoadScene)
 				{
@@ -471,6 +500,8 @@ void CutScenePlayer::CreateResources()
 			animationController->AddAnimation(scene);
 			animationController->SetDefaultAnimation(scene);
 		}
+		rollingTime = 0.0f;
+		rolling = false;
 
 	}
 	else if (cutsceneType == CutsceneType::Ending)

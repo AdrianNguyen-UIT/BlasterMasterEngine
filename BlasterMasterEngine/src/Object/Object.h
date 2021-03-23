@@ -27,7 +27,8 @@ enum class Tag
 	CheckPoint,
 	Gate,
 	Trap,
-	Ladder
+	Ladder,
+	Punji
 };
 
 enum class Layer

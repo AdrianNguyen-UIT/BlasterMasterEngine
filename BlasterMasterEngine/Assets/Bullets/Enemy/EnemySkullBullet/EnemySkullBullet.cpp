@@ -1,20 +1,12 @@
 #include "d3dpch.h"
 #include "EnemySkullBullet.h"
-#include "Core/SceneManager/SceneManager.h"
-#include "Assets/Particles/NormalExplosion.h"
-#include "Assets/Characters/Sophia/Sophia.h"
-#include "Assets/Characters/Jason/Jason.h"
 
 EnemySkullBullet::EnemySkullBullet(float x, float y, bool pIsAttackingFromRight)
-	: Object2D(x, y)
+	: Bullet(x, y), isAttackingFromRight(pIsAttackingFromRight)
 {
 	name = "EnemySkullBullet";
 	tag = Tag::EnemyBullet;
-	isAttackingFromRight = pIsAttackingFromRight;
-	rigidbody = GetComponent<Rigidbody>();
-	boxCollider = GetComponent<BoxCollider2D>();
 	animationController = GetComponent<AnimationController>();
-	spriteRenderer = GetComponent<SpriteRenderer>();
 }
 
 void EnemySkullBullet::CreateResources()
@@ -48,7 +40,6 @@ void EnemySkullBullet::Start()
 {
 	rigidbody->mass = 3.0f;
 	starting = true;
-	isFacingRight = true;
 	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	rigidbody->gravityScale = 1.5f;
 	rigidbody->bounciness = 0.7f;
@@ -56,11 +47,11 @@ void EnemySkullBullet::Start()
 	boxCollider->offset = { 0.0f, 0.0f };
 	boxCollider->isTrigger = false;
 	transform->scale = { 3.0f, 3.0f, 3.0f };
+	damage = 1;
 }
 
 void EnemySkullBullet::Update()
 {
-
 	if (starting == true)
 	{
 		spawnBulletAt = Time::GetTime();
@@ -79,40 +70,6 @@ void EnemySkullBullet::Update()
 
 	if (Time::GetTime() - spawnBulletAt >= explosionDelayTime)
 	{
-		explosion = std::make_shared<NormalExplosion>(transform->position.x, transform->position.y);
-		explosion->CreateResources();
-		SceneManager::Instantiate(explosion, transform->position);
-		SceneManager::DestroyObject(shared_from_this());
+		Explode();
 	}
-}
-
-void EnemySkullBullet::OnCollisionEnter(std::shared_ptr<Object2D> object)
-{
-	if (object->tag == Tag::Player && object->rigidbody->bodyType == Rigidbody::BodyType::Dynamic)
-	{
-		std::shared_ptr<Sophia> sophia = std::dynamic_pointer_cast<Sophia>(object);
-		if (sophia != NULL)
-		{
-			sophia->TakeDamage(damage);
-		}
-
-		std::shared_ptr<Jason> jason = std::dynamic_pointer_cast<Jason>(object);
-		if (jason != NULL)
-		{
-			jason->TakeDamage(damage);
-		}
-
-		explosion = std::make_shared<NormalExplosion>(transform->position.x, transform->position.y);
-		explosion->CreateResources();
-		SceneManager::Instantiate(explosion, transform->position);
-		SceneManager::DestroyObject(shared_from_this());
-	}
-}
-
-void EnemySkullBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
-{
-}
-
-void EnemySkullBullet::Flip()
-{
 }

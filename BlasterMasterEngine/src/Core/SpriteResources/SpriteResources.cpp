@@ -12,7 +12,7 @@ SpriteResources::~SpriteResources()
 
 HRESULT SpriteResources::CreateSpriteResources()
 {
-	sprites.reserve(15);
+	sprites.reserve(19);
 
 	std::shared_ptr<Sprite> sprite1 = DeviceResources::LoadTexture(SOPHIA_JASON_TEXTURE_PATH, 0);
 	sprite1->name = "Sophia_Jason_Texture";
@@ -59,6 +59,21 @@ HRESULT SpriteResources::CreateSpriteResources()
 	std::shared_ptr<Sprite> sprite15 = DeviceResources::LoadTexture(BADGE_PATH, 0);
 	sprite15->name = "Badge_Texture";
 
+	std::shared_ptr<Sprite> sprite16 = DeviceResources::LoadTexture(BODY_BOSS_TEXTURE_PATH, 0);
+	sprite16->name = "Body_Boss_Texture";
+
+	std::shared_ptr<Sprite> sprite17 = DeviceResources::LoadTexture(ARM_BOSS_TEXTURE_PATH, 0);
+	sprite17->name = "Arm_Boss_Texture";
+
+	std::shared_ptr<Sprite> sprite18 = DeviceResources::LoadTexture(AREA2_BOSSROOM_PATH, 0);
+	sprite18->name = "Boss_Room_Texture";
+
+	std::shared_ptr<Sprite> sprite19 = DeviceResources::LoadTexture(AREA2OVERWORLD_MAP_PATH, 0);
+	sprite19->name = "Area2_Overworld_Texture";
+
+
+
+
 	sprites.emplace_back(sprite1);
 	sprites.emplace_back(sprite2);
 	sprites.emplace_back(sprite3);
@@ -74,6 +89,10 @@ HRESULT SpriteResources::CreateSpriteResources()
 	sprites.emplace_back(sprite13);
 	sprites.emplace_back(sprite14);
 	sprites.emplace_back(sprite15);
+	sprites.emplace_back(sprite16);
+	sprites.emplace_back(sprite17);
+	sprites.emplace_back(sprite18);
+	sprites.emplace_back(sprite19);
 	return S_OK;
 }
 

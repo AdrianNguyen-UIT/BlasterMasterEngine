@@ -6,7 +6,7 @@
 #include "Assets/Particles/PlayerDeadExplosion.h"
 #include "Assets/Characters/Jason/Jason.h"
 #include "Assets/Characters/PlayerHealth.h"
-
+#include "Core/AudioMixer/AudioMixer.h"
 Sophia::Sophia(float x, float y)
 	: Object2D(x, y)
 {
@@ -90,6 +90,8 @@ void Sophia::Start()
 	iFrameColors[3] = {255, 204, 255, 2255};
 
 	color = iFrameColors[2];
+
+	isAllowAudio = false;
 }
 
 void Sophia::Update()
@@ -228,6 +230,7 @@ void Sophia::OnCollisionEnter(std::shared_ptr<Object2D> object)
 {
 	if (object->tag == Tag::Terrain)
 	{
+		AudioMixer::PlayWaveFile("SOPHIA_LANDING", false);
 		isJumping = false;
 	}
 
@@ -309,6 +312,7 @@ void Sophia::Jump(bool& jump)
 
 		if (downCollision != 0)
 		{
+			AudioMixer::PlayWaveFile("SOPHIA_JUMP", false);
 			D3DXVECTOR2 force(0.0f, 850.0f);
 			rigidbody->AddForce(force);
 		}
@@ -429,9 +433,16 @@ void Sophia::DoIFrame()
 			iFrame = false;
 			iFrameColorIndex = 0;
 			color = iFrameColors[2];
+			isAllowAudio = true;
 		}
 		else
 		{
+			if (isAllowAudio) 
+			{
+				AudioMixer::PlayWaveFile("SOPHIA_ROCKET", false);
+				isAllowAudio = false;
+			}
+
 			color = iFrameColors[iFrameColorIndex];
 			++iFrameColorIndex;
 			if (iFrameColorIndex > iFrameColors.size() - 1)

@@ -2,6 +2,7 @@
 #include "GameOverScreen.h"
 #include "Core/Canvas/UIElement/TextUI.h"
 #include "Assets/Others/ChooseWheel.h"
+#include "Core/AudioMixer/AudioMixer.h"
 void GameOverScreen::CreateScene()
 {
 	mapSize = { (float)BLACK_BACKGROUND_WIDTH, (float)BLACK_BACKGROUND_HEIGHT };
@@ -32,5 +33,10 @@ void GameOverScreen::CreateScene()
 		std::shared_ptr<Object2D> chooseWheel = std::make_shared<ChooseWheel>();
 		chooseWheel->CreateResources();
 		AddObject(chooseWheel);
+	}
+
+	for (auto audio : AudioMixer::audios)
+	{
+		AudioMixer::Stop(audio->name);
 	}
 }

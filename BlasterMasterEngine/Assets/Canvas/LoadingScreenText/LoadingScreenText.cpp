@@ -17,6 +17,7 @@ void LoadingScreenText::Update()
 		allowToLoad = false;
 		timeBeforeLoad = 0.0f;
 		SceneManager::ReloadScene("Area2");
+		LOG_INFO("LOAD");
 	}
 	timeBeforeLoad += Time::GetDeltaTime();
 }

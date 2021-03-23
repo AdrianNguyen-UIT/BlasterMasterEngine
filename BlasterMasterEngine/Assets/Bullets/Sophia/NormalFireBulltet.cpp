@@ -2,31 +2,28 @@
 #include "NormalFireBullet.h"
 #include "Core/SceneManager/SceneManager.h"
 #include "Assets/Particles/NormalExplosion.h"
-#include "Assets/Characters/Enemy/EnemyList.h"
+#include "Assets/Characters/Enemy/Area2EnemyList.h"
+#include "Core/AudioMixer/AudioMixer.h"
 NormalFireBullet::NormalFireBullet(float x, float y, bool pHorizontal, bool pIsFacingRight)
-	: Object2D(x, y)
+	: Bullet(x, y, pHorizontal, pIsFacingRight)
 {
 	name = "Normal Fire Bullet";
-	horizontal = pHorizontal;
-	isFacingRight = pIsFacingRight;
 	tag = Tag::PlayerBullet;
-	rigidbody = GetComponent<Rigidbody>();
-	boxCollider = GetComponent<BoxCollider2D>();
-	spriteRenderer = GetComponent<SpriteRenderer>();
-	layer = Layer::Projectile;
 }
 
 void NormalFireBullet::Start()
 {
 	runSpeed = 150.0f;
-	horizontalRect = {73, 20, 81, 28};
-	verticalRect = {82, 20, 90, 28};
+	horizontalRect = { 73, 20, 81, 28 };
+	verticalRect = { 82, 20, 90, 28 };
 	boxCollider->size = { 7.0f, 7.0f };
 	boxCollider->isTrigger = true;
 	rigidbody->bodyType = Rigidbody::BodyType::Dynamic;
 	rigidbody->gravityScale = 0.0f;
-	damage = 3;
 	transform->Scale(isFacingRight ? -WINDOW_CAMERA_SCALE_X : WINDOW_CAMERA_SCALE_X, WINDOW_CAMERA_SCALE_Y, 0.0f);
+	AudioMixer::PlayWaveFile("NORMAL_BULLET_SHOOT", false);
+
+	damage = 3;
 }
 
 void NormalFireBullet::Update()
@@ -48,22 +45,4 @@ void NormalFireBullet::Update()
 void NormalFireBullet::CreateResources()
 {
 	spriteRenderer->sprite = SpriteResources::GetSprite("Sophia_Jason_Texture");
-}
-
-void NormalFireBullet::OnTriggerEnter(std::shared_ptr<Object2D> object)
-{
-	if (object->tag == Tag::Enemy)
-	{
-		std::shared_ptr<Enemy> enemy = std::dynamic_pointer_cast<Enemy>(object);
-		enemy->Die();
-	}
-	Explode();
-}
-
-void NormalFireBullet::Explode()
-{
-	std::shared_ptr<Object2D> explosion = std::make_shared<NormalExplosion>(transform->position.x, transform->position.y);
-	explosion->CreateResources();
-	SceneManager::Instantiate(explosion, transform->position);
-	SceneManager::DestroyObject(shared_from_this());
 }

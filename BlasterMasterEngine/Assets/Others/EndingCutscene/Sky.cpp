@@ -30,7 +30,6 @@ void Sky::Update()
 			color.green = 255;
 		if (color.blue > 255)
 			color.blue = 255;
-		LOG_INFO(color.green);
 	}
 	else if (time >= 9.0f)
 	{

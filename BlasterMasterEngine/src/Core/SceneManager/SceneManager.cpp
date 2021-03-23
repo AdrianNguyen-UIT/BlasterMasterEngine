@@ -1,6 +1,5 @@
 #include "d3dpch.h"
 #include "SceneManager.h"
-#include "Samples/MainScene.h"
 #include "Assets/Scenes/Area2.h"
 #include "Assets/Scenes/LoadingScreen.h"
 #include "Assets/Scenes/OpeningCutscene.h"
@@ -9,6 +8,8 @@
 #include "Assets/Scenes/GameOverScreen.h"
 #include "Assets/Scenes/EndingCutscene.h"
 #include "Assets/Scenes/Credit.h"
+#include "Assets/Scenes/Area2Overworld.h"
+
 std::vector<std::shared_ptr<Scene>> SceneManager::scenes;
 std::shared_ptr<Scene> SceneManager::activeScene;
 std::list<std::shared_ptr<Object2D>> SceneManager::waitingObjects;
@@ -25,12 +26,17 @@ SceneManager::~SceneManager()
 
 HRESULT SceneManager::CreateScenesResources()
 {
-	scenes.reserve(8);
+	scenes.reserve(9);
 
 	std::shared_ptr<Scene> area2 = std::make_shared<Area2>();
-	area2->CreateScene();
+	//area2->CreateScene();
 	scenes.emplace_back(area2);
-	activeScene = area2;
+	//activeScene = area2;
+
+	std::shared_ptr<Scene> area2Overworld = std::make_shared<Area2Overworld>();
+	area2Overworld->CreateScene();
+	//activeScene = area2Overworld;
+	scenes.emplace_back(area2Overworld);
 
 	std::shared_ptr<Scene> loadingScreen = std::make_shared<LoadingScreen>();
 	//loadingScreen->CreateScene();
@@ -43,9 +49,9 @@ HRESULT SceneManager::CreateScenesResources()
 	//activeScene = openingCutscene;
 
 	std::shared_ptr<Scene> openingScreen = std::make_shared<OpeningScreen>();
-	//openingScreen->CreateScene();
+	openingScreen->CreateScene();
 	scenes.emplace_back(openingScreen);
-	//activeScene = openingScreen;
+	activeScene = openingScreen;
 
 	std::shared_ptr<Scene> rolloutCutscene = std::make_shared<RollOutCutscene>();
 	//rolloutCutscene->CreateScene();
@@ -74,10 +80,8 @@ HRESULT SceneManager::CreateScenesResources()
 
 void SceneManager::ReloadScene(std::string p_Name)
 {
-
 	std::thread thread([=]
 		{
-			std::mutex m;
 			for (std::shared_ptr<Scene> scene : scenes)
 			{
 				if (scene->GetName() == p_Name)
@@ -86,6 +90,7 @@ void SceneManager::ReloadScene(std::string p_Name)
 					scene->ClearScene();
 					scene->CreateScene();
 					scene->SetReadyToLoad(true);
+					break;
 				}
 			}
 			LOG_INFO("FINISHED!");
@@ -110,6 +115,7 @@ void SceneManager::ReloadScene(size_t index)
 					scene->ClearScene();
 					scene->CreateScene();
 					scene->SetReadyToLoad(true);
+					break;
 				}
 				++currentIndex;
 			}
@@ -132,6 +138,7 @@ void SceneManager::LoadScene(std::string p_Name)
 				{
 					LOG_TRACE("Reloading Scene [{0}]", p_Name);
 					scene->SetReadyToLoad(true);
+					break;
 				}
 			}
 			LOG_INFO("FINISHED!");
@@ -154,6 +161,7 @@ void SceneManager::LoadScene(size_t index)
 				{
 					LOG_TRACE("Reloading Scene [{0}]", scene->GetName());
 					scene->SetReadyToLoad(true);
+					break;
 				}
 				++currentIndex;
 			}

@@ -1,6 +1,8 @@
 #include "d3dpch.h"
 #include "LoadingScreen.h"
 #include "Assets/Canvas/LoadingScreenText/LoadingScreenText.h"
+#include "Core/AudioMixer/AudioMixer.h"
+
 void LoadingScreen::CreateScene()
 {
 	mapSize = { (float)BLACK_BACKGROUND_WIDTH, (float)BLACK_BACKGROUND_HEIGHT };
@@ -19,4 +21,10 @@ void LoadingScreen::CreateScene()
 		leftText->CreateResources();
 		canvas->AddUIElement(leftText);
 	}
+
+	for (auto audio : AudioMixer::audios)
+	{
+		AudioMixer::Stop(audio->name);
+	}
+
 }

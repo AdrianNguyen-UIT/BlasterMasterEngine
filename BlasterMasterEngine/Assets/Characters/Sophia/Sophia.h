@@ -21,7 +21,7 @@ private:
 	bool isFacingRight;
 	bool isJumping;
 	float fallMultiplier;
-
+	bool isAllowAudio;
 	bool iFrame;
 	std::array<Color, 4> iFrameColors;
 

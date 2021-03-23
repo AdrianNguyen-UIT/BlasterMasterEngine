@@ -5,6 +5,8 @@
 #include "Assets/CameraBound.h"
 #include "Assets/Bullets/Jason/SmallFireBullet.h"
 #include "Assets/Characters/PlayerHealth.h"
+#include "Assets/Others/Checkpoint/OverworldGate.h"
+#include "Assets/Characters/Jason/OverworldJason.h"
 Jason::Jason(float x, float y)
 	: Object2D(x, y)
 {
@@ -558,7 +560,7 @@ void Jason::Update()
 	}
 		else if (state == State::Die)
 	{
-		if (timeBeforLoadScreen >= 2.5f && allowToLoad);
+		if (timeBeforLoadScreen >= 2.5f && allowToLoad)
 		{
 			PlayerHealth::SetPlayerLife(PlayerHealth::GetPlayerLife() - 1);
 			if (PlayerHealth::GetPlayerLife() < 0)
@@ -629,6 +631,23 @@ void Jason::OnCollisionEnter(std::shared_ptr<Object2D> object)
 	if (object->tag == Tag::CheckPoint)
 	{
 		state = State::CheckPointMove;
+	}
+
+	if (object->tag == Tag::Gate)
+	{
+		std::shared_ptr<OverworldGate> gate = std::dynamic_pointer_cast<OverworldGate>(object);
+		if (gate != NULL)
+		{
+			if (gate->GetGateID() == 0) 
+			{
+				OverworldJason::id = 0;
+			}
+			else 
+			{
+				OverworldJason::id = 1;
+			}
+			SceneManager::LoadScene("Area2Overworld");
+		}
 	}
 }
 

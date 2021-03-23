@@ -16,7 +16,7 @@ void CreditPanel::Update()
 		if (childUIElements[index]->GetPosition().y > (position.y - 700.0f))
 		{
 			childUIElements[index]->SetPosition(childUIElements[index]->GetPosition().x,
-				childUIElements[index]->GetPosition().y - 1.0f, 0.0f);
+				childUIElements[index]->GetPosition().y - 0.2f, 0.0f);
 		}
 		else
 		{

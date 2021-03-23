@@ -489,14 +489,16 @@ bool Object2D::IsCollidable(std::shared_ptr<Object2D>& object)
 		(tag == Tag::PlayerBullet && object->tag == Tag::Trap) ||
 		(tag == Tag::PlayerBullet && object->tag == Tag::Item) ||
 		(tag == Tag::PlayerBullet && object->tag == Tag::Player) ||
-		(tag == Tag::PlayerBullet && object->tag == Tag::Ladder))
+		(tag == Tag::PlayerBullet && object->tag == Tag::Ladder) ||
+		(tag == Tag::PlayerBullet && object->tag == Tag::Punji))
 		return false;
 
 	if ((tag == Tag::EnemyBullet && object->tag == Tag::EnemyBullet) ||
 		(tag == Tag::EnemyBullet && object->tag == Tag::Trap) ||
 		(tag == Tag::EnemyBullet && object->tag == Tag::Item) ||
 		(tag == Tag::EnemyBullet && object->tag == Tag::Enemy) ||
-		(tag == Tag::EnemyBullet && object->tag == Tag::Ladder))
+		(tag == Tag::EnemyBullet && object->tag == Tag::Ladder) ||
+		(tag == Tag::EnemyBullet && object->tag == Tag::Punji))
 		return false;
 
 	if (tag == Tag::Player && object->tag == Tag::PlayerBullet)
